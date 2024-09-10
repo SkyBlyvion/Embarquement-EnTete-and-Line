@@ -1,4 +1,4 @@
-table 50235 EnTeteEmbarquement
+table 50236 EnTeteEmbarquement
 {
     DataClassification = ToBeClassified;
 
@@ -13,6 +13,7 @@ table 50235 EnTeteEmbarquement
         {
             DataClassification = ToBeClassified;
             Caption = 'N° preneur d''ordre';
+            TableRelation = Vendor;
         }
         field(3; "Date embarquement"; Date)
         {
@@ -63,11 +64,13 @@ table 50235 EnTeteEmbarquement
         {
             DataClassification = ToBeClassified;
             Caption = 'Code pays preneur d''ordre';
+            TableRelation = "Country/Region";
         }
         field(13; "Souches de No"; Code[10])
         {
             DataClassification = ToBeClassified;
             Caption = 'Souches de N°';
+            TableRelation = "No. Series";
         }
     }
 
