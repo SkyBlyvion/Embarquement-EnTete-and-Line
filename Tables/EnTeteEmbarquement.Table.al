@@ -64,7 +64,7 @@ table 50235 EnTeteEmbarquement
             DataClassification = ToBeClassified;
             Caption = 'Code pays preneur d''ordre';
         }
-        field(13; "Souches de N°"; Code[10])
+        field(13; "Souches de No"; Code[10])
         {
             DataClassification = ToBeClassified;
             Caption = 'Souches de N°';
@@ -77,6 +77,10 @@ table 50235 EnTeteEmbarquement
         {
             Clustered = true;
         }
+        key(SecondaryKey; "No preneur d'ordre", "Date embarquement")
+        {
+            Clustered = false;
+        }
     }
 
     fieldgroups
@@ -85,25 +89,75 @@ table 50235 EnTeteEmbarquement
     }
 
     var
-        myInt: Integer;
+        ParamAchat: Record "Purchases & Payables Setup";
+        Fns: Record Vendor;
+        LigEmbarquement: Record "Ligne Embarquement"; // Assuming "Ligne Embarquement" is a custom table
+        LigAchat: Record "Purchase Line";
+        GestionNoSouche: Codeunit "NoSeriesManagement";
 
     trigger OnInsert()
     begin
-
+        if ("No embarquement" = '') then begin
+            ParamAchat.TESTFIELD("No embarquement");
+            GestionNoSouche.InitSeries(ParamAchat."No embarquement", xRec."Souches de No", 0D, "No embarquement", "Souches de No");
+        end;
+        "Date embarquement" := Today;
     end;
 
     trigger OnModify()
     begin
-
+        // No specific logic
     end;
 
     trigger OnDelete()
-    begin
+    var
+        LigEmbarquement: Record "Ligne Embarquement";
+        LigAchat: Record "Purchase Line";
 
+    begin
+        LigEmbarquement.Reset();
+        LigEmbarquement.SetRange("No embarquement", "No embarquement");
+        if LigEmbarquement.FindSet() then begin
+            CancelReservEntry();
+            repeat
+                if LigAchat.Get(LigAchat."Document Type"::Order, LigEmbarquement."No commande achat", LigEmbarquement."No ligne commande achat") then begin
+                    LigEmbarquement.Delete();
+                    LigAchat.InitQteAEmbarquer();
+                    LigAchat.Modify();
+                end else
+                    LigEmbarquement.Delete();
+            until LigEmbarquement.Next() = 0;
+        end;
     end;
 
     trigger OnRename()
     begin
+        Error('Vous ne pouvez pas renommer %1.', TableName);
+    end;
 
+    procedure CancelReservEntry()
+    var
+        LigEmbarquement: Record "Ligne Embarquement";
+    begin
+        LigEmbarquement.Reset();
+        LigEmbarquement.SetRange("No embarquement", "No embarquement");
+        if LigEmbarquement.FindSet() then begin
+            repeat
+                LigEmbarquement.DeleteReservEntry();
+            until LigEmbarquement.Next() = 0;
+        end;
+    end;
+
+    trigger OnValidate()
+    begin
+        ExtrFns("No preneur d'ordre");
+        "Nom du preneur d'ordre" := .Name;
+        "Adresse preneur d'ordre" := Fns.Address;
+        "Adresse preneur d'ordre 2" := Fns."Address 2";
+        "Ville preneur d'ordre" := Fns.City;
+        "Code postal preneur d'ordre" := Fns."Post Code";
+        "Adresse preneur d'ordre 3" := Fns.County;
+        "Code pays preneur d'ordre" := Fns."Country Code";
+        "Contact preneur d'ordre" := Fns.Contact;
     end;
 }
