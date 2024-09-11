@@ -13,7 +13,7 @@ table 50236 EnTeteEmbarquement
         {
             DataClassification = ToBeClassified;
             Caption = 'N° preneur d''ordre';
-            TableRelation = Vendor;
+            TableRelation = Vendor."No.";
         }
         field(3; "Date embarquement"; Date)
         {
@@ -94,7 +94,7 @@ table 50236 EnTeteEmbarquement
     var
         ParamAchat: Record "Purchases & Payables Setup";
         Fns: Record Vendor;
-        LigEmbarquement: Record "Ligne Embarquement"; // Assuming "Ligne Embarquement" is a custom table
+        LigEmbarquement: Record "LigneEmbarquement"; // Assuming "Ligne Embarquement" is a custom table
         LigAchat: Record "Purchase Line";
         GestionNoSouche: Codeunit "NoSeriesManagement";
 
@@ -114,7 +114,7 @@ table 50236 EnTeteEmbarquement
 
     trigger OnDelete()
     var
-        LigEmbarquement: Record "Ligne Embarquement";
+        LigEmbarquement: Record "LigneEmbarquement";
         LigAchat: Record "Purchase Line";
 
     begin
@@ -140,7 +140,7 @@ table 50236 EnTeteEmbarquement
 
     procedure CancelReservEntry()
     var
-        LigEmbarquement: Record "Ligne Embarquement";
+        LigEmbarquement: Record "LigneEmbarquement";
     begin
         LigEmbarquement.Reset();
         LigEmbarquement.SetRange("No embarquement", "No embarquement");
