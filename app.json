@@ -4,7 +4,7 @@
   "publisher": "Lopez Nicolas - REVIMPORT",
   "version": "1.0.0.1",
   "brief": "",
-  "description": "",
+  "description": "Ajout de PurchaseHeader&Line, Ajout d'EmbarquementHead&Line, Ajout PurchasePayablesSetup, Ajout ReservationEntry",
   "privacyStatement": "",
   "EULA": "",
   "help": "",

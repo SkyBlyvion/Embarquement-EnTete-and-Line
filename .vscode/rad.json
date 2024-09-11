@@ -1,1 +1,1 @@
-﻿{"Added":[],"Modified":[{"Id":50236,"Kind":10,"Name":"EnTeteEmbarquement","Namespace":""},{"Id":50235,"Kind":10,"Name":"LigneEmbarquement","Namespace":""}],"Removed":[{"Id":0,"Kind":11,"Name":"Reservation Engine Mgt.","Namespace":""}]}
+﻿{"Added":[],"Modified":[{"Id":50239,"Kind":17,"Name":"ReservationEntry","Namespace":""},{"Id":50235,"Kind":10,"Name":"LigneEmbarquement","Namespace":""},{"Id":50236,"Kind":10,"Name":"EnTeteEmbarquement","Namespace":""}],"Removed":[{"Id":0,"Kind":11,"Name":"Reservation Engine Mgt.","Namespace":""}]}
