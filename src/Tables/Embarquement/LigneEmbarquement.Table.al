@@ -449,8 +449,6 @@ table 50235 "LigneEmbarquement"
     end;
 
 
-
-
     procedure DeleteReservEntry()
     var
         ReservEntry: Record "Reservation Entry";
