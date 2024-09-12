@@ -92,4 +92,39 @@ tableextension 50241 PurchaseLineCustom extends "Purchase Line" // Line sans s e
     }
 
     //TODO: Add triggers ( 3800 lignes à Refactoriser )
+
+    // Procedure MajQte ( a créer ?!) Biensur que non c'est dans le C/AL Editor, +3800 lignes de la table Purchase Line depuis NAV, Bonne CHANCE !
+    procedure MajQte(var LigAch: Record "Purchase Line")
+    begin
+        Rec.Copy(LigAch);           // Copy the record into Rec (current instance)
+        CustomInitQtyToReceive();         // Recalculate the quantity to receive
+        InitQteAEmbarquer();        // Recalculate the quantity to ship
+        Modify();                   // Save the changes to the database
+    end;
+
+    procedure InitQteAEmbarquer()
+    begin
+        // Calculate fields "Qté embarquée" and "Qté embarquée (Pièce)"
+        CalcFields("Qté embarquée", "Qté embarquée (Pièce)");
+
+        // Update the quantity to ship
+        "Qté à embarquer" := "Outstanding Quantity" - "Qté embarquée";
+        "Qté à embarquer (Pièce)" := "Outstanding Qty. (Base)" - "Qté embarquée (Pièce)";
+    end;
+
+    procedure CustomInitQtyToReceive()// Procedure NAtive est InitQtyToReceive
+    begin
+        // Calculate fields "Qté embarquée" and "Qté embarquée (Pièce)"
+        CalcFields("Qté embarquée", "Qté embarquée (Pièce)");
+
+        // Update the quantity to receive
+        "Qty. to Receive" := "Outstanding Quantity" - "Qté embarquée";
+        "Qty. to Receive (Base)" := "Outstanding Qty. (Base)" - "Qté embarquée (Pièce)";
+
+        InitQtyToInvoice();  // Assuming this function handles the quantities to invoice natively.
+    end;
+
+
+
+
 }

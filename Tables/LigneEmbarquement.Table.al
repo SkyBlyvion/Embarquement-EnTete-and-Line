@@ -6,14 +6,14 @@ table 50235 "LigneEmbarquement"
     {
         field(1; "No embarquement"; Code[10])
         {
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
             Caption = 'No embarquement';
             Description = 'Identifiant unique de l''embarquement';
             Editable = false;
         }
         field(2; "No preneur d'ordre"; Code[20])
         {
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
             Caption = 'No preneur d''ordre';
             Description = 'Code du preneur d''ordre pour cet embarquement';
             TableRelation = Vendor."No.";
@@ -21,7 +21,7 @@ table 50235 "LigneEmbarquement"
         }
         field(3; "No ligne"; Integer)
         {
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
             Caption = 'No ligne';
             Description = 'Numéro de ligne pour identifier chaque ligne d''embarquement';
             Editable = false;
@@ -36,7 +36,7 @@ table 50235 "LigneEmbarquement"
         }
         field(5; "No commande achat"; Code[20])
         {
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
             Caption = 'No commande achat';
             Description = 'Numéro de commande d''achat lié à l''embarquement';
             TableRelation = "Purchase Header"."No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No preneur d'ordre"));
@@ -44,7 +44,7 @@ table 50235 "LigneEmbarquement"
         }
         field(6; "No ligne commande achat"; Integer)
         {
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
             Caption = 'No ligne commande achat';
             Description = 'Numéro de ligne pour la commande d''achat associée';
             TableRelation = "Purchase Line"."Line No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No preneur d'ordre"), "Document No." = field("No commande achat"), Type = const(Item));
@@ -57,7 +57,7 @@ table 50235 "LigneEmbarquement"
         }
         field(7; "No Article"; Code[20])
         {
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
             Caption = 'No Article';
             Description = 'Code unique de l''article embarqué';
             TableRelation = "Item"."No.";
@@ -519,9 +519,6 @@ table 50235 "LigneEmbarquement"
             MAJDateReceptEcrReservEmbarq("Date réception prévue", "No embarquement", "No ligne");
     end;
 
-    // Procedure TODO: MajQte ( a créer ?!) Biensur que non c'est dans le C/AL Editor, +3800 lignes de la table Purchase Line depuis NAV, Bonne CHANCE !
-
-
     // Modale 
     procedure ShowReservationEntries(Modal: Boolean)
     var
@@ -537,6 +534,21 @@ table 50235 "LigneEmbarquement"
             Page.RunModal(Page::"Reservation Entries", ReservEntry)
         else
             Page.Run(Page::"Reservation Entries", ReservEntry);
+    end;
+
+    procedure DeleteLine()
+    var
+        PurchaseLine: Record "Purchase Line";
+    begin
+        PurchaseLine.Reset();
+        PurchaseLine.SetRange("Document Type", PurchaseLine."Document Type"::Order);
+        PurchaseLine.SetRange("Document No.", "No commande achat");
+        PurchaseLine.SetRange("Line No.", "No ligne commande achat");
+        if PurchaseLine.Find('-') then begin
+            Delete(true);
+            Commit();
+            PurchaseLine.MajQte(PurchaseLine);
+        end;
     end;
 
 }
