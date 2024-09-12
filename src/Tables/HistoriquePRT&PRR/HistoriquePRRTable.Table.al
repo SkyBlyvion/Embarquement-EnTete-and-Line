@@ -77,7 +77,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'N° dossier';
-            // TableRelation = "Dossier d'arrivage" TODO: créer la table "Dossier d'arrivage"
+            TableRelation = "Dossier d'arrivage"."No.";// TODO: créer la table "Dossier d'arrivage"
         }
         field(40; "No ligne dossier"; Text[250])
         {

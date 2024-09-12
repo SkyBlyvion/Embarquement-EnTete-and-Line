@@ -181,36 +181,54 @@ tableextension 50240 PurchaseHeaderCustom extends "Purchase Header"
             DataClassification = AccountData;
             Caption = 'Maj Réservation Vente';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
+            Editable = false;
         }
         field(50026; "No. commande portable"; Code[20])
         {
             DataClassification = AccountData;
             Caption = 'N° commande portable';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
+            Editable = true;
         }
         field(50027; "Date calcul PRT"; Date)
         {
             DataClassification = AccountData;
             Caption = 'Date calcul PRT';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
+            Editable = true;
         }
         field(50028; "Heure calcul PRT"; Time)
         {
             DataClassification = AccountData;
             Caption = 'Heure calcul PRT';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
+            Editable = true;
         }
         field(50029; "Commande REV'GARDEN"; Boolean)
         {
             DataClassification = AccountData;
             Caption = 'Commande REV''GARDEN';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
+            Editable = true;
         }
         field(50060; "Total Outstanding Quantity"; Decimal)
         {
-            DataClassification = AccountData;
             Caption = 'Quantité totale en attente';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
+            FieldClass = FlowField;
+            CalcFormula = Sum("Purchase Line"."Outstanding Quantity" WHERE("Document Type" = FIELD("Document Type"), "Document No." = FIELD("No.")));
+            Editable = false;
         }
     }
+
+    // keys //TODO: a modifier( il faut targer le No. de la table Purchase Header)
+    // {
+    //     key(Key10; "Document Type", "Date d'embarquement prévue", "No.")
+    //     {
+    //         Enabled = true;
+    //     }
+    // }
+
+
+
 }

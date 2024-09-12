@@ -6,6 +6,9 @@
  - Prestation dossier arrivage 50017
  - CREDOC 50012
 
+12/09/24 = 2350 lignes de code
+
+TODO: 02 TODO Dossier Arrivage
  . . .
  {
       "from": 50235,
@@ -38,7 +41,7 @@
  permissionset 50246 HistoriquePRTPerm
 
  table 50247 "HistoriquePRTTable"
- 
+
  table 50248 "HistoriquePRRTable"
 
 

@@ -6,6 +6,8 @@ tableextension 50241 PurchaseLineCustom extends "Purchase Line" // Line sans s e
         {
             DataClassification = EndUserIdentifiableInformation;
             Caption = 'N° dossier';
+            Description = 'DOSSIER_ARRIVAGE LN 12/09/24 REV24';
+            Editable = false;
         }
         field(50001; "Date d'embarquement prévue"; Date)
         {
