@@ -50,6 +50,7 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50251 "PrestationDossierArrivage"
 
+permissionset 50252 "ArrivagePerms"
 
 
 

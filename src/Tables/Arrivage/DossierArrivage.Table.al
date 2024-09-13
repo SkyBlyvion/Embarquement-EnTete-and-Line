@@ -47,7 +47,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Prestation / dossiers arrivage"."Montant affecté"
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Frais de transport")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Frais de transport)))
@@ -58,7 +58,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Prestation / dossiers arrivage"."Montant affecté"
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Frais Financiers")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Frais financiers)))
@@ -70,7 +70,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Prestation / dossiers arrivage"."Montant affecté"
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Assurances")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Assurances)))
@@ -81,7 +81,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Prestation / dossiers arrivage"."Montant affecté"
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Commissions")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Commissions)))
@@ -92,7 +92,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Prestation / dossiers arrivage"."Montant affecté"
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Transit")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Transit)))
@@ -103,7 +103,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Prestation / dossiers arrivage"."Montant affecté"
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Douane")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Douane)))
@@ -154,7 +154,7 @@ table 50249 "DossierArrivage"
         NDossier: Record "DossierArrivage";
         ParamStock: Record "Inventory Setup";
         AvisDossier: Record "Avis / dossiers arrivage";
-        PrestDossier: Record "Prestation / dossiers arrivage";
+        PrestDossier: Record "PrestationDossierArrivage";
         HistoPRR: Record "HistoriquePRRTable";
         LigDossier: Record "Ligne dossier arrivage";
         CalculerPR: Codeunit "Calculer PR";

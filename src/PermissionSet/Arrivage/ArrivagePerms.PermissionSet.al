@@ -1,6 +1,7 @@
-permissionset 50250 "ArrivagePerms"
+permissionset 50252 "ArrivagePerms"
 {
     Assignable = true;
     Permissions =
-        tabledata "DossierArrivage" = RIMD;
+        tabledata "DossierArrivage" = RIMD,
+        tabledata "PrestationDossierArrivage" = RIMD;
 }
