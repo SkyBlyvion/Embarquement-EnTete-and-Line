@@ -56,6 +56,9 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50253 Prestation
 
+ table 50254 "PrestationLigneDossier"
+
+ table 50255 "LigneDossierArrivage"
 
 
 
