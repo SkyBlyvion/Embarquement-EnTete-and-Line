@@ -4,12 +4,12 @@ table 50248 "HistoriquePRRTable"
 
     fields
     {
-        field(1; "No calcul"; Integer)
+        field(1; "No. calcul"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'N° calcul';
         }
-        field(2; "No article"; Code[20])
+        field(2; "No. article"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'N° article';
@@ -30,13 +30,13 @@ table 50248 "HistoriquePRRTable"
             DataClassification = ToBeClassified;
             Caption = 'Définitif';
         }
-        field(10; "No fournisseur"; Code[20])
+        field(10; "No. fournisseur"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'N° fournisseur';
             TableRelation = "Vendor"."No.";
         }
-        field(11; "No réception"; Text[250])
+        field(11; "No. réception"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'N° réception';
@@ -73,13 +73,13 @@ table 50248 "HistoriquePRRTable"
             DataClassification = ToBeClassified;
             Caption = 'Volume dossier';
         }
-        field(39; "No dossier"; Code[10])
+        field(39; "No. dossier"; Code[10])
         {
             DataClassification = ToBeClassified;
             Caption = 'N° dossier';
-            TableRelation = "Dossier d'arrivage"."No.";// TODO: créer la table "Dossier d'arrivage"
+            TableRelation = "DossierArrivage"."No. Dossier";// TODO: créer la table "Dossier d'arrivage"
         }
-        field(40; "No ligne dossier"; Text[250])
+        field(40; "No. ligne dossier"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'N° ligne dossier';
@@ -145,7 +145,7 @@ table 50248 "HistoriquePRRTable"
             DataClassification = ToBeClassified;
             Caption = 'Code credoc Avis source';
         }
-        field(65; "No ligne Avis source"; Integer)
+        field(65; "No. ligne Avis source"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'N° ligne Avis source';
@@ -164,7 +164,7 @@ table 50248 "HistoriquePRRTable"
 
     keys
     {
-        key(PK; "No calcul", "No article")
+        key(PK; "No. calcul", "No. article")
         {
             Clustered = true;
         }
@@ -182,18 +182,18 @@ table 50248 "HistoriquePRRTable"
         }
 
         //  Accélère les recherches d'articles par date.
-        key(SecondaryKey3; "No article", "Date")
+        key(SecondaryKey3; "No. article", "Date")
         {
             Enabled = true;
         }
 
         // Permet un accès rapide aux détails filtrés par date, article, et commande.
-        key(SecondaryKey4; "Date", "Heure", "No article", "No dossier")
+        key(SecondaryKey4; "Date", "Heure", "No. article", "No. dossier")
         {
             Enabled = true;
         }
 
-        key(SecondaryKey5; "No article", "Date creation dossier")
+        key(SecondaryKey5; "No. article", "Date creation dossier")
         {
             Enabled = true;
         }

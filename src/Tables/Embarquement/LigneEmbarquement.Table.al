@@ -4,25 +4,25 @@ table 50235 "LigneEmbarquement"
 
     fields
     {
-        field(1; "No embarquement"; Code[10])
+        field(1; "No. embarquement"; Code[10])
         {
             DataClassification = CustomerContent;
-            Caption = 'No embarquement';
+            Caption = 'No. embarquement';
             Description = 'Identifiant unique de l''embarquement';
             Editable = false;
         }
-        field(2; "No preneur d'ordre"; Code[20])
+        field(2; "No. preneur d'ordre"; Code[20])
         {
             DataClassification = CustomerContent;
-            Caption = 'No preneur d''ordre';
+            Caption = 'No. preneur d''ordre';
             Description = 'Code du preneur d''ordre pour cet embarquement';
             TableRelation = Vendor."No.";
             Editable = false;
         }
-        field(3; "No ligne"; Integer)
+        field(3; "No. ligne"; Integer)
         {
             DataClassification = CustomerContent;
-            Caption = 'No ligne';
+            Caption = 'No. ligne';
             Description = 'Numéro de ligne pour identifier chaque ligne d''embarquement';
             Editable = false;
         }
@@ -34,20 +34,20 @@ table 50235 "LigneEmbarquement"
             Editable = true;
 
         }
-        field(5; "No commande achat"; Code[20])
+        field(5; "No. commande achat"; Code[20])
         {
             DataClassification = CustomerContent;
-            Caption = 'No commande achat';
+            Caption = 'No. commande achat';
             Description = 'Numéro de commande d''achat lié à l''embarquement';
-            TableRelation = "Purchase Header"."No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No preneur d'ordre"));
+            TableRelation = "Purchase Header"."No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No. preneur d'ordre"));
             Editable = true;
         }
-        field(6; "No ligne commande achat"; Integer)
+        field(6; "No. ligne commande achat"; Integer)
         {
             DataClassification = CustomerContent;
-            Caption = 'No ligne commande achat';
+            Caption = 'No. ligne commande achat';
             Description = 'Numéro de ligne pour la commande d''achat associée';
-            TableRelation = "Purchase Line"."Line No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No preneur d'ordre"), "Document No." = field("No commande achat"), Type = const(Item));
+            TableRelation = "Purchase Line"."Line No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No. preneur d'ordre"), "Document No." = field("No. commande achat"), Type = const(Item));
             Editable = true;
 
             trigger OnValidate()
@@ -55,10 +55,10 @@ table 50235 "LigneEmbarquement"
                 ValidatePurchaseLine();
             end;
         }
-        field(7; "No Article"; Code[20])
+        field(7; "No. Article"; Code[20])
         {
             DataClassification = CustomerContent;
-            Caption = 'No Article';
+            Caption = 'No. Article';
             Description = 'Code unique de l''article embarqué';
             TableRelation = "Item"."No.";
             Editable = false;
@@ -124,9 +124,9 @@ table 50235 "LigneEmbarquement"
             FieldClass = FlowField;
             CalcFormula = lookup("Purchase Line"."Vendor Item No."
                                 where("Document Type" = const(Order),
-                                        "Buy-from Vendor No." = field("No preneur d'ordre"),
-                                        "Document No." = field("No commande achat"),
-                                        "Line No." = field("No ligne commande achat")));
+                                        "Buy-from Vendor No." = field("No. preneur d'ordre"),
+                                        "Document No." = field("No. commande achat"),
+                                        "Line No." = field("No. ligne commande achat")));
         }
         field(18; "Date réception prévue"; Date)
         {
@@ -147,11 +147,11 @@ table 50235 "LigneEmbarquement"
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Ligneembarquement".Quantité
-                            WHERE("No embarquement" = FIELD("Filtre Embarquement"),
-                                "No preneur d'ordre" = FIELD("No preneur d'ordre"),
-                                "No commande achat" = FIELD("No commande achat"),
-                                "No ligne commande achat" = FIELD("No ligne commande achat"),
-                                "No ligne" = FIELD("Filtre No ligne")));
+                            WHERE("No. embarquement" = FIELD("Filtre Embarquement"),
+                                "No. preneur d'ordre" = FIELD("No. preneur d'ordre"),
+                                "No. commande achat" = FIELD("No. commande achat"),
+                                "No. ligne commande achat" = FIELD("No. ligne commande achat"),
+                                "No. ligne" = FIELD("Filtre No. ligne")));
         }
 
         field(20; "Qté embarquée (Pièce)"; Decimal)
@@ -161,11 +161,11 @@ table 50235 "LigneEmbarquement"
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Ligneembarquement"."Quantité (Pièce)"
-                            WHERE("No embarquement" = FIELD("Filtre Embarquement"),
-                                "No preneur d'ordre" = FIELD("No preneur d'ordre"),
-                                "No commande achat" = FIELD("No commande achat"),
-                                "No ligne commande achat" = FIELD("No ligne commande achat"),
-                                "No ligne" = FIELD("Filtre No ligne")));
+                            WHERE("No. embarquement" = FIELD("Filtre Embarquement"),
+                                "No. preneur d'ordre" = FIELD("No. preneur d'ordre"),
+                                "No. commande achat" = FIELD("No. commande achat"),
+                                "No. ligne commande achat" = FIELD("No. ligne commande achat"),
+                                "No. ligne" = FIELD("Filtre No. ligne")));
         }
         field(21; "Filtre Embarquement"; Code[10])
         {
@@ -182,9 +182,9 @@ table 50235 "LigneEmbarquement"
             FieldClass = FlowField;
             CalcFormula = Lookup("Purchase Line".Quantity
                             WHERE("Document Type" = CONST(Order),
-                            "Buy-from Vendor No." = FIELD("No preneur d'ordre"),
-                            "Document No." = FIELD("No commande achat"),
-                            "Line No." = FIELD("No ligne commande achat")));
+                            "Buy-from Vendor No." = FIELD("No. preneur d'ordre"),
+                            "Document No." = FIELD("No. commande achat"),
+                            "Line No." = FIELD("No. ligne commande achat")));
         }
         field(23; "Qté en commande (Pièce)"; Decimal)
         {
@@ -194,13 +194,13 @@ table 50235 "LigneEmbarquement"
             FieldClass = FlowField;
             CalcFormula = Lookup("Purchase Line"."Quantity (Base)"
                             WHERE("Document Type" = CONST(Order),
-                            "Buy-from Vendor No." = FIELD("No preneur d'ordre"),
-                            "Document No." = FIELD("No commande achat"),
-                            "Line No." = FIELD("No ligne commande achat")));
+                            "Buy-from Vendor No." = FIELD("No. preneur d'ordre"),
+                            "Document No." = FIELD("No. commande achat"),
+                            "Line No." = FIELD("No. ligne commande achat")));
         }
-        field(24; "Filtre No ligne"; Integer)
+        field(24; "Filtre No. ligne"; Integer)
         {
-            Caption = 'Filtre No ligne';
+            Caption = 'Filtre No. ligne';
             Description = 'Filtre spécifique pour les lignes d''embarquement';
             FieldClass = FlowFilter;
             BlankNumbers = DontBlank;
@@ -213,13 +213,13 @@ table 50235 "LigneEmbarquement"
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Reservation Entry"."Quantity (Base)"
-                            WHERE("Source ID" = FIELD("No commande achat"),
-                            "Source Ref. No." = FIELD("No ligne commande achat"),
+                            WHERE("Source ID" = FIELD("No. commande achat"),
+                            "Source Ref. No." = FIELD("No. ligne commande achat"),
                             "Source Type" = CONST(39),
                             "Source Subtype" = CONST(1),
                             "Reservation Status" = CONST("Reservation"),
-                            "No embarquement" = FIELD("No embarquement"),
-                            "No ligne embarquement" = FIELD("No ligne")));
+                            "No. embarquement" = FIELD("No. embarquement"),
+                            "No. ligne embarquement" = FIELD("No. ligne")));
         }
         field(50001; "Code casier"; Code[10])
         {
@@ -235,24 +235,24 @@ table 50235 "LigneEmbarquement"
             Description = 'Indicateur de livraison directe';
             Editable = false;
         }
-        field(50003; "No projet"; Code[20])
+        field(50003; "No. projet"; Code[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No projet';
+            Caption = 'No. projet';
             Description = 'Numéro de projet lié à l''embarquement';
             Editable = false;
         }
-        field(50004; "No de série"; Code[20])
+        field(50004; "No. de série"; Code[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No de série';
+            Caption = 'No. de série';
             Description = 'Numéro de série de l''article';
             Editable = false;
         }
-        field(50005; "No lot"; Code[20])
+        field(50005; "No. lot"; Code[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No lot';
+            Caption = 'No. lot';
             Description = 'Numéro de lot de l''article';
             Editable = false;
         }
@@ -277,13 +277,13 @@ table 50235 "LigneEmbarquement"
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Sum("Reservation Entry".Quantity
-                            WHERE("Source ID" = FIELD("No commande achat"),
-                            "Source Ref. No." = FIELD("No ligne commande achat"),
+                            WHERE("Source ID" = FIELD("No. commande achat"),
+                            "Source Ref. No." = FIELD("No. ligne commande achat"),
                             "Source Type" = CONST(39),
                             "Source Subtype" = CONST(1),
                             "Reservation Status" = CONST("Reservation"),
-                            "No embarquement" = FIELD("No embarquement"),
-                            "No ligne embarquement" = FIELD("No ligne")));
+                            "No. embarquement" = FIELD("No. embarquement"),
+                            "No. ligne embarquement" = FIELD("No. ligne")));
         }
         field(50009; "Quantité à réservée"; Decimal)
         {
@@ -292,10 +292,10 @@ table 50235 "LigneEmbarquement"
             Description = 'Quantité d''articles à réserver';
             Editable = false;
         }
-        field(50010; "No conteneur"; Text[30])
+        field(50010; "No. conteneur"; Text[30])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No conteneur';
+            Caption = 'No. conteneur';
             Description = 'Numéro du conteneur d''embarquement';
             Editable = true;
         }
@@ -304,40 +304,40 @@ table 50235 "LigneEmbarquement"
     keys
     {
         // Primary Key
-        key(PK; "No embarquement", "No preneur d'ordre", "No ligne")
+        key(PK; "No. embarquement", "No. preneur d'ordre", "No. ligne")
         {
             Clustered = true;
             SumIndexFields = "Quantité", "Quantité (Pièce)";
         }
 
         // Secondary Key: Date embarquement, No Article
-        key(DateEmbarquement_Article; "Date embarquement", "No Article")
+        key(DateEmbarquement_Article; "Date embarquement", "No. Article")
         {
             Enabled = true;
         }
 
         // Secondary Key: No commande achat, No ligne commande achat
-        key(CommAchat_LineCommAchat; "No commande achat", "No ligne commande achat")
+        key(CommAchat_LineCommAchat; "No. commande achat", "No. ligne commande achat")
         {
             Enabled = true;
         }
 
         // Secondary Key: No embarquement, No Article
-        key(Embarquement_Article; "No embarquement", "No Article")
+        key(Embarquement_Article; "No. embarquement", "No. Article")
         {
             Enabled = true;
             SumIndexFields = "Quantité", "Quantité (Pièce)";
         }
 
         // Secondary Key: No preneur d'ordre, No commande achat, No ligne commande achat, No Article
-        key(Pren_CommAchat_LineAchat_Art; "No preneur d'ordre", "No commande achat", "No ligne commande achat", "No Article")
+        key(Pren_CommAchat_LineAchat_Art; "No. preneur d'ordre", "No. commande achat", "No. ligne commande achat", "No. Article")
         {
             Enabled = true;
             SumIndexFields = "Quantité", "Quantité (Pièce)";
         }
 
         // Secondary Key: No Article, Conditionnement produit, Livraison directe, Code magasin, Code casier, Date réception prévue
-        key(Article_Conditionnement; "No Article", "Conditionnement produit", "Livraison directe", "Code magasin", "Code casier", "Date réception prévue")
+        key(Article_Conditionnement; "No. Article", "Conditionnement produit", "Livraison directe", "Code magasin", "Code casier", "Date réception prévue")
         {
             Enabled = true;
         }
@@ -382,18 +382,18 @@ table 50235 "LigneEmbarquement"
         QteEmb2 := 0;
         QteEmbPièce2 := 0;
         LigEmb.Reset();
-        LigEmb.SetRange("No commande achat", "No commande achat");
-        LigEmb.SetRange("No ligne commande achat", "No ligne commande achat");
+        LigEmb.SetRange("No. commande achat", "No. commande achat");
+        LigEmb.SetRange("No. ligne commande achat", "No. ligne commande achat");
         LigAchat.Reset();
 
         // Calculate the limits for shipping
-        if LigAchat.Get(LigAchat."Document Type"::Order, "No commande achat", "No ligne commande achat") then begin
+        if LigAchat.Get(LigAchat."Document Type"::Order, "No. commande achat", "No. ligne commande achat") then begin
             // Retrieve quantities in the order
             QteEnCde := LigAchat.Quantity;
             QteEnCdePièce := LigAchat."Quantity (Base)";
 
             // Quantities already shipped in other shipments for the same order and line
-            LigEmb.SetFilter("Filtre Embarquement", '<>%1', "No embarquement");
+            LigEmb.SetFilter("Filtre Embarquement", '<>%1', "No. embarquement");
             if LigEmb.FindFirst() then begin
                 LigEmb.CalcFields("Qté embarquée", "Qté embarquée (Pièce)");
                 QteEmb := LigEmb."Qté embarquée";
@@ -401,8 +401,8 @@ table 50235 "LigneEmbarquement"
             end;
 
             // Quantities already shipped in the same shipment for the same order and line
-            LigEmb.SetRange("Filtre Embarquement", "No embarquement");
-            LigEmb.SetFilter("No ligne", '<>%1', "No ligne");
+            LigEmb.SetRange("Filtre Embarquement", "No. embarquement");
+            LigEmb.SetFilter("No. ligne", '<>%1', "No. ligne");
             if LigEmb.FindFirst() then begin
                 LigEmb.CalcFields("Qté embarquée", "Qté embarquée (Pièce)");
                 QteEmb2 := LigEmb."Qté embarquée";
@@ -433,7 +433,7 @@ table 50235 "LigneEmbarquement"
 
             // Update purchase line table
             LigAchat.Reset();
-            if LigAchat.Get(LigAchat."Document Type"::Order, "No commande achat", "No ligne commande achat") then begin
+            if LigAchat.Get(LigAchat."Document Type"::Order, "No. commande achat", "No. ligne commande achat") then begin
                 LigAchat."Qté à embarquer" := (LigAchat."Outstanding Quantity" - QteEmb - QteEmb2 - "Quantité");
                 LigAchat."Qté à embarquer (Pièce)" := (LigAchat."Outstanding Qty. (Base)" - QteEmbPièce - QteEmbPièce2 - "Quantité (Pièce)");
                 LigAchat."Qty. to Receive" := (LigAchat."Outstanding Quantity" - QteEmb - QteEmb2 - "Quantité");
@@ -454,9 +454,9 @@ table 50235 "LigneEmbarquement"
         ReservEntry: Record "Reservation Entry";
         ReservEngineMgt: Codeunit "Reservation Engine Mgt.";
     begin
-        if ("Quantité" <> 0) and ItemExists("No Article") then begin
-            ReservEntry.SetRange("No embarquement", "No embarquement");
-            ReservEntry.SetRange("No ligne embarquement", "No ligne");
+        if ("Quantité" <> 0) and ItemExists("No. Article") then begin
+            ReservEntry.SetRange("No. embarquement", "No. embarquement");
+            ReservEntry.SetRange("No. ligne embarquement", "No. ligne");
             if ReservEntry.FindSet() then
                 repeat
                     ReservEngineMgt.CloseReservEntry(ReservEntry, false, false);
@@ -480,8 +480,8 @@ table 50235 "LigneEmbarquement"
         ReservEntry: Record "Reservation Entry";
         ReservEngineMgt: Codeunit "Reservation Engine Mgt.";
     begin
-        ReservEntry.SetRange("No embarquement", NEmbarq);
-        ReservEntry.SetRange("No ligne embarquement", NLigneEmbarq);
+        ReservEntry.SetRange("No. embarquement", NEmbarq);
+        ReservEntry.SetRange("No. ligne embarquement", NLigneEmbarq);
         if ReservEntry.FindSet() then
             ReservEngineMgt.ModifyExpectedReceiptDate(ReservEntry, NouvDateRecept);
     end;
@@ -491,8 +491,8 @@ table 50235 "LigneEmbarquement"
     var
         LigAchat: Record "Purchase Line";
     begin
-        if LigAchat.Get(LigAchat."Document Type"::Order, "No commande achat", "No ligne commande achat") then begin
-            "No Article" := LigAchat."No.";
+        if LigAchat.Get(LigAchat."Document Type"::Order, "No. commande achat", "No. ligne commande achat") then begin
+            "No. Article" := LigAchat."No.";
             "Date réception prévue" := LigAchat."Expected Receipt Date";
             CalcFields("Désignation", "Code magasin", "Quantité par unité", "Référence fournisseur", "Qté en commande", "Qté en commande (Pièce)");
         end else
@@ -514,7 +514,7 @@ table 50235 "LigneEmbarquement"
     procedure ValidateDateReceptionPrevue()
     begin
         if "Date réception prévue" <> xRec."Date réception prévue" then
-            MAJDateReceptEcrReservEmbarq("Date réception prévue", "No embarquement", "No ligne");
+            MAJDateReceptEcrReservEmbarq("Date réception prévue", "No. embarquement", "No. ligne");
     end;
 
     // Modale 
@@ -522,11 +522,11 @@ table 50235 "LigneEmbarquement"
     var
         ReservEntry: Record "Reservation Entry";
     begin
-        TestField("No Article"); // Test de presence de l'article
+        TestField("No. Article"); // Test de presence de l'article
 
         // Filtres embarquement
-        ReservEntry.SetRange("No embarquement", "No embarquement");
-        ReservEntry.SetRange("No ligne embarquement", "No ligne");
+        ReservEntry.SetRange("No. embarquement", "No. embarquement");
+        ReservEntry.SetRange("No. ligne embarquement", "No. ligne");
 
         if Modal then
             Page.RunModal(Page::"Reservation Entries", ReservEntry)
@@ -540,8 +540,8 @@ table 50235 "LigneEmbarquement"
     begin
         PurchaseLine.Reset();
         PurchaseLine.SetRange("Document Type", PurchaseLine."Document Type"::Order);
-        PurchaseLine.SetRange("Document No.", "No commande achat");
-        PurchaseLine.SetRange("Line No.", "No ligne commande achat");
+        PurchaseLine.SetRange("Document No.", "No. commande achat");
+        PurchaseLine.SetRange("Line No.", "No. ligne commande achat");
         if PurchaseLine.Find('-') then begin
             Delete(true);
             Commit();

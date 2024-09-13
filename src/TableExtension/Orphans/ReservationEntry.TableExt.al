@@ -14,15 +14,15 @@ tableextension 50239 "ReservationEntry" extends "Reservation Entry"
             Description = 'RESERVATION - REVIMPORT - 11/09/24';
             Editable = true;
         }
-        field(50002; "No embarquement"; Code[10])
+        field(50002; "No. embarquement"; Code[10])
         {
-            Caption = 'No embarquement';
+            Caption = 'No. embarquement';
             Description = 'EMBARQUEMENT - REVIMPORT - 10/09/24';
             Editable = false;
         }
-        field(50003; "No ligne embarquement"; Integer)
+        field(50003; "No. ligne embarquement"; Integer)
         {
-            Caption = 'No ligne embarquement';
+            Caption = 'No. ligne embarquement';
             Description = 'EMBARQUEMENT - REVIMPORT - 10/09/24';
             Editable = false;
         }

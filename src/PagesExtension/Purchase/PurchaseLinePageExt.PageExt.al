@@ -1,10 +1,10 @@
-pageextension 50243 PurchaseLinePageExt extends "Purchase Lines" // Lines avec S est la page
+pageextension 50243 "PurchaseLinePageExt" extends "Purchase Lines" // Lines avec S est la page
 {
     layout
     {
         addafter("Outstanding Quantity")
         {
-            field("N° dossier"; Rec."N° dossier")
+            field("No. dossier"; Rec."No. dossier")
             {
                 ApplicationArea = All;
                 ToolTip = 'Entrez le numéro de dossier associé à cette ligne de commande.';
@@ -79,7 +79,7 @@ pageextension 50243 PurchaseLinePageExt extends "Purchase Lines" // Lines avec S
                 ApplicationArea = All;
                 ToolTip = 'Indiquez la quantité par conditionnement pour cette ligne de commande.';
             }
-            field("N° conteneur"; Rec."N° conteneur")
+            field("No. conteneur"; Rec."No. conteneur")
             {
                 ApplicationArea = All;
                 ToolTip = 'Entrez le numéro du conteneur utilisé pour l''expédition des articles.';

@@ -3,18 +3,18 @@ tableextension 50237 "PurchasesPayablesSetup" extends "Purchases & Payables Setu
 
     fields
     {
-        field(50000; "No prestation"; Code[10])
+        field(50000; "No. prestation"; Code[10])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No prestation';
+            Caption = 'No. prestation';
             Description = 'PARAM_ACHAT - REVIMPORT - 10/09/24';
             TableRelation = "No. Series";
         }
 
-        field(50001; "No embarquement"; Code[10])
+        field(50001; "No. embarquement"; Code[10])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No embarquement';
+            Caption = 'No. embarquement';
             Description = 'EMBARQUEMENT - REVIMPORT - 10/09/24';
             TableRelation = "No. Series";
         }

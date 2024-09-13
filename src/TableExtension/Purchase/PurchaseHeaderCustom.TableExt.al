@@ -1,4 +1,4 @@
-tableextension 50240 PurchaseHeaderCustom extends "Purchase Header"
+tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
 {
     fields
     {
@@ -9,8 +9,8 @@ tableextension 50240 PurchaseHeaderCustom extends "Purchase Header"
             Description = 'DOSSIER_ARRIVAGE LN 12/09/24 REV24';
             Editable = true;
             //TODO: Dossier D'arrivage
-            TableRelation = "Dossier d'arrivage"."No dossier"
-                                WHERE("No Fournisseur" = FIELD("Buy-from Vendor No."));
+            TableRelation = "DossierArrivage"."No. Dossier"
+                                WHERE("No. Fournisseur" = FIELD("Buy-from Vendor No."));
         }
         field(50001; "Date disponibilité Perpignan"; Date)
         {
@@ -174,7 +174,7 @@ tableextension 50240 PurchaseHeaderCustom extends "Purchase Header"
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = Exist("HistoriquePRTTable" WHERE("No commande" = FIELD("No.")));
+            CalcFormula = Exist("HistoriquePRTTable" WHERE("No. commande" = FIELD("No.")));
         }
         field(50025; "Maj Réservation Vente"; Boolean)
         {

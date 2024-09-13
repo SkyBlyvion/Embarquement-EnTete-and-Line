@@ -12,12 +12,12 @@ page 50244 "HistoriquePRRPage"
         {
             repeater(Group)
             {
-                field("No calcul"; Rec."No calcul")
+                field("No. calcul"; Rec."No. calcul")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de calcul associé au PRR.';
                 }
-                field("No article"; Rec."No article")
+                field("No. article"; Rec."No. article")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de l''article associé au PRR.';
@@ -37,12 +37,12 @@ page 50244 "HistoriquePRRPage"
                     ApplicationArea = All;
                     ToolTip = 'Indique si le calcul est définitif.';
                 }
-                field("No fournisseur"; Rec."No fournisseur")
+                field("No. fournisseur"; Rec."No. fournisseur")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro du fournisseur associé.';
                 }
-                field("No réception"; Rec."No réception")
+                field("No. réception"; Rec."No. réception")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de la réception.';
@@ -77,12 +77,12 @@ page 50244 "HistoriquePRRPage"
                     ApplicationArea = All;
                     ToolTip = 'Volume total du dossier.';
                 }
-                field("No dossier"; Rec."No dossier")
+                field("No. dossier"; Rec."No. dossier")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro du dossier associé.';
                 }
-                field("No ligne dossier"; Rec."No ligne dossier")
+                field("No. ligne dossier"; Rec."No. ligne dossier")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de la ligne du dossier associé.';
@@ -147,7 +147,7 @@ page 50244 "HistoriquePRRPage"
                     ApplicationArea = All;
                     ToolTip = 'Code credoc provenant de l''avis source.';
                 }
-                field("No ligne Avis source"; Rec."No ligne Avis source")
+                field("No. ligne Avis source"; Rec."No. ligne Avis source")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de ligne dans l''avis source.';

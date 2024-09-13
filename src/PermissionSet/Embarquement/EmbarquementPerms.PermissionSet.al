@@ -1,4 +1,4 @@
-permissionset 50238 EmbarquementPerms
+permissionset 50238 "EmbarquementPerms"
 {
     Assignable = true;
     Permissions =

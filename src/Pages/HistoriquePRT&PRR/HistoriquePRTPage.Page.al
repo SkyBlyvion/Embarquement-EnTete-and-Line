@@ -12,12 +12,12 @@ page 50245 "HistoriquePRTPage"
         {
             repeater(Group)
             {
-                field("No calcul"; Rec."No calcul")
+                field("No. calcul"; Rec."No. calcul")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de calcul associé à l''historique.';
                 }
-                field("No article"; Rec."No article")
+                field("No. article"; Rec."No. article")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro d''article associé à l''historique.';
@@ -32,7 +32,7 @@ page 50245 "HistoriquePRTPage"
                     ApplicationArea = All;
                     ToolTip = 'Heure du calcul.';
                 }
-                field("No commande"; Rec."No commande")
+                field("No. commande"; Rec."No. commande")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de commande lié à cet historique.';
@@ -57,7 +57,7 @@ page 50245 "HistoriquePRTPage"
                     ApplicationArea = All;
                     ToolTip = 'Incoterm utilisé dans la commande.';
                 }
-                field("No fournisseur"; Rec."No fournisseur")
+                field("No. fournisseur"; Rec."No. fournisseur")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de fournisseur associé à la commande.';
@@ -127,7 +127,7 @@ page 50245 "HistoriquePRTPage"
                     ApplicationArea = All;
                     ToolTip = 'Volume de la commande passée.';
                 }
-                field("No ligne"; Rec."No ligne")
+                field("No. ligne"; Rec."No. ligne")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de ligne de la commande.';

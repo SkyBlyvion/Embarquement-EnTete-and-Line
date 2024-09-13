@@ -44,6 +44,8 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50248 "HistoriquePRRTable"
 
+ table 50249 DossierArrivage
+
 
 
 

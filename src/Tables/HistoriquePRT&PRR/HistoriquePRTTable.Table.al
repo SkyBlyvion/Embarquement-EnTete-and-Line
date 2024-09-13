@@ -4,15 +4,15 @@ table 50247 "HistoriquePRTTable"
 
     fields
     {
-        field(1; "No calcul"; Integer)
+        field(1; "No. calcul"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'No calcul';
+            Caption = 'No. calcul';
         }
-        field(2; "No article"; Code[20])
+        field(2; "No. article"; Code[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No article';
+            Caption = 'No. article';
             TableRelation = "Item"."No.";
         }
         field(3; "Date"; Date)
@@ -25,10 +25,10 @@ table 50247 "HistoriquePRTTable"
             DataClassification = SystemMetadata;
             Caption = 'Heure';
         }
-        field(5; "No commande"; Code[20])
+        field(5; "No. commande"; Code[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No commande';
+            Caption = 'No. commande';
             TableRelation = "Purchase Header"."No." where("Document Type" = const(Order));
         }
         field(6; "Date achat"; Date)
@@ -53,10 +53,10 @@ table 50247 "HistoriquePRTTable"
             Caption = 'Incoterm';
             OptionMembers = EXW,FOB,CNI,CFR,CNF,CIF;
         }
-        field(10; "No fournisseur"; Code[20])
+        field(10; "No. fournisseur"; Code[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No fournisseur';
+            Caption = 'No. fournisseur';
             TableRelation = "Vendor"."No.";
         }
         field(20; "Code transport routier"; Code[10])
@@ -127,10 +127,10 @@ table 50247 "HistoriquePRTTable"
             DataClassification = ToBeClassified;
             Caption = 'Volume commande';
         }
-        field(40; "No ligne"; Text[250])
+        field(40; "No. ligne"; Text[250])
         {
             DataClassification = ToBeClassified;
-            Caption = 'No ligne';
+            Caption = 'No. ligne';
         }
         field(41; "Quantité achetée"; Decimal)
         {
@@ -226,7 +226,7 @@ table 50247 "HistoriquePRTTable"
 
     keys
     {   // Clé primaire Composée de "No calcul" et "No article" pour identifier chaque ligne de manière unique.
-        key(PK; "No calcul", "No article")
+        key(PK; "No. calcul", "No. article")
         {
             Clustered = true;
         }
@@ -238,19 +238,19 @@ table 50247 "HistoriquePRTTable"
         }
 
         // Facilite les requêtes sur les numéros de commande avec date et heure.
-        key(SecondaryKey2; "No commande", "Date", "Heure")
+        key(SecondaryKey2; "No. commande", "Date", "Heure")
         {
             Enabled = true;
         }
 
         //  Accélère les recherches d'articles par date.
-        key(SecondaryKey3; "No article", "Date")
+        key(SecondaryKey3; "No. article", "Date")
         {
             Enabled = true;
         }
 
         // Permet un accès rapide aux détails filtrés par date, article, et commande.
-        key(SecondaryKey4; "Date", "Heure", "No article", "No commande")
+        key(SecondaryKey4; "Date", "Heure", "No. article", "No. commande")
         {
             Enabled = true;
         }

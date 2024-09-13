@@ -1,18 +1,18 @@
-table 50236 EnTeteEmbarquement
+table 50236 "EnTeteEmbarquement"
 {
     DataClassification = ToBeClassified;
 
     fields
     {
         // Champ pour le numéro d'embarquement
-        field(1; "No embarquement"; Code[10])
+        field(1; "No. embarquement"; Code[10])
         {
             DataClassification = SystemMetadata;
             Caption = 'N° embarquement';
             Editable = false;
         }
         // Champ pour le numéro du preneur d'ordre
-        field(2; "No preneur d'ordre"; Code[20])
+        field(2; "No. preneur d'ordre"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'N° preneur d''ordre';
@@ -103,7 +103,7 @@ table 50236 EnTeteEmbarquement
             Editable = false;
         }
         // Champ pour les souches de numéro
-        field(13; "Souches de No"; Code[10])
+        field(13; "Souches de No."; Code[10])
         {
             DataClassification = SystemMetadata;
             Caption = 'Souches de N°';
@@ -116,14 +116,14 @@ table 50236 EnTeteEmbarquement
     keys
     {
         // Clé principale pour le numéro d'embarquement
-        key(PK; "No embarquement")
+        key(PK; "No. embarquement")
         {
             Clustered = true;
             // MaintainSqlIndex = true; // Déjà activé par défaut
         }
 
         // Clé secondaire pour le numéro du preneur d'ordre et la date d'embarquement
-        key(SecondaryKey; "No preneur d'ordre", "Date embarquement")
+        key(SecondaryKey; "No. preneur d'ordre", "Date embarquement")
         {
             Clustered = false;
         }
@@ -141,12 +141,12 @@ table 50236 EnTeteEmbarquement
     // Trigger pour l'insertion d'un en-tête d'embarquement
     trigger OnInsert()
     begin
-        if ("No embarquement" = '') then begin
+        if ("No. embarquement" = '') then begin
             // Vérifier que le champ de numéro de série est rempli
-            ParamAchat.TESTFIELD("No embarquement");
+            ParamAchat.TESTFIELD("No. embarquement");
 
             // Initialiser le numéro de série
-            NoSeries.GetNextNo(ParamAchat."No embarquement", 0D, false);
+            NoSeries.GetNextNo(ParamAchat."No. embarquement", 0D, false);
 
             // Si nécessaire, vérifier si la série est liée
             // NoSeries.AreRelated(ParamAchat."No embarquement", "Souches de No");
@@ -161,11 +161,11 @@ table 50236 EnTeteEmbarquement
     trigger OnDelete()
     begin
         LigEmbarquement.Reset();
-        LigEmbarquement.SetRange("No embarquement", "No embarquement");
+        LigEmbarquement.SetRange("No. embarquement", "No. embarquement");
         if LigEmbarquement.FindSet() then begin
             CancelReservEntry(); // Annuler toutes les réservations liées à l'embarquement
             repeat
-                if LigAchat.Get(LigAchat."Document Type"::Order, LigEmbarquement."No commande achat", LigEmbarquement."No ligne commande achat") then begin
+                if LigAchat.Get(LigAchat."Document Type"::Order, LigEmbarquement."No. commande achat", LigEmbarquement."No. ligne commande achat") then begin
                     LigEmbarquement.Delete(); // Supprimer les lignes d'embarquement
                     LigAchat.InitQteAEmbarquer(); // Recalculer la quantité à embarquer sur la ligne d'achat
                     LigAchat.Modify(); // Enregistrer les modifications
@@ -188,7 +188,7 @@ table 50236 EnTeteEmbarquement
         LigEmbarquement.Reset();
 
         // Définir la plage de recherche pour le champ "No embarquement"
-        LigEmbarquement.SetRange("No embarquement", "No embarquement");
+        LigEmbarquement.SetRange("No. embarquement", "No. embarquement");
 
         // Rechercher les enregistrements dans la plage définie
         if LigEmbarquement.FindSet() then
@@ -205,7 +205,7 @@ table 50236 EnTeteEmbarquement
     procedure ValidateNoPreneurOrdre()
     begin
         // Extraire les informations du preneur d'ordre
-        ExtrFns("No preneur d'ordre");
+        ExtrFns("No. preneur d'ordre");
 
         // Mettre à jour les champs avec les informations extraites
         "Nom du preneur d'ordre" := Fns.Name;
@@ -221,7 +221,7 @@ table 50236 EnTeteEmbarquement
     // Procédure pour valider la "Date embarquement"
     procedure ValidateDateEmbarquement()
     begin
-        LigEmbarquement.SETRANGE("No embarquement", "No embarquement"); // Définir la plage de recherche pour le champ "No embarquement"
+        LigEmbarquement.SETRANGE("No. embarquement", "No. embarquement"); // Définir la plage de recherche pour le champ "No embarquement"
         if LigEmbarquement.FIND('-') then // Rechercher les enregistrements dans la plage définie
             LigEmbarquement.MODIFYALL("Date embarquement", "Date embarquement", true); // Mettre à jour la date d'embarquement pour tous les enregistrements trouvés
     end;
@@ -230,7 +230,7 @@ table 50236 EnTeteEmbarquement
     procedure ValidateDateReceptionPrevue()
     begin
         LigEmbarquement.RESET(); // Réinitialiser la table LigEmbarquement
-        LigEmbarquement.SETRANGE("No embarquement", "No embarquement"); // Définir la plage de recherche pour le champ "No embarquement"
+        LigEmbarquement.SETRANGE("No. embarquement", "No. embarquement"); // Définir la plage de recherche pour le champ "No embarquement"
         if LigEmbarquement.FIND('-') then // Rechercher les enregistrements dans la plage définie
             // Boucler sur les enregistrements trouvés
             repeat
@@ -240,8 +240,8 @@ table 50236 EnTeteEmbarquement
 
                 // Mise à jour de la date de réception dans les lignes de commande achat
                 LigAchat.RESET();
-                LigAchat.SETRANGE("Document No.", LigEmbarquement."No commande achat");
-                LigAchat.SETRANGE("Line No.", LigEmbarquement."No ligne commande achat");
+                LigAchat.SETRANGE("Document No.", LigEmbarquement."No. commande achat");
+                LigAchat.SETRANGE("Line No.", LigEmbarquement."No. ligne commande achat");
                 if LigAchat.FIND('-') then begin
                     LigAchat."Expected Receipt Date" := "Date réception prévue";
                     LigAchat.MODIFY();

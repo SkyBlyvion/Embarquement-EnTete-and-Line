@@ -1,11 +1,11 @@
-tableextension 50241 PurchaseLineCustom extends "Purchase Line" // Line sans s est la table
+tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s est la table
 {
     fields
     {
-        field(50000; "No dossier"; Code[10])
+        field(50000; "No. Dossier"; Code[10])
         {
             DataClassification = EndUserIdentifiableInformation;
-            Caption = 'No dossier';
+            Caption = 'No. dossier';
             Description = 'DOSSIER_ARRIVAGE LN 12/09/24 REV24';
             Editable = false;
         }
@@ -51,10 +51,10 @@ tableextension 50241 PurchaseLineCustom extends "Purchase Line" // Line sans s e
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Ligneembarquement"."Quantité"
-                            WHERE("No preneur d'ordre" = FIELD("Buy-from Vendor No."),
-                            "No commande achat" = FIELD("Document No."),
-                            "No ligne commande achat" = FIELD("Line No."),
-                            "No Article" = FIELD("No.")));
+                            WHERE("No. preneur d'ordre" = FIELD("Buy-from Vendor No."),
+                            "No. commande achat" = FIELD("Document No."),
+                            "No. ligne commande achat" = FIELD("Line No."),
+                            "No. Article" = FIELD("No.")));
         }
         field(50007; "Qté embarquée (Pièce)"; Decimal)
         {
@@ -63,10 +63,10 @@ tableextension 50241 PurchaseLineCustom extends "Purchase Line" // Line sans s e
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Sum("Ligneembarquement"."Quantité (Pièce)"
-                            WHERE("No preneur d'ordre" = FIELD("Buy-from Vendor No."),
-                            "No commande achat" = FIELD("Document No."),
-                            "No ligne commande achat" = FIELD("Line No."),
-                            "No Article" = FIELD("No.")));
+                            WHERE("No. preneur d'ordre" = FIELD("Buy-from Vendor No."),
+                            "No. commande achat" = FIELD("Document No."),
+                            "No. ligne commande achat" = FIELD("Line No."),
+                            "No. Article" = FIELD("No.")));
         }
         field(50008; "Volume (unitaire)"; Decimal)
         {
@@ -125,16 +125,16 @@ tableextension 50241 PurchaseLineCustom extends "Purchase Line" // Line sans s e
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Sum("Ligneembarquement"."Quantité réservée (Pièce)"
-                            WHERE("No preneur d'ordre" = FIELD("Buy-from Vendor No."),
-                            "No commande achat" = FIELD("Document No."),
-                            "No ligne commande achat" = FIELD("Line No.")));
+                            WHERE("No. preneur d'ordre" = FIELD("Buy-from Vendor No."),
+                            "No. commande achat" = FIELD("Document No."),
+                            "No. ligne commande achat" = FIELD("Line No.")));
 
 
         }
-        field(50016; "No conteneur"; Text[30])
+        field(50016; "No. conteneur"; Text[30])
         {
             DataClassification = EndUserIdentifiableInformation;
-            Caption = 'No conteneur';
+            Caption = 'No. conteneur';
             Description = 'EMBARQUEMENT LN 12/09/24 REV24';
             Editable = true;
         }
