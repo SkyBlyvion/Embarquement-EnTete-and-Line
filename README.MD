@@ -46,6 +46,10 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50249 DossierArrivage
 
+ tableextension 50250 "InventorySetupCustom"
+
+ table 50251 "PrestationDossierArrivage"
+
 
 
 
