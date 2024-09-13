@@ -28,7 +28,13 @@ table 50251 "PrestationDossierArrivage"
             Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
             Editable = false;
             NotBlank = true;
+            BlankNumbers = DontBlank;
             OptionMembers = "Frais de transport","Frais Financiers","Assurances","Commissions","Transit","Douane";
+
+            trigger OnValidate()
+            begin
+                TypeValidate();
+            end;
         }
         field(8; "Montant affecté"; Decimal)
         {
@@ -51,15 +57,58 @@ table 50251 "PrestationDossierArrivage"
             Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST("Yes")));
+            CalcFormula = Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(Yes)));
         } // Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE (N° prestation=FIELD(N° prestation),N° dossier=FIELD(N° dossier),Affectation=CONST(Yes)))
+        field(11; "Affectation partielle"; Boolean)
+        {
+            Caption = 'Affectation partielle';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
+            Editable = false;
+            FieldClass = FlowField;
+            BlankNumbers = DontBlank;
+            CalcFormula = Exist("Prestation / ligne dossier" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(No)));
+        }
+        field(12; "Mnt affecté total lig affect"; Decimal)
+        {
+            Caption = 'Mnt affecté total lig affect';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
+            Editable = false;
+            BlankNumbers = DontBlank;
+            FieldClass = FlowField;
+            CalcFormula = Sum("Prestation / ligne dossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(Yes)));
+        }
+        field(13; "Vol total lignes affect"; Decimal)
+        {
+            Caption = 'Vol total lignes affect';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
+            Editable = true;
+            BlankNumbers = DontBlank;
+            FieldClass = FlowField;
+            CalcFormula = Sum("Prestation / ligne dossier"."Volume ligne" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(Yes)));
+        }
+        field(14; "Code devise"; Code[10])
+        {
+            Caption = 'Code devise';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = Lookup("Prestation"."Code devise" WHERE("No." = FIELD("No. prestation")));
+        }
     }
+
 
     keys
     {
-        key(Key1; MyField)
+        key(Key1; "No. Dossier", "No. prestation")
         {
             Clustered = true;
+            SumIndexFields = "Montant affecté";
+        }
+
+        key(Key2; "Type")
+        {
+            Enabled = true;
+            SumIndexFields = "Montant affecté";
         }
     }
 
@@ -69,26 +118,110 @@ table 50251 "PrestationDossierArrivage"
     }
 
     var
-        myInt: Integer;
+        Dossier: Record "DossierArrivage";
+        PrestLigneDossier: Record "PrestationLigneDossier";
+        Prest: Record "Prestation";
+        LigneDossier: Record "Ligne dossier arrivage";
 
     trigger OnInsert()
     begin
+
+        IF Dossier.GET("No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+                ERROR('Affectation impossible : ce dossier est clôturé');
+
+        Prest.GET("No. prestation");
+        Type := Prest.Type;
+
+        LigneDossier.SETRANGE("No. dossier", "No. dossier");
+        IF LigneDossier.FIND('-') THEN
+            REPEAT
+                PrestLigneDossier.INIT;
+                PrestLigneDossier."No. prestation" := "No. prestation";
+                PrestLigneDossier."No. dossier" := "No. dossier";
+                PrestLigneDossier."No. ligne dossier" := LigneDossier."No. ligne";
+                //BUG CC 29/05/10 REV4.14
+                //PrestLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant (dev soc)";
+                PrestLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant";
+                //Fin BUG CC 29/05/10 REV4.14
+                PrestLigneDossier."Volume ligne" := LigneDossier."Volume";
+                PrestLigneDossier.Type := Prest.Type;
+                PrestLigneDossier.Affectation := TRUE;
+                PrestLigneDossier.INSERT;
+            UNTIL LigneDossier.NEXT = 0;
 
     end;
 
     trigger OnModify()
     begin
-
+        IF Dossier.GET("No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::"Clôturé" THEN
+                ERROR('Modification impossible : ce dossier est clôturé');
     end;
 
     trigger OnDelete()
     begin
 
+        IF Dossier.GET("No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::"Clôturé" THEN
+                ERROR('Suppression impossible : ce dossier est clôturé');
+
+        PrestLigneDossier.SETRANGE("No. dossier", "No. dossier");
+        PrestLigneDossier.SETRANGE("No. prestation", "No. prestation");
+        PrestLigneDossier.DELETEALL;
     end;
 
     trigger OnRename()
     begin
 
+        IF Dossier.GET("No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::"Clôturé" THEN
+                ERROR('Modification impossible : ce dossier est clôturé');
+
+        PrestLigneDossier.SETRANGE("No. dossier", xRec."No. dossier");
+        PrestLigneDossier.SETRANGE("No. prestation", xRec."No. prestation");
+        PrestLigneDossier.DELETEALL;
+
+        Prest.GET("No. prestation");
+        Type := Prest.Type;
+
+        LigneDossier.SETRANGE("No. dossier", "No. dossier");
+        IF LigneDossier.FIND('-') THEN
+            PrestLigneDossier.INIT;
+        PrestLigneDossier."N° prestation" := "No. prestation";
+        PrestLigneDossier."N° dossier" := "No. dossier";
+        PrestLigneDossier."N° ligne dossier" := LigneDossier."N° ligne";
+        PrestLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant (dev soc)";
+        PrestLigneDossier."Volume ligne" := LigneDossier."Volume";
+        PrestLigneDossier.Type := Prest.Type;
+        PrestLigneDossier.Affectation := TRUE;
+        PrestLigneDossier.INSERT;
+        REPEAT
+        UNTIL LigneDossier.NEXT = 0;
+    end;
+
+    // Code C/AL
+    // Type - OnValidate()
+    // IF xRec.Type <> Type THEN BEGIN
+    // PrestLigneDossier.SETRANGE("N° prestation","N° prestation");
+    // IF PrestLigneDossier.FIND('-') THEN
+    //     REPEAT
+    //     PrestLigneDossier.VALIDATE(Type,Type);
+    //     PrestLigneDossier.MODIFY;
+    //     UNTIL PrestLigneDossier.NEXT = 0;
+    // END;
+
+    procedure TypeValidate()
+    begin
+        if xRec.Type <> Type then begin
+            PrestLigneDossier.SETRANGE("No. prestation", "No. prestation");
+            if PrestLigneDossier.FIND('-') then
+                repeat
+                    PrestLigneDossier.VALIDATE(Type, Type); // Apply validation on the Type field
+                    PrestLigneDossier.MODIFY(true); // Always set MODIFY to true to ensure it locks and updates the record
+                until PrestLigneDossier.NEXT = 0;
+
+        end;
     end;
 
 }

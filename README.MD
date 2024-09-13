@@ -1,9 +1,11 @@
 # Tables à réaliser : 
 
- - Dossier D'arrivage 50010
+ - Dossier D'arrivage 50010 En cours
  - ligne dossier arrivage 50026
  - Avis dossier arrivage 50004
- - Prestation dossier arrivage 50017
+ - Prestation dossier arrivage 50017 En cours
+ - Prestation ligne dossier 50019
+ - Prestation 50016
  - CREDOC 50012
 
 12/09/24 = 2350 lignes de code
@@ -50,7 +52,9 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50251 "PrestationDossierArrivage"
 
-permissionset 50252 "ArrivagePerms"
+ permissionset 50252 "ArrivagePerms"
+
+ table 50253 Prestation
 
 
 
