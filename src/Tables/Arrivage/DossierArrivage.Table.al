@@ -130,7 +130,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Ligne dossier arrivage"."Montant (dev soc)" WHERE("No. dossier" = FIELD("No. dossier")));
+            CalcFormula = Sum("Lignedossierarrivage"."Montant (dev soc)" WHERE("No. dossier" = FIELD("No. dossier")));
             // Sum("Ligne dossier arrivage"."Montant (dev soc)" WHERE (N° dossier=FIELD(N° dossier)))
         }
     }

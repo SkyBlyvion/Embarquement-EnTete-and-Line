@@ -121,7 +121,7 @@ table 50251 "PrestationDossierArrivage"
         Dossier: Record "DossierArrivage";
         PrestLigneDossier: Record "PrestationLigneDossier";
         Prest: Record "Prestation";
-        LigneDossier: Record "Ligne dossier arrivage";
+        LigneDossier: Record "Lignedossierarrivage";
 
     trigger OnInsert()
     begin
@@ -136,7 +136,7 @@ table 50251 "PrestationDossierArrivage"
         LigneDossier.SETRANGE("No. dossier", "No. dossier");
         IF LigneDossier.FIND('-') THEN
             REPEAT
-                PrestLigneDossier.INIT;
+                PrestLigneDossier.INIT();
                 PrestLigneDossier."No. prestation" := "No. prestation";
                 PrestLigneDossier."No. dossier" := "No. dossier";
                 PrestLigneDossier."No. ligne dossier" := LigneDossier."No. ligne";
@@ -146,9 +146,9 @@ table 50251 "PrestationDossierArrivage"
                 //Fin BUG CC 29/05/10 REV4.14
                 PrestLigneDossier."Volume ligne" := LigneDossier."Volume";
                 PrestLigneDossier.Type := Prest.Type;
-                PrestLigneDossier.Affectation := TRUE;
-                PrestLigneDossier.INSERT;
-            UNTIL LigneDossier.NEXT = 0;
+                PrestLigneDossier."Affectation" := TRUE;
+                PrestLigneDossier.INSERT();
+            UNTIL LigneDossier.NEXT() = 0;
 
     end;
 
@@ -168,7 +168,7 @@ table 50251 "PrestationDossierArrivage"
 
         PrestLigneDossier.SETRANGE("No. dossier", "No. dossier");
         PrestLigneDossier.SETRANGE("No. prestation", "No. prestation");
-        PrestLigneDossier.DELETEALL;
+        PrestLigneDossier.DELETEALL();
     end;
 
     trigger OnRename()
@@ -180,14 +180,14 @@ table 50251 "PrestationDossierArrivage"
 
         PrestLigneDossier.SETRANGE("No. dossier", xRec."No. dossier");
         PrestLigneDossier.SETRANGE("No. prestation", xRec."No. prestation");
-        PrestLigneDossier.DELETEALL;
+        PrestLigneDossier.DELETEALL();
 
         Prest.GET("No. prestation");
         Type := Prest.Type;
 
         LigneDossier.SETRANGE("No. dossier", "No. dossier");
         IF LigneDossier.FIND('-') THEN
-            PrestLigneDossier.INIT;
+            PrestLigneDossier.INIT();
         PrestLigneDossier."N° prestation" := "No. prestation";
         PrestLigneDossier."N° dossier" := "No. dossier";
         PrestLigneDossier."N° ligne dossier" := LigneDossier."N° ligne";
@@ -195,9 +195,9 @@ table 50251 "PrestationDossierArrivage"
         PrestLigneDossier."Volume ligne" := LigneDossier."Volume";
         PrestLigneDossier.Type := Prest.Type;
         PrestLigneDossier.Affectation := TRUE;
-        PrestLigneDossier.INSERT;
+        PrestLigneDossier.INSERT();
         REPEAT
-        UNTIL LigneDossier.NEXT = 0;
+        UNTIL LigneDossier.NEXT() = 0;
     end;
 
     // Code C/AL
@@ -219,7 +219,7 @@ table 50251 "PrestationDossierArrivage"
                 repeat
                     PrestLigneDossier.VALIDATE(Type, Type); // Apply validation on the Type field
                     PrestLigneDossier.MODIFY(true); // Always set MODIFY to true to ensure it locks and updates the record
-                until PrestLigneDossier.NEXT = 0;
+                until PrestLigneDossier.NEXT() = 0;
 
         end;
     end;
