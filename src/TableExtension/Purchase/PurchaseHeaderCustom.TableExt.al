@@ -18,7 +18,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Date disponibilité Perpignan';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = true;
-
+            BlankNumbers = DontBlank;
         }
         field(50002; "Date d'embarquement prévue"; Date)
         {
@@ -26,6 +26,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Date d''embarquement prévue';
             Description = 'EMBARQUEMENT LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50004; "Incoterm"; Option)
         {
@@ -34,6 +35,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Incoterm';
             Description = 'GENDCODE_INCOTERM LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50005; "Gencodage"; Boolean)
         {
@@ -41,29 +43,31 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Gencodage';
             Description = 'GENDCODE_INCOTERM LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50006; "Volume"; Decimal)
         {
             Caption = 'Volume';
             Description = 'VOLUME_POIDS LN  12/09/24 REV24';
             FieldClass = FlowField;
-            CalcFormula = Sum("Purchase Line"."Volume"
-                            WHERE("Document Type" = FIELD("Document Type"),
+            CalcFormula = Sum("Purchase Line"."Volume" WHERE("Document Type" = FIELD("Document Type"),
                             "Buy-from Vendor No." = FIELD("Buy-from Vendor No."),
                             "Document No." = FIELD("No.")));
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 3 : 3;
         }
         field(50007; "Poids"; Decimal)
         {
             Caption = 'Poids';
             Description = 'VOLUME_POIDS LN  12/09/24 REV24';
             FieldClass = FlowField;
-            CalcFormula = Sum("Purchase Line"."Poids"
-                            WHERE("Document Type" = FIELD("Document Type"),
+            CalcFormula = Sum("Purchase Line"."Poids" WHERE("Document Type" = FIELD("Document Type"),
                             "Buy-from Vendor No." = FIELD("Buy-from Vendor No."),
                             "Document No." = FIELD("No.")));
             Editable = false;
-
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 3 : 3;
         }
         field(50010; "Code transport routier"; Code[10])
         {
@@ -79,6 +83,8 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Montant transport routier';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            AutoFormatType = 1;
         }
         field(50012; "Code devise transport routier"; Code[10])
         {
@@ -94,6 +100,8 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Facteur devise transp. routier';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 15;
         }
         field(50014; "Code transport maritime"; Code[10])
         {
@@ -109,6 +117,8 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Montant transport maritime';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            AutoFormatType = 1;
         }
         field(50016; "Code devise transport maritime"; Code[10])
         {
@@ -124,6 +134,8 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Facteur devise transp. maritime';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 15;
         }
         field(50018; "% de frais financier"; Decimal)
         {
@@ -133,6 +145,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             MinValue = 0; // Pour les champs en % il faut set le Min Max Value( afin d'éviter les négatifs et les infinis )
             MaxValue = 100;
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50019; "% Assurances"; Decimal)
         {
@@ -142,6 +155,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             MinValue = 0;
             MaxValue = 100;
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50020; "% Commissions"; Decimal)
         {
@@ -151,6 +165,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             MinValue = 0;
             MaxValue = 100;
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50021; "% Transit"; Decimal)
         {
@@ -160,6 +175,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             MinValue = 0;
             MaxValue = 100;
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50023; "Date de relance"; Date)
         {
@@ -175,6 +191,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Exist("HistoriquePRTTable" WHERE("No. commande" = FIELD("No.")));
+            BlankNumbers = DontBlank;
         }
         field(50025; "Maj Réservation Vente"; Boolean)
         {
@@ -182,6 +199,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Maj Réservation Vente';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(50026; "No. commande portable"; Code[20])
         {
@@ -196,6 +214,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Date calcul PRT';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50028; "Heure calcul PRT"; Time)
         {
@@ -203,6 +222,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Heure calcul PRT';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50029; "Commande REV'GARDEN"; Boolean)
         {
@@ -210,6 +230,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'Commande REV''GARDEN';
             Description = 'ENTETE_ACHAT LN  12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50060; "Total Outstanding Quantity"; Decimal)
         {
@@ -218,16 +239,26 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             FieldClass = FlowField;
             CalcFormula = Sum("Purchase Line"."Outstanding Quantity" WHERE("Document Type" = FIELD("Document Type"), "Document No." = FIELD("No.")));
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 5;
         }
     }
 
-    // keys //TODO: a modifier( il faut targer le No. de la table Purchase Header)
-    // {
-    //     key(Key10; "Document Type", "Date d'embarquement prévue", "No.")
-    //     {
-    //         Enabled = true;
-    //     }
-    // }
+    keys //TODO: a modifier( il faut targer le No. de la table Purchase Header)
+    {
+        key(Key10; "Document Type", "Buy-from Vendor No.", "No.")
+        {
+            Enabled = true;
+        }
+        key(Key11; "Buy-from Vendor No.", "Vendor Authorization No.")
+        {
+            Enabled = true;
+        }
+        // key(Key12; "Document Type", "Date d'embarquement prévue")
+        // {
+        //     Enabled = true;
+        // }
+    }
 
 
 

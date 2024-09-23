@@ -7,12 +7,14 @@ tableextension 50239 "ReservationEntry" extends "Reservation Entry"
             Caption = 'NouveauNLigne';
             Description = 'RESERVATION - REVIMPORT - 11/09/24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50001; "Sélection transfert"; Boolean)
         {
             Caption = 'Sélection transfert';
             Description = 'RESERVATION - REVIMPORT - 11/09/24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50002; "No. embarquement"; Code[10])
         {
@@ -25,12 +27,14 @@ tableextension 50239 "ReservationEntry" extends "Reservation Entry"
             Caption = 'No. ligne embarquement';
             Description = 'EMBARQUEMENT - REVIMPORT - 10/09/24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(50004; "Ecriture bloquée"; Boolean)
         {
             Caption = 'Ecriture bloquée';
             Description = 'RESERVATION - REVIMPORT - 11/09/24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
 
     }

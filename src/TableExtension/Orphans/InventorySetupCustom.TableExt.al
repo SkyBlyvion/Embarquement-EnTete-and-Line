@@ -48,6 +48,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
             Editable = false;
             Caption = 'Dernier No. Reserv.';
             Description = 'PARAM_STOCK - REVIMPORT - 13/09/24 REV24';
+            BlankNumbers = DontBlank;
         }
     }
 
@@ -62,9 +63,8 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
     }
 
     var
-        myInt: Integer;
 
-    /* Triggers to add
+    /* Triggers to add - check for more !
 
     
         //PARAM_STOCK PC 08/02/00 NSC2.12 

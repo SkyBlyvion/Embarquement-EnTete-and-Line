@@ -15,6 +15,7 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Date d''embarquement prévue';
             Description = 'EMBARQUEMENT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50002; "Coût unitaire (Pièce)"; Decimal)
         {
@@ -22,6 +23,7 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Coût unitaire (Pièce)';
             Description = 'LIGNE_ACHAT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50003; "Date de relance"; Date)
         {
@@ -29,6 +31,7 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Date de relance';
             Description = 'LIGNE_ACHAT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50004; "Qté à embarquer"; Decimal)
         {
@@ -36,6 +39,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Quantité à embarquer';
             Description = 'EMBARQUEMENT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50005; "Qté à embarquer (Pièce)"; Decimal)
         {
@@ -43,6 +48,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Quantité à embarquer (Pièce)';
             Description = 'EMBARQUEMENT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50006; "Qté embarquée"; Decimal)
         {
@@ -55,6 +62,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
                             "No. commande achat" = FIELD("Document No."),
                             "No. ligne commande achat" = FIELD("Line No."),
                             "No. Article" = FIELD("No.")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50007; "Qté embarquée (Pièce)"; Decimal)
         {
@@ -67,6 +76,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
                             "No. commande achat" = FIELD("Document No."),
                             "No. ligne commande achat" = FIELD("Line No."),
                             "No. Article" = FIELD("No.")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50008; "Volume (unitaire)"; Decimal)
         {
@@ -74,6 +85,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Volume unitaire';
             Description = 'VOLUME_POIDS LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 3 : 3;
         }
         field(50009; "Volume"; Decimal)
         {
@@ -81,6 +94,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Volume total';
             Description = 'VOLUME_POIDS LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 3 : 3;
         }
         field(50010; "Poids (unitaire)"; Decimal)
         {
@@ -88,6 +103,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Poids unitaire';
             Description = 'VOLUME_POIDS LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 3 : 3;
         }
         field(50011; "Poids"; Decimal)
         {
@@ -95,6 +112,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Poids total';
             Description = 'VOLUME_POIDS LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 3 : 3;
         }
         field(50012; "TEC"; Decimal)
         {
@@ -102,6 +121,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'TEC';
             Description = 'LIGNE_ACHAT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 2 : 2;
         }
         field(50013; "Incoterm"; Option)
         {
@@ -110,6 +131,7 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Incoterm';
             Description = 'INCOTERM LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50014; "Quantité/Conditionnement"; Integer)
         {
@@ -117,6 +139,7 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Quantité/Conditionnement';
             Description = 'LIGNE_ACHAT LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
         field(50015; "Qté réserv sur embarq (pièce)"; Decimal)
         {
@@ -128,6 +151,8 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
                             WHERE("No. preneur d'ordre" = FIELD("Buy-from Vendor No."),
                             "No. commande achat" = FIELD("Document No."),
                             "No. ligne commande achat" = FIELD("Line No.")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
 
 
         }
@@ -144,26 +169,10 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
             Caption = 'Taxe anti-dumping';
             Description = ' LN 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
         }
 
     }
-
-    // A trier et a modifier
-    /*Enabled	Key	SumIndexFields
-    Yes	 Document Type,Document No.,Line No.	Amount,Amount Including VAT,Outstanding Quantity,Line Amount
-    Yes	 Document Type,Type,No.,Variant Code,Drop Shipment,Location Code,Expected Receipt Date	Outstanding Qty. (Base)
-    Yes	 Document Type,Pay-to Vendor No.,Currency Code	Outstanding Amount,Amt. Rcd. Not Invoiced,Outstanding Amount (LCY),Amt. Rcd. Not Invoiced (LCY)
-    No	 Document Type,Type,No.,Variant Code,Drop Shipment,Shortcut Dimension 1 Code,Shortcut Dimension 2 Code,Location Code,Expected Receipt Date	Outstanding Qty. (Base)
-    No	 Document Type,Pay-to Vendor No.,Shortcut Dimension 1 Code,Shortcut Dimension 2 Code,Currency Code	Outstanding Amount,Amt. Rcd. Not Invoiced,Outstanding Amount (LCY),Amt. Rcd. Not Invoiced (LCY)
-    Yes	 Document Type,Blanket Order No.,Blanket Order Line No.	
-    Yes	 Document Type,Type,Prod. Order No.,Prod. Order Line No.,Routing No.,Operation No.	
-    Yes	 Document Type,Document No.,Location Code	
-    Yes	 Document Type,Receipt No.,Receipt Line No.	
-    Yes	 Type,No.,Variant Code,Drop Shipment,Location Code,Document Type,Expected Receipt Date	
-    Yes	 Document Type,Buy-from Vendor No.,Document No.	Volume,Poids
-    Yes	 Document Type,Type,No.,Variant Code,Date d'embarquement prévue	Quantity
-    Yes	 Document Type,Type,Outstanding Quantity,Buy-from Vendor No.	
-    Yes	 Document Type,Type,No.,Variant Code,Drop Shipment,Location Code,Bin Code,Expected Receipt Date	*/
 
     //TODO: Add triggers ( 3800 lignes à Refactoriser ? Non, seulements les Customisations)
 

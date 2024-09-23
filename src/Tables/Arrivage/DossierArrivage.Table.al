@@ -7,7 +7,7 @@ table 50249 "DossierArrivage"
         field(1; "No. Dossier"; Code[10])
         {
             DataClassification = ToBeClassified;
-            Caption = 'N° Dossier';
+            Caption = 'No. Dossier';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
             NotBlank = true;
@@ -103,9 +103,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
-                            WHERE("No. Dossier" = FIELD("No. Dossier"),
-                            Type = const("Douane")));
+            CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté" WHERE("No. Dossier" = FIELD("No. Dossier"), Type = const("Douane")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Douane)))
         }
         field(13; "Nom Fournisseur"; Text[100])
@@ -131,6 +129,7 @@ table 50249 "DossierArrivage"
             FieldClass = FlowField;
             Editable = true;
             CalcFormula = sum("Lignedossierarrivage"."Montant (dev soc)" where("No. dossier" = field("No. dossier")));
+            AutoFormatType = 1;
             // Sum("Ligne dossier arrivage"."Montant (dev soc)" WHERE (N° dossier=FIELD(N° dossier)))
         }
     }

@@ -60,6 +60,10 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50255 "LigneDossierArrivage"
 
+ tableextension 50256 "ItemVariantCustom"
+
+ table 50257 AvisDossierArrivage 
+
 
 
 

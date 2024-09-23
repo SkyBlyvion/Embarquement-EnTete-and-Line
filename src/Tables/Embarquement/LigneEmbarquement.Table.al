@@ -8,14 +8,14 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'No. embarquement';
-            Description = 'Identifiant unique de l''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(2; "No. preneur d'ordre"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'No. preneur d''ordre';
-            Description = 'Code du preneur d''ordre pour cet embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = Vendor."No.";
             Editable = false;
         }
@@ -23,22 +23,23 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'No. ligne';
-            Description = 'Numéro de ligne pour identifier chaque ligne d''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(4; "Date embarquement"; Date)
         {
             DataClassification = SystemMetadata;
             Caption = 'Date embarquement';
-            Description = 'Date de l''embarquement des articles';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
-
+            BlankNumbers = DontBlank;
         }
         field(5; "No. commande achat"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'No. commande achat';
-            Description = 'Numéro de commande d''achat lié à l''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = "Purchase Header"."No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No. preneur d'ordre"));
             Editable = true;
         }
@@ -46,9 +47,10 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'No. ligne commande achat';
-            Description = 'Numéro de ligne pour la commande d''achat associée';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = "Purchase Line"."Line No." where("Document Type" = const(Order), "Buy-from Vendor No." = field("No. preneur d'ordre"), "Document No." = field("No. commande achat"), Type = const(Item));
             Editable = true;
+            BlankNumbers = DontBlank;
 
             trigger OnValidate()
             begin
@@ -59,7 +61,7 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'No. Article';
-            Description = 'Code unique de l''article embarqué';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = "Item"."No.";
             Editable = false;
         }
@@ -67,13 +69,13 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Conditionnement produit';
-            Description = 'Code du conditionnement pour le produit';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(9; "Désignation"; Text[50])
         {
             Caption = 'Désignation';
-            Description = 'Description du produit embarqué';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             FieldClass = FlowField;
             Editable = false;
 
@@ -82,15 +84,17 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Code magasin';
-            Description = 'Code du magasin où le produit est stocké';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(11; "Quantité"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Quantité';
-            Description = 'Quantité d''articles embarqués';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
 
             trigger OnValidate()
             begin
@@ -101,15 +105,19 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Quantité par unité';
-            Description = 'Quantité d''articles par unité de conditionnement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(13; "Quantité (Pièce)"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Quantité (Pièce)';
-            Description = 'Quantité d''articles exprimée en pièce';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
 
             trigger OnValidate()
             begin
@@ -119,7 +127,7 @@ table 50235 "LigneEmbarquement"
         field(17; "Référence fournisseur"; Text[50])
         {
             Caption = 'Référence fournisseur';
-            Description = 'Référence du fournisseur pour l''article';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = lookup("Purchase Line"."Vendor Item No."
@@ -132,8 +140,9 @@ table 50235 "LigneEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date réception prévue';
-            Description = 'Date prévue pour la réception de l''article embarqué';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
 
             trigger OnValidate()
             begin
@@ -143,7 +152,7 @@ table 50235 "LigneEmbarquement"
         field(19; "Qté Embarquée"; Decimal)
         {
             Caption = 'Qté embarquée';
-            Description = 'Quantité totale embarquée pour cet article.';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Ligneembarquement".Quantité
@@ -152,12 +161,14 @@ table 50235 "LigneEmbarquement"
                                 "No. commande achat" = FIELD("No. commande achat"),
                                 "No. ligne commande achat" = FIELD("No. ligne commande achat"),
                                 "No. ligne" = FIELD("Filtre No. ligne")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
 
         field(20; "Qté embarquée (Pièce)"; Decimal)
         {
             Caption = 'Qté embarquée (Pièce)';
-            Description = 'Quantité d''articles embarqués exprimée en pièce';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Ligneembarquement"."Quantité (Pièce)"
@@ -166,18 +177,20 @@ table 50235 "LigneEmbarquement"
                                 "No. commande achat" = FIELD("No. commande achat"),
                                 "No. ligne commande achat" = FIELD("No. ligne commande achat"),
                                 "No. ligne" = FIELD("Filtre No. ligne")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(21; "Filtre Embarquement"; Code[10])
         {
             Caption = 'Filtre Embarquement';
-            Description = 'Filtre spécifique pour l''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             FieldClass = FlowFilter;
             Editable = true;
         }
         field(22; "Qté en commande"; Decimal)
         {
             Caption = 'Qté en commande';
-            Description = 'Quantité totale d''articles en commande';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Lookup("Purchase Line".Quantity
@@ -185,11 +198,13 @@ table 50235 "LigneEmbarquement"
                             "Buy-from Vendor No." = FIELD("No. preneur d'ordre"),
                             "Document No." = FIELD("No. commande achat"),
                             "Line No." = FIELD("No. ligne commande achat")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(23; "Qté en commande (Pièce)"; Decimal)
         {
             Caption = 'Qté en commande (Pièce)';
-            Description = 'Quantité d''articles en commande exprimée en pièce';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Lookup("Purchase Line"."Quantity (Base)"
@@ -197,11 +212,13 @@ table 50235 "LigneEmbarquement"
                             "Buy-from Vendor No." = FIELD("No. preneur d'ordre"),
                             "Document No." = FIELD("No. commande achat"),
                             "Line No." = FIELD("No. ligne commande achat")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(24; "Filtre No. ligne"; Integer)
         {
             Caption = 'Filtre No. ligne';
-            Description = 'Filtre spécifique pour les lignes d''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             FieldClass = FlowFilter;
             BlankNumbers = DontBlank;
             Editable = true;
@@ -209,7 +226,7 @@ table 50235 "LigneEmbarquement"
         field(50000; "Quantité réservée (Pièce)"; Decimal)
         {
             Caption = 'Quantité réservée (Pièce)';
-            Description = 'Quantité d''articles réservée exprimée en pièce';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = Sum("Reservation Entry"."Quantity (Base)"
@@ -220,60 +237,66 @@ table 50235 "LigneEmbarquement"
                             "Reservation Status" = CONST("Reservation"),
                             "No. embarquement" = FIELD("No. embarquement"),
                             "No. ligne embarquement" = FIELD("No. ligne")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50001; "Code casier"; Code[10])
         {
             DataClassification = ToBeClassified;
             Caption = 'Code casier';
-            Description = 'Code du casier de stockage pour les articles';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(50002; "Livraison directe"; Boolean)
         {
             DataClassification = ToBeClassified;
             Caption = 'Livraison directe';
-            Description = 'Indicateur de livraison directe';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(50003; "No. projet"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'No. projet';
-            Description = 'Numéro de projet lié à l''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(50004; "No. de série"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'No. de série';
-            Description = 'Numéro de série de l''article';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(50005; "No. lot"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'No. lot';
-            Description = 'Numéro de lot de l''article';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(50006; "Qté à réserv non sur achat"; Boolean)
         {
             DataClassification = ToBeClassified;
             Caption = 'Qté à réserver non sur achat';
-            Description = 'Quantité à réserver hors achat';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(50007; "Quantité à réservée (Pièce)"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Quantité à réserver (Pièce)';
-            Description = 'Quantité d''articles à réserver exprimée en pièce';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50008; "Quantité réservée"; Decimal)
         {
             Caption = 'Quantité réservée';
-            Description = 'Quantité totale d''articles réservée';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Sum("Reservation Entry".Quantity
@@ -284,19 +307,23 @@ table 50235 "LigneEmbarquement"
                             "Reservation Status" = CONST("Reservation"),
                             "No. embarquement" = FIELD("No. embarquement"),
                             "No. ligne embarquement" = FIELD("No. ligne")));
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50009; "Quantité à réservée"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Quantité à réserver';
-            Description = 'Quantité d''articles à réserver';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 0;
         }
         field(50010; "No. conteneur"; Text[30])
         {
             DataClassification = ToBeClassified;
             Caption = 'No. conteneur';
-            Description = 'Numéro du conteneur d''embarquement';
+            Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
         }
     }

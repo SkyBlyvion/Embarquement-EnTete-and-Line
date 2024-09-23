@@ -9,6 +9,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'N° embarquement';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         // Champ pour le numéro du preneur d'ordre
@@ -16,6 +17,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'N° preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = Vendor."No.";
             Editable = false;
             // ValidateTableRelation = true; // Déjà activé par défaut
@@ -31,7 +33,9 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date embarquement';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
 
             // Trigger pour valider la date d'embarquement
             trigger OnValidate()
@@ -44,7 +48,9 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date réception prévue';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
 
             // Trigger pour valider la date de réception prévue
             trigger OnValidate()
@@ -57,48 +63,56 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'Nom du preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(6; "Adresse preneur d'ordre"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Adresse preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(7; "Adresse preneur d'ordre 2"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Adresse preneur d''ordre 2';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(8; "Adresse preneur d'ordre 3"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Adresse preneur d''ordre 3';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(9; "Ville preneur d'ordre"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Ville preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(10; "Contact preneur d'ordre"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Contact preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(11; "Code postal preneur d'ordre"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'Code postal preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
         field(12; "Code pays preneur d'ordre"; Code[10])
         {
             DataClassification = CustomerContent;
             Caption = 'Code pays preneur d''ordre';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = "Country/Region";
             Editable = false;
         }
@@ -107,6 +121,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Souches de N°';
+            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             TableRelation = "No. Series";
             Editable = false;
         }

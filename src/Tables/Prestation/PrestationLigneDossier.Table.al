@@ -157,7 +157,6 @@ table 50254 "PrestationLigneDossier"
     }
 
     var
-        myInt: Integer;
 
     trigger OnInsert()
     begin
