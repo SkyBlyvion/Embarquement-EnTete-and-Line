@@ -130,7 +130,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
-            CalcFormula = Sum("Lignedossierarrivage"."Montant (dev soc)" WHERE("No. dossier" = FIELD("No. dossier")));
+            CalcFormula = sum("Lignedossierarrivage"."Montant (dev soc)" where("No. dossier" = field("No. dossier")));
             // Sum("Ligne dossier arrivage"."Montant (dev soc)" WHERE (N° dossier=FIELD(N° dossier)))
         }
     }
@@ -156,7 +156,7 @@ table 50249 "DossierArrivage"
         AvisDossier: Record "Avis / dossiers arrivage";
         PrestDossier: Record "PrestationDossierArrivage";
         HistoPRR: Record "HistoriquePRRTable";
-        LigDossier: Record "Ligne dossier arrivage";
+        LigDossier: Record "LigneDossierArrivage";
         CalculerPR: Codeunit "Calculer PR";
         GestionNoSouche: Codeunit "NoSeriesManagement";
         NoArticlePrec: Code[20];

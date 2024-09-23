@@ -90,7 +90,7 @@ table 50253 Prestation
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestationlignedossier"."Montant affecté" WHERE("No. prestation" = FIELD("No."), "Affectation" = CONST(Yes)));
+            CalcFormula = Sum("Prestationlignedossier"."Montant affecté" WHERE("No. prestation" = FIELD("No."), "Affectation" = CONST(true)));
         }
         field(11; "Mnt total lig doss affectées"; Decimal)
         {
@@ -99,7 +99,7 @@ table 50253 Prestation
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestationlignedossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No."), "Affectation" = CONST(Yes)));
+            CalcFormula = Sum("Prestationlignedossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No."), "Affectation" = CONST(true)));
         }
         field(12; "Vol total lig doss affectées"; Decimal)
         {
@@ -108,7 +108,7 @@ table 50253 Prestation
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestationlignedossier"."Volume ligne" WHERE("No. prestation" = FIELD("No."), "Affectation" = CONST(Yes)));
+            CalcFormula = Sum("Prestationlignedossier"."Volume ligne" WHERE("No. prestation" = FIELD("No."), "Affectation" = CONST(true)));
         }
         field(13; "Prévisionnel"; Boolean)
         {

@@ -19,7 +19,7 @@ table 50251 "PrestationDossierArrivage"
             Caption = 'No. prestation';
             Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
             Editable = true;
-            TableRelation = "Prestation"."Code";
+            TableRelation = "Prestation"."No.";
         }
         field(3; "Type"; Option)
         {
@@ -57,7 +57,7 @@ table 50251 "PrestationDossierArrivage"
             Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(Yes)));
+            CalcFormula = Sum("PrestationLigneDossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
         } // Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE (N° prestation=FIELD(N° prestation),N° dossier=FIELD(N° dossier),Affectation=CONST(Yes)))
         field(11; "Affectation partielle"; Boolean)
         {
@@ -66,7 +66,7 @@ table 50251 "PrestationDossierArrivage"
             Editable = false;
             FieldClass = FlowField;
             BlankNumbers = DontBlank;
-            CalcFormula = Exist("Prestation / ligne dossier" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(No)));
+            CalcFormula = Exist("PrestationLigneDossier" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(false)));
         }
         field(12; "Mnt affecté total lig affect"; Decimal)
         {
@@ -75,7 +75,7 @@ table 50251 "PrestationDossierArrivage"
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestation / ligne dossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(Yes)));
+            CalcFormula = Sum("PrestationLigneDossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(true)));
         }
         field(13; "Vol total lignes affect"; Decimal)
         {
@@ -84,7 +84,7 @@ table 50251 "PrestationDossierArrivage"
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("Prestation / ligne dossier"."Volume ligne" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(Yes)));
+            CalcFormula = Sum("PrestationLigneDossier"."Volume ligne" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
         }
         field(14; "Code devise"; Code[10])
         {
@@ -95,7 +95,6 @@ table 50251 "PrestationDossierArrivage"
             CalcFormula = Lookup("Prestation"."Code devise" WHERE("No." = FIELD("No. prestation")));
         }
     }
-
 
     keys
     {
@@ -133,7 +132,7 @@ table 50251 "PrestationDossierArrivage"
         Prest.GET("No. prestation");
         Type := Prest.Type;
 
-        LigneDossier.SETRANGE("No. dossier", "No. dossier");
+        LigneDossier.SETRANGE("No. Dossier", "No. Dossier");
         IF LigneDossier.FIND('-') THEN
             REPEAT
                 PrestLigneDossier.INIT();
@@ -188,9 +187,9 @@ table 50251 "PrestationDossierArrivage"
         LigneDossier.SETRANGE("No. dossier", "No. dossier");
         IF LigneDossier.FIND('-') THEN
             PrestLigneDossier.INIT();
-        PrestLigneDossier."N° prestation" := "No. prestation";
-        PrestLigneDossier."N° dossier" := "No. dossier";
-        PrestLigneDossier."N° ligne dossier" := LigneDossier."N° ligne";
+        PrestLigneDossier."No. prestation" := "No. prestation";
+        PrestLigneDossier."No. dossier" := "No. dossier";
+        PrestLigneDossier."No. ligne dossier" := LigneDossier."No. ligne";
         PrestLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant (dev soc)";
         PrestLigneDossier."Volume ligne" := LigneDossier."Volume";
         PrestLigneDossier.Type := Prest.Type;
