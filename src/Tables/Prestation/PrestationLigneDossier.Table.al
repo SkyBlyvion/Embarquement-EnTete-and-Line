@@ -86,7 +86,7 @@ table 50254 "PrestationLigneDossier"
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
             DecimalPlaces = 0 : 5;
-            CalcFormula = lookup("LigneDossierArrivage"."Quantité (pièce)" where("No. dossier" = field("No. dossier"), "No. ligne" = field("No. ligne dossier")));
+            CalcFormula = lookup("LigneDossierArrivage"."Quantité (piece)" where("No. dossier" = field("No. dossier"), "No. ligne" = field("No. ligne dossier")));
         }
         field(13; "Montant ligne (dev soc)"; Decimal)
         {

@@ -144,12 +144,12 @@ table 50253 Prestation
     }
 
     var
-        Dossier: Record "DossierArrivage";
-        DeviseTauxChange: Record "Currency Exchange Rate";
-        Prest: Record "Prestation";
-        ParamAchat: Record "Purchases & Payables Setup";
-        PrestDossier: Record "PrestationDossierArrivage";
-        GestionNoSouche: Codeunit "NoSeriesManagement";
+    // Dossier: Record "DossierArrivage";
+    // DeviseTauxChange: Record "Currency Exchange Rate";
+    // Prest: Record "Prestation";
+    // ParamAchat: Record "Purchases & Payables Setup";
+    // PrestDossier: Record "PrestationDossierArrivage";
+    // GestionNoSouche: Codeunit "NoSeriesManagement";
 
 
     trigger OnInsert()

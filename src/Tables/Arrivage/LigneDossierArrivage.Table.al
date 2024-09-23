@@ -145,8 +145,83 @@ table 50255 "LigneDossierArrivage"
             Editable = true;
             TableRelation = "Item Variant".Code where("Item No." = field("No. article"), Choix = filter('Achat | Achats/Ventes'));
         }
+        field(19; "Quantité (piece)"; Decimal)
+        {
+            DataClassification = AccountData;
+            Caption = 'Quantité (piece)';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 0 : 5;
+        }
+        field(20; "Cout unitaire (piece)"; Decimal)
+        {
+            DataClassification = AccountData;
+            Caption = 'Cout unitaire (piece)';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+            BlankNumbers = DontBlank;
+        }
+        field(21; "Montant (dev soc)"; Decimal)
+        {
+            DataClassification = AccountData;
+            Caption = 'Montant (devise spéciale)';
+            Description = 'Montant * facteur devise (si <> 0) - - LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+            BlankNumbers = DontBlank;
+        }
+        field(22; "Volume"; Decimal)
+        {
+            DataClassification = AccountData;
+            Caption = 'Volume';
+            Description = 'soit volume PCB * Qté, si pas de PCB Volume article * Qté (pièce) - - LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = true;
+            BlankNumbers = DontBlank;
+        }
+        field(23; "% Remise ligne"; Decimal)
+        {
+            DataClassification = AccountData;
+            Caption = '% Remise ligne';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = true;
+            BlankNumbers = DontBlank;
+            MinValue = 0;
+            MaxValue = 100;
+        }
+        field(24; "No. commande"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'No. commande';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+        }
+        field(25; "Quantité par unité"; Decimal)
+        {
+            DataClassification = AccountData;
+            Caption = 'Quantité par unité';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+            BlankNumbers = DontBlank;
+        }
+        field(26; "Code devise"; Code[10])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Code devise';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+            TableRelation = "Currency"."Code";
+        }
+        field(27; "Facteur devise"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Facteur devise';
+            Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
+            Editable = false;
+            BlankNumbers = DontBlank;
+            DecimalPlaces = 1 : 15;
+            MinValue = 0;
+        }
     }
-
     keys
     {
         key(PK; "No. dossier", "No. ligne")
@@ -167,7 +242,6 @@ table 50255 "LigneDossierArrivage"
     }
 
     var
-        myInt: Integer;
 
     trigger OnInsert()
     begin
