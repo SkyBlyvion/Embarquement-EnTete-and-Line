@@ -8,7 +8,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'No. prestation';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
             Editable = false;
             TableRelation = "Prestation"."No.";
         }
@@ -16,7 +16,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'No. dossier';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
             Editable = false;
             TableRelation = "LigneDossierArrivage"."No. Dossier"; //TODO: remplir la LigneDossierArrivage
         }
@@ -24,14 +24,14 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'No. ligne dossier';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
             Editable = false;
         }
         field(6; "Affectation"; Boolean)
         {
             DataClassification = AccountData;
             Caption = 'Affectation';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -39,7 +39,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'Montant affecté';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }

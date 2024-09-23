@@ -8,7 +8,7 @@ table 50253 Prestation
         {
             DataClassification = CustomerContent;
             Caption = 'No.';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = false;
         }
@@ -16,7 +16,7 @@ table 50253 Prestation
         {
             DataClassification = CustomerContent;
             Caption = 'No. document';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = false;
         }
@@ -24,7 +24,7 @@ table 50253 Prestation
         {
             DataClassification = SystemMetadata;
             Caption = 'Date';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = true;
             ClosingDates = false;
@@ -33,7 +33,7 @@ table 50253 Prestation
         {
             DataClassification = CustomerContent;
             Caption = 'Type';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = true;
             BlankNumbers = DontBlank;
@@ -43,7 +43,7 @@ table 50253 Prestation
         {
             DataClassification = CustomerContent;
             Caption = 'Montant';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = false;
         }
@@ -51,7 +51,7 @@ table 50253 Prestation
         {
             DataClassification = SystemMetadata;
             Caption = 'Code devise';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = false;
             TableRelation = "Currency"."Code";
@@ -59,6 +59,8 @@ table 50253 Prestation
         field(7; "Facteur devise"; Decimal)
         {
             DataClassification = CustomerContent;
+            Caption = 'Facteur devise';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
             MinValue = 0;
@@ -67,7 +69,7 @@ table 50253 Prestation
         field(8; "Imputé"; Boolean)
         {
             Caption = 'Imputé';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = false;
             NotBlank = false;
             FieldClass = FlowField;
@@ -77,7 +79,7 @@ table 50253 Prestation
         field(9; "Mnt affecté total (doss)"; Decimal)
         {
             Caption = 'Mnt affecté total (doss)';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -86,7 +88,7 @@ table 50253 Prestation
         field(10; "Mnt affecté total (lig doss)"; Decimal)
         {
             Caption = 'Mnt affecté total (lig doss)';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -95,7 +97,7 @@ table 50253 Prestation
         field(11; "Mnt total lig doss affectées"; Decimal)
         {
             Caption = 'Mnt total lig doss affectées';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -104,7 +106,7 @@ table 50253 Prestation
         field(12; "Vol total lig doss affectées"; Decimal)
         {
             Caption = 'Vol total lig doss affectées';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -114,7 +116,7 @@ table 50253 Prestation
         {
             DataClassification = CustomerContent;
             Caption = 'Prévisionnel';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = true;
             NotBlank = false;
         }
@@ -122,7 +124,7 @@ table 50253 Prestation
         {
             DataClassification = SystemMetadata;
             Caption = 'Souche de No.';
-            Description = 'PRESTATION - REVIMPORT - 13/09/24 REV24';
+            Description = 'PRESTATION - REVIMPORT - 09/09/24 REV24';
             Editable = false;
             TableRelation = "No. Series"."Code";
         }

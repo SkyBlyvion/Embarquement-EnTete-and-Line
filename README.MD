@@ -64,6 +64,8 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50257 AvisDossierArrivage 
 
+ table 50258 Avis
+
 
 
 
