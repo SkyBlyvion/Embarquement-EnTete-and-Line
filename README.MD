@@ -70,6 +70,8 @@ TODO: 02 TODO Dossier Arrivage
 
 table 50260 "AvisLigneDossier"
 
+pageextension 50261 "HistoriquePRTExtPage"
+
 
 
 
