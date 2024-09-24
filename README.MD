@@ -66,6 +66,10 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50258 Avis
 
+ table 50259 Credoc
+
+table 50260 "AvisLigneDossier"
+
 
 
 

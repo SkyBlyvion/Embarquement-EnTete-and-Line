@@ -66,7 +66,7 @@ table 50257 AvisDossierArrivage
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
             FieldClass = FlowField;
-            CalcFormula = Sum("Avis ligne dossier"."Montant ligne (dev soc)" WHERE("Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
+            CalcFormula = Sum("AvisLigneDossier"."Montant ligne (dev soc)" WHERE("Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
         }
         field(11; "Affectation partielle"; Boolean)
         {
@@ -75,7 +75,7 @@ table 50257 AvisDossierArrivage
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Exist("Avis ligne dossier" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(false)));
+            CalcFormula = Exist("AvisLigneDossier" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(false)));
         }
         field(12; "Mnt affecté total lig affect"; Decimal)
         {
@@ -85,7 +85,7 @@ table 50257 AvisDossierArrivage
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
             FieldClass = FlowField;
-            CalcFormula = Sum("Avis ligne dossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(true)));
+            CalcFormula = Sum("AvisLigneDossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(true)));
         }
         field(13; "Vol total lignes affectées"; Decimal)
         {
@@ -94,7 +94,7 @@ table 50257 AvisDossierArrivage
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("Avis ligne dossier"."Volume ligne" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(true)));
+            CalcFormula = Sum("AvisLigneDossier"."Volume ligne" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(true)));
         }
         field(14; "Code devise"; Code[10])
         {
