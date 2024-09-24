@@ -115,7 +115,4 @@ tableextension 50256 "ItemVariantCustom" extends "Item Variant"
     {
         // Add changes to field groups here
     }
-
-    var
-        myInt: Integer;
 }
