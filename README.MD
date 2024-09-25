@@ -84,7 +84,13 @@ TODO: 02 TODO Dossier Arrivage
 
  page 50267 AvisDossierArrivagePage no perm
 
- page 50268 PrestationPage
+ page 50268 PrestationPage no perm
+
+ page 50269 PrestationLigneDossierPage no perm
+
+ page 50270 PrestationDossierArrivagePage no perm
+
+ page 50271 DossierArrivagePage 
 
 
 

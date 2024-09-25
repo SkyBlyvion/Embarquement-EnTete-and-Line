@@ -6,6 +6,7 @@ permissionset 50252 "ArrivagePerms"
         tabledata "PrestationDossierArrivage" = RIMD,
         tabledata "LigneDossierArrivage" = RIMD,
         tabledata "Credoc" = RIMD,
+        tabledata "FraisAnnexesAchat" = RIMD,
         tabledata "Avis" = RIMD,
         tabledata "AvisLigneDossier" = RIMD,
         tabledata "AvisDossierArrivage" = RIMD;

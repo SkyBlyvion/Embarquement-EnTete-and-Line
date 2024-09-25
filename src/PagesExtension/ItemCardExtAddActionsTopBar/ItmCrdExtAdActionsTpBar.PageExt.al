@@ -57,9 +57,54 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         end;
                     }
                 }
-                group("Prestation")
+                group("Prestations")
                 {
                     Caption = 'Prestation';
+                    action("Prestation")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Prestation';
+                        ToolTip = 'Voir la prestation pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            PrestationPage: Page PrestationPage;
+                        begin
+                            PrestationPage.SetTableView(Rec);
+                            Page.Run(PAGE::PrestationPage);
+                        end;
+                    }
+                    action("Prestation Ligne Dossier")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Prestation Ligne Dossier';
+                        ToolTip = 'Voir la prestation de la ligne de dossier pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            PrestationLigneDossierPage: Page PrestationLigneDossierPage;
+                        begin
+                            PrestationLigneDossierPage.SetTableView(Rec);
+                            Page.Run(PAGE::PrestationLigneDossierPage);
+                        end;
+                    }
+                    action("Prestation Dossier Arrivage")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Prestation Dossier Arrivage';
+                        ToolTip = 'Voir la prestation du dossier d''arrivage pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            PrestationDossierArrivagePage: Page PrestationDossierArrivagePage;
+                        begin
+                            PrestationDossierArrivagePage.SetTableView(Rec);
+                            Page.Run(PAGE::PrestationDossierArrivagePage);
+                        end;
+                    }
                 }
                 group("Embarquement")
                 {
