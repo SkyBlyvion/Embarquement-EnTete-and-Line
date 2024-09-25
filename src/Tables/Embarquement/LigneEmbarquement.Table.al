@@ -72,13 +72,13 @@ table 50235 "LigneEmbarquement"
             Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
             Editable = false;
         }
-        field(9; "Désignation"; Text[50])
+        field(9; "Désignation"; Text[100])
         {
             Caption = 'Désignation';
             Description = 'LIGNE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
-            FieldClass = FlowField;
             Editable = false;
-
+            FieldClass = FlowField;
+            CalcFormula = lookup("Purchase Line"."Description" WHERE("Document Type" = CONST("Order"), "Buy-from Vendor No." = FIELD("No. preneur d'ordre"), "Document No." = FIELD("No. commande achat"), "Line No." = FIELD("No. ligne commande achat")));
         }
         field(10; "Code magasin"; Code[10])
         {

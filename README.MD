@@ -68,10 +68,17 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50259 Credoc
 
-table 50260 "AvisLigneDossier"
+ table 50260 "AvisLigneDossier"
 
-pageextension 50261 "HistoriquePRTExtPage"
+ /!\ REMOVED /!\ pageextension 50261 "HistoriquePRTExtPage"
 
+ page 50262 EnTeteEmbrq
+
+ pageextension 50263 ItmCrdExtAdActionsTpBar
+
+ page 50264 "LigneEmbarquemen"
+
+ page 50265 AvisPage
 
 
 

@@ -1,10 +1,10 @@
 {
   "id": "6a9dc1c3-f34e-420a-af99-365af079266c",
-  "name": "Embarquement, Arrivage, Dossier",
+  "name": "Hist PRT PRR, Prestat, Embarq, Avis, Dossr, Arrvge",
   "publisher": "Lopez Nicolas - REVIMPORT",
   "version": "1.0.0.2",
   "brief": "",
-  "description": "Ajout de PurchaseHeader&Line, Ajout d'EmbarquementHead&Line, Ajout PurchasePayablesSetup, Ajout ReservationEntry",
+  "description": "Extension contenant, Historique PRR & PRT, Prestations",
   "privacyStatement": "",
   "EULA": "",
   "help": "",
