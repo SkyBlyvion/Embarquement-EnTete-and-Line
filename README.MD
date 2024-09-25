@@ -72,13 +72,19 @@ TODO: 02 TODO Dossier Arrivage
 
  /!\ REMOVED /!\ pageextension 50261 "HistoriquePRTExtPage"
 
- page 50262 EnTeteEmbrq
+ page 50262 EnTeteEmbrq - NO PERM
 
- pageextension 50263 ItmCrdExtAdActionsTpBar
+ pageextension 50263 ItmCrdExtAdActionsTpBar - NO PERM
 
- page 50264 "LigneEmbarquemen"
+ page 50264 "LigneEmbarquemen" - NO PERM
 
- page 50265 AvisPage
+ page 50265 AvisPage - NO PERM
+
+ page 50266 "AvisLigneDossierPage" NO PERM
+
+ page 50267 AvisDossierArrivagePage no perm
+
+ page 50268 PrestationPage
 
 
 

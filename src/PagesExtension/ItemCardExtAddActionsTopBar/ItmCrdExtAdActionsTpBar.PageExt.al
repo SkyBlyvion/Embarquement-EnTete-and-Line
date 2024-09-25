@@ -4,7 +4,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
     {
         addlast(Resources)
         {
-            // TODO: Filtre pour chaque action ouverture de page afin de charger seulement la ou les lignes correspondantes.
+            // TODO: Filtre pour chaque action 
             group("Gestion et Suivi des Opérations")
             {
                 Caption = 'Gestion et Suivi des Opérations';
@@ -19,8 +19,41 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
+                        var
+                            AvisPage: Page AvisPage;
                         begin
+                            AvisPage.SetTableView(Rec);
                             Page.Run(PAGE::AvisPage);
+                        end;
+                    }
+                    action("Avis Ligne Dossier")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Avis Ligne Dossier';
+                        ToolTip = 'Voir l''avis de la ligne de dossier pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            AvisLigneDossierPage: Page AvisLigneDossierPage;
+                        begin
+                            AvisLigneDossierPage.SetTableView(Rec);
+                            Page.Run(PAGE::AvisLigneDossierPage);
+                        end;
+                    }
+                    action("Avis Dossier Arrivage")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Avis Dossier Arrivage';
+                        ToolTip = 'Voir l''avis du dossier d''arrivage pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            AvisDossierArrivagePage: Page AvisDossierArrivagePage;
+                        begin
+                            AvisDossierArrivagePage.SetTableView(Rec);
+                            Page.Run(PAGE::AvisDossierArrivagePage);
                         end;
                     }
                 }
