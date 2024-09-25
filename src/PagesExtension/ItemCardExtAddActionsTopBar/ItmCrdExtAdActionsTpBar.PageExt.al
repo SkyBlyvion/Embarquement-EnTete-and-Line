@@ -109,6 +109,36 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                 group("Embarquement")
                 {
                     Caption = 'Embarquement';
+                    action("EnTete Embarquement")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Embarquement';
+                        ToolTip = 'Voir l''embarquement pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            EmbarquementPage: Page EnTeteEmbarquemen;
+                        begin
+                            EmbarquementPage.SetTableView(Rec);
+                            Page.Run(PAGE::EnTeteEmbarquemen);
+                        end;
+                    }
+                    action("Ligne Embarquement")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'LigneEmbarquement';
+                        ToolTip = 'Voir l''embarquement de la ligne de dossier pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            LigneEmbarquementPage: Page LigneEmbarquemen;
+                        begin
+                            LigneEmbarquementPage.SetTableView(Rec);
+                            Page.Run(PAGE::LigneEmbarquemen);
+                        end;
+                    }
                 }
                 group("Historique PRT & PRR")
                 {
@@ -149,9 +179,69 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                 }
                 group("Arrivage")
                 {
+                    action("Dossier Arrivage")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Dossier Arrivage';
+                        ToolTip = 'Voir le dossier d''arrivage pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            DossierArrivagePage: Page DossierArrivagePage;
+                        begin
+                            DossierArrivagePage.SetTableView(Rec);
+                            Page.Run(PAGE::DossierArrivagePage);
+                        end;
+                    }
+                    action("Ligne Dossier Arrivage")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Ligne Dossier Arrivage';
+                        ToolTip = 'Voir la ligne de dossier d''arrivage pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            LigneDossierArrivagePage: Page LigneDossierArrivagePage;
+                        begin
+                            LigneDossierArrivagePage.SetTableView(Rec);
+                            Page.Run(PAGE::LigneDossierArrivagePage);
+                        end;
+                    }
                 }
                 group("Credoc")
                 {
+                    action("Credit Documentaire")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Credoc';
+                        ToolTip = 'Voir le Credoc pour cet article.';
+                        Image = History;
+
+                        trigger OnAction()
+                        var
+                            CredocPage: Page CredocPage;
+                        begin
+                            CredocPage.SetTableView(Rec);
+                            Page.Run(PAGE::CredocPage);
+                        end;
+                    }
+                }
+                action("Frais Annexes Achat")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Frais Annexes Achat';
+                    ToolTip = 'Voir les frais annexes d''achat pour cet article.';
+                    Image = History;
+
+                    trigger OnAction()
+                    var
+                        FraisAnnexesAchatPage: Page FraisAnnexesAchatPage;
+                    begin
+                        FraisAnnexesAchatPage.SetTableView(Rec);
+                        Page.Run(PAGE::FraisAnnexesAchatPage);
+                    end;
                 }
             }
         }

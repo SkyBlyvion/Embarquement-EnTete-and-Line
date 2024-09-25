@@ -92,6 +92,20 @@ TODO: 02 TODO Dossier Arrivage
 
  page 50271 DossierArrivagePage 
 
+ page 50272 LigneDossierArrivagePage
+
+ page 50273 CredocPage
+
+ page 50274 FraisAnnexesAchat
+
+ pageext 50275 PurchasePayablesSetup
+
+ pageext 50276 inventorySetupCstmPage
+
+ pageext 50277 ItemVariantCustomPage
+
+ pageext 50278 ReservationEntryPage
+
 
 
 
