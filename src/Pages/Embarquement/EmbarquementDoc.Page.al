@@ -60,7 +60,6 @@ page 50236 "EmbarquementDoc"
                     ToolTip = 'Affiche le code pays du preneur d''ordre.';
                 }
             }
-            // Change this area to `subparts` instead of `subpage`
             part(LignesEmbarquement; "LigneEmbarqmtSubform")
             {
                 ApplicationArea = Suite;

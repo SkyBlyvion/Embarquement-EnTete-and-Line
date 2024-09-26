@@ -4,8 +4,10 @@ page 50262 EnTeteEmbarquemen
     SourceTable = EnTeteEmbarquement;
     ApplicationArea = All;
     Caption = 'Embarquements';
-    Editable = false;
     RefreshOnActivate = true;
+
+    // Use CardPageID to link the list page to the document page
+    CardPageID = "EmbarquementDoc"; // Links to the Document page when creating or editing a record
 
     layout
     {
@@ -37,21 +39,5 @@ page 50262 EnTeteEmbarquemen
             }
         }
     }
-    actions
-    {
-        area(Creation)
-        {
-            // Ajoutez des actions ici si besoin
-            action("NewEmbarquement")
-            {
-                Caption = 'Nouvel embarquement';
-                ApplicationArea = All;
-                ToolTip = 'Nouvel embarquement';
-                trigger OnAction()
-                begin
-                    PAGE.RUN(PAGE::"EmbarquementDoc", Rec);
-                end;
-            }
-        }
-    }
+
 }

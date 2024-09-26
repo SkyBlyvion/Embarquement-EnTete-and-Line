@@ -8,7 +8,6 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
             Caption = 'N° Dossier';
             Description = 'DOSSIER_ARRIVAGE LN 12/09/24 REV24';
             Editable = true;
-            //TODO: Dossier D'arrivage
             TableRelation = "DossierArrivage"."No. Dossier"
                                 WHERE("No. Fournisseur" = FIELD("Buy-from Vendor No."));
         }
@@ -244,7 +243,7 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
         }
     }
 
-    keys //TODO: a modifier( il faut targer le No. de la table Purchase Header)
+    keys
     {
         key(Key10; "Document Type", "Buy-from Vendor No.", "No.")
         {
@@ -254,10 +253,6 @@ tableextension 50240 "PurchaseHeaderCustom" extends "Purchase Header"
         {
             Enabled = true;
         }
-        // key(Key12; "Document Type", "Date d'embarquement prévue")
-        // {
-        //     Enabled = true;
-        // }
     }
 
 

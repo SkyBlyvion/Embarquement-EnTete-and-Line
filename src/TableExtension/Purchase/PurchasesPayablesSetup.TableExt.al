@@ -8,7 +8,7 @@ tableextension 50237 "PurchasesPayablesSetup" extends "Purchases & Payables Setu
             DataClassification = ToBeClassified;
             Caption = 'No. prestation';
             Description = 'PARAM_ACHAT - LN - 10/09/24';
-            TableRelation = "No. Series";
+            TableRelation = "No. Series".Code;
         }
 
         field(50001; "No. embarquement"; Code[10])
@@ -16,7 +16,7 @@ tableextension 50237 "PurchasesPayablesSetup" extends "Purchases & Payables Setu
             DataClassification = ToBeClassified;
             Caption = 'No. embarquement';
             Description = 'EMBARQUEMENT - LN - 10/09/24';
-            TableRelation = "No. Series";
+            TableRelation = "No. Series".Code;
         }
 
     }
