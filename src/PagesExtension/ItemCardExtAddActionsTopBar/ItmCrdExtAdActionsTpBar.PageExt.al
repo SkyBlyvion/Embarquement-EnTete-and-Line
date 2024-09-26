@@ -2,9 +2,8 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
 {
     actions
     {
-        addlast(Resources)
+        addafter(Resources)
         {
-            // TODO: Filtre pour chaque action 
             group("Gestion et Suivi des Opérations")
             {
                 Caption = 'Gestion et Suivi des Opérations';
@@ -19,10 +18,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            AvisPage: Page AvisPage;
                         begin
-                            AvisPage.SetTableView(Rec);
                             Page.Run(PAGE::AvisPage);
                         end;
                     }
@@ -34,10 +30,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            AvisLigneDossierPage: Page AvisLigneDossierPage;
                         begin
-                            AvisLigneDossierPage.SetTableView(Rec);
                             Page.Run(PAGE::AvisLigneDossierPage);
                         end;
                     }
@@ -49,10 +42,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            AvisDossierArrivagePage: Page AvisDossierArrivagePage;
                         begin
-                            AvisDossierArrivagePage.SetTableView(Rec);
                             Page.Run(PAGE::AvisDossierArrivagePage);
                         end;
                     }
@@ -68,10 +58,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            PrestationPage: Page PrestationPage;
                         begin
-                            PrestationPage.SetTableView(Rec);
                             Page.Run(PAGE::PrestationPage);
                         end;
                     }
@@ -83,10 +70,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            PrestationLigneDossierPage: Page PrestationLigneDossierPage;
                         begin
-                            PrestationLigneDossierPage.SetTableView(Rec);
                             Page.Run(PAGE::PrestationLigneDossierPage);
                         end;
                     }
@@ -98,10 +82,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            PrestationDossierArrivagePage: Page PrestationDossierArrivagePage;
                         begin
-                            PrestationDossierArrivagePage.SetTableView(Rec);
                             Page.Run(PAGE::PrestationDossierArrivagePage);
                         end;
                     }
@@ -117,10 +98,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            EmbarquementPage: Page EnTeteEmbarquemen;
                         begin
-                            EmbarquementPage.SetTableView(Rec);
                             Page.Run(PAGE::EnTeteEmbarquemen);
                         end;
                     }
@@ -132,10 +110,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            LigneEmbarquementPage: Page LigneEmbarquemen;
                         begin
-                            LigneEmbarquementPage.SetTableView(Rec);
                             Page.Run(PAGE::LigneEmbarquemen);
                         end;
                     }
@@ -187,10 +162,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            DossierArrivagePage: Page DossierArrivagePage;
                         begin
-                            DossierArrivagePage.SetTableView(Rec);
                             Page.Run(PAGE::DossierArrivagePage);
                         end;
                     }
@@ -202,10 +174,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            LigneDossierArrivagePage: Page LigneDossierArrivagePage;
                         begin
-                            LigneDossierArrivagePage.SetTableView(Rec);
                             Page.Run(PAGE::LigneDossierArrivagePage);
                         end;
                     }
@@ -220,10 +189,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                         Image = History;
 
                         trigger OnAction()
-                        var
-                            CredocPage: Page CredocPage;
                         begin
-                            CredocPage.SetTableView(Rec);
                             Page.Run(PAGE::CredocPage);
                         end;
                     }
@@ -236,10 +202,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
                     Image = History;
 
                     trigger OnAction()
-                    var
-                        FraisAnnexesAchatPage: Page FraisAnnexesAchatPage;
                     begin
-                        FraisAnnexesAchatPage.SetTableView(Rec);
                         Page.Run(PAGE::FraisAnnexesAchatPage);
                     end;
                 }

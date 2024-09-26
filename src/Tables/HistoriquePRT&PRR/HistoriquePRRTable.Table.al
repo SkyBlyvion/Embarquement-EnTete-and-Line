@@ -8,7 +8,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'N° calcul';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -16,7 +16,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'N° article';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             TableRelation = "Item"."No.";
         }
@@ -24,7 +24,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -32,7 +32,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = SystemMetadata;
             Caption = 'Heure';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -40,14 +40,14 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Définitif';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
         }
         field(10; "No. fournisseur"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'N° fournisseur';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             TableRelation = "Vendor"."No.";
         }
@@ -55,7 +55,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'N° réception';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             TableRelation = "Purch. Rcpt. Header"."No.";
         }
@@ -63,7 +63,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Incoterm';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
             OptionMembers = EXW,FOB,CNI,CFR,CNF,CIF;
@@ -72,7 +72,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Mnt affecté total / avis';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
             Editable = false;
@@ -81,7 +81,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Mnt affecté total / prest';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
             Editable = false;
@@ -90,14 +90,14 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Eléments estimés';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
         }
         field(20; "Mnt affecté total déduction"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Mnt affecté total déduction';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
             Editable = false;
@@ -106,7 +106,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Volume dossier';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
         }
@@ -114,7 +114,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'N° dossier';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             TableRelation = "DossierArrivage"."No. Dossier";
         }
@@ -123,13 +123,13 @@ table 50248 "HistoriquePRRTable"
             DataClassification = ToBeClassified;
             Caption = 'N° ligne dossier';
             Editable = false;
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
         }
         field(41; "Quantité"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Quantité';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             DecimalPlaces = 0 : 5;
             Editable = false;
@@ -138,7 +138,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Prix achat (devise société)';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
             Editable = false;
@@ -147,7 +147,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Montant (devise société)';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
             Editable = false;
@@ -156,7 +156,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Volume';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
         }
@@ -164,7 +164,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = '% remise moyen';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             DecimalPlaces = 0 : 5;
             Editable = false;
@@ -173,7 +173,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = '% avoir qualité';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
         }
@@ -181,7 +181,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = '% escompte';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
         }
@@ -189,7 +189,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'PRR';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
             Editable = true;
@@ -198,35 +198,35 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Code devise';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             TableRelation = "Currency"."Code";
         }
         field(62; "Facteur devise"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Facteur devise';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
         }
         field(63; "Montant"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Montant';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
         }
         field(64; "Code credoc Avis source"; Code[19])
         {
             DataClassification = ToBeClassified;
             Caption = 'Code credoc Avis source';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
         }
         field(65; "No. ligne Avis source"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'N° ligne Avis source';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -234,7 +234,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date création Dossier';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
         }
@@ -242,7 +242,7 @@ table 50248 "HistoriquePRRTable"
         {
             DataClassification = ToBeClassified;
             Caption = 'Coût unitaire direct';
-            Description = 'HISTORIQUE_PRR - REVIMPORT - 11/09/24 REV24';
+            Description = 'HISTORIQUE_PRR - LN - 11/09/24 REV24';
             BlankNumbers = DontBlank;
             Editable = false;
         }

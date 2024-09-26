@@ -8,7 +8,7 @@ table 50258 Avis
         {
             DataClassification = CustomerContent;
             Caption = 'Code credoc';
-            Description = 'AVIS - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS - LN - 23/09/24 REV24';
             Editable = true;
             TableRelation = "Credoc"."Code";
         }
@@ -16,7 +16,7 @@ table 50258 Avis
         {
             DataClassification = AccountData;
             Caption = 'No. ligne';
-            Description = 'AVIS - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -24,7 +24,7 @@ table 50258 Avis
         {
             DataClassification = SystemMetadata;
             Caption = 'Date';
-            Description = 'AVIS - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -32,7 +32,7 @@ table 50258 Avis
         {
             DataClassification = AccountData;
             Caption = 'Type';
-            Description = 'AVIS - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             OptionMembers = "Marchandise","Financier","Avoir qualité","Escompte","Autre";
@@ -41,7 +41,7 @@ table 50258 Avis
         {
             DataClassification = AccountData;
             Caption = 'Montant';
-            Description = 'AVIS - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
@@ -50,7 +50,7 @@ table 50258 Avis
         {
             DataClassification = CustomerContent;
             Caption = 'Code devise';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             TableRelation = "Currency"."Code";
         }
@@ -58,7 +58,7 @@ table 50258 Avis
         {
             DataClassification = AccountData;
             Caption = 'Facteur devise';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             AutoFormatType = 0;
@@ -67,7 +67,7 @@ table 50258 Avis
         field(8; "Imputé"; Boolean)
         {
             Caption = 'Imputé';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             AutoFormatType = 0;
@@ -77,7 +77,7 @@ table 50258 Avis
         field(9; "Mnt affecté total (doss)"; Decimal)
         {
             Caption = 'Mnt affecté total (doss)';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -87,7 +87,7 @@ table 50258 Avis
         field(10; "Mnt affecté total (lig doss)"; Decimal)
         {
             Caption = 'Mnt affecté total (lig doss)';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -97,7 +97,7 @@ table 50258 Avis
         field(11; "Mnt total lig doss affectées"; Decimal)
         {
             Caption = 'Mnt total lig doss affectées';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -107,7 +107,7 @@ table 50258 Avis
         field(12; "Vol total lig doss affectées"; Decimal)
         {
             Caption = 'Vol total lig doss affectées';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -117,14 +117,14 @@ table 50258 Avis
         field(13; "Prévisionnel"; Boolean)
         {
             Caption = 'Prévisionnel';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
         field(14; "%"; Decimal)
         {
             Caption = '%';
-            Description = 'AVIS - REVIMPORT - 24/09/24 REV24';
+            Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             AutoFormatType = 0;

@@ -9,7 +9,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'N° embarquement';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         // Champ pour le numéro du preneur d'ordre
@@ -17,7 +17,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'N° preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             TableRelation = Vendor."No.";
             Editable = false;
             // ValidateTableRelation = true; // Déjà activé par défaut
@@ -33,7 +33,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date embarquement';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
 
@@ -48,7 +48,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date réception prévue';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
 
@@ -63,56 +63,56 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = CustomerContent;
             Caption = 'Nom du preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(6; "Adresse preneur d'ordre"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Adresse preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(7; "Adresse preneur d'ordre 2"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Adresse preneur d''ordre 2';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(8; "Adresse preneur d'ordre 3"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Adresse preneur d''ordre 3';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(9; "Ville preneur d'ordre"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Ville preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(10; "Contact preneur d'ordre"; Text[30])
         {
             DataClassification = CustomerContent;
             Caption = 'Contact preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(11; "Code postal preneur d'ordre"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'Code postal preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = false;
         }
         field(12; "Code pays preneur d'ordre"; Code[10])
         {
             DataClassification = CustomerContent;
             Caption = 'Code pays preneur d''ordre';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             TableRelation = "Country/Region";
             Editable = false;
         }
@@ -121,7 +121,7 @@ table 50236 "EnTeteEmbarquement"
         {
             DataClassification = SystemMetadata;
             Caption = 'Souches de N°';
-            Description = 'EN_TETE_EMBARQUEMENT - REVIMPORT - 12/09/24 REV24';
+            Description = 'EN_TETE_EMBARQUEMENT - LN - 12/09/24 REV24';
             TableRelation = "No. Series";
             Editable = false;
         }
@@ -156,20 +156,22 @@ table 50236 "EnTeteEmbarquement"
     // Trigger pour l'insertion d'un en-tête d'embarquement
     trigger OnInsert()
     begin
+        // Check if "No. embarquement" is empty
         if ("No. embarquement" = '') then begin
-            // Vérifier que le champ de numéro de série est rempli
+            // Ensure that the "No. embarquement" series is set up in Purchases & Payables Setup
             ParamAchat.TESTFIELD("No. embarquement");
 
-            // Initialiser le numéro de série
-            NoSeries.GetNextNo(ParamAchat."No. embarquement", 0D, false);
+            // Fetch the next number in the number series and assign it to "No. embarquement"
+            "No. embarquement" := NoSeries.GetNextNo(ParamAchat."No. embarquement", 0D, false);
 
-            // Si nécessaire, vérifier si la série est liée
-            // NoSeries.AreRelated(ParamAchat."No embarquement", "Souches de No");
+            // Validate if the series is properly related (if necessary)
+            // NoSeries.AreRelated(ParamAchat."No. embarquement", "Souches de No.");
         end;
 
-        // Définir la date d'embarquement sur la date du jour
+        // Set today's date as the shipment date
         "Date embarquement" := Today;
     end;
+
 
 
     // Trigger pour la suppression d'un en-tête d'embarquement

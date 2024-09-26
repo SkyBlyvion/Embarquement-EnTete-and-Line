@@ -106,6 +106,15 @@ TODO: 02 TODO Dossier Arrivage
 
  pageext 50278 ReservationEntryPage
 
+ table 50279 HistoriqueCredoc
+
+ pageextension 50280 ExtendPurchasingMenu
+
+ pageextension 50281 EntendWhseMngRoleCntr
+
+ pageextension 50282 EntendSalesMngRoleCntr
+
+ table 50283 ReglementCredoc
 
 
 

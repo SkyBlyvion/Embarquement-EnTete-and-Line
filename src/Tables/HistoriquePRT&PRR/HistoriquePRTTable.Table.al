@@ -8,7 +8,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'No. calcul';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -16,7 +16,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'No. article';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             TableRelation = "Item"."No.";
         }
@@ -24,7 +24,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -32,7 +32,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = SystemMetadata;
             Caption = 'Heure';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -40,7 +40,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'No. commande';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             TableRelation = "Purchase Header"."No." where("Document Type" = const(Order));
         }
@@ -48,7 +48,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = SystemMetadata;
             Caption = 'Date achat';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -56,7 +56,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Code devise commande';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             TableRelation = "Currency"."Code";
             Editable = false;
         }
@@ -64,7 +64,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Facteur devise commande';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             Editable = false;
             BlankNumbers = DontBlank;
@@ -74,7 +74,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Incoterm';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             OptionMembers = EXW,FOB,CNI,CFR,CNF,CIF;
             Editable = false;
             BlankNumbers = DontBlank;
@@ -83,7 +83,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'No. fournisseur';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             TableRelation = "Vendor"."No.";
             Editable = false;
         }
@@ -91,14 +91,14 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Code transport routier';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
         }
         field(21; "Montant transport routier"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Montant transport routier';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             AutoFormatType = 2;
             BlankNumbers = DontBlank;
@@ -107,7 +107,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Code devise transport routier';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             TableRelation = Currency."Code";
             Editable = false;
 
@@ -116,7 +116,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Facteur devise transport routier';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             Editable = false;
             BlankNumbers = DontBlank;
@@ -126,13 +126,13 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Code transport maritime';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
         }
         field(25; "Montant transport maritime"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Montant transport maritime';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -140,14 +140,14 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Code devise transport maritime';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             TableRelation = Currency."Code";
         }
         field(27; "Facteur devise transp. marit."; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Facteur devise transport maritime';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             Editable = false;
             BlankNumbers = DontBlank;
@@ -157,7 +157,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = '% frais financiers';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             MaxValue = 100;
             BlankNumbers = DontBlank;
@@ -166,7 +166,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = '% assurances';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             MaxValue = 100;
             BlankNumbers = DontBlank;
@@ -175,7 +175,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = '% commissions';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             MaxValue = 100;
             BlankNumbers = DontBlank;
@@ -184,7 +184,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = '% transit';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             MinValue = 0;
             MaxValue = 100;
             BlankNumbers = DontBlank;
@@ -193,20 +193,20 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Volume commande';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
         }
         field(40; "No. ligne"; Text[250])
         {
             DataClassification = CustomerContent;
             Caption = 'No. ligne';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
         }
         field(41; "Quantité achetée"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Quantité achetée';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             DecimalPlaces = 0 : 5;
         }
@@ -214,7 +214,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Prix achat (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -222,7 +222,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant ligne achat';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -230,7 +230,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Volume';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -238,7 +238,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Coût transport routier (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -246,7 +246,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant frais financiers (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -254,7 +254,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant assurances (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -262,7 +262,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant commissions (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -270,7 +270,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant transit (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -278,7 +278,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant frais douane (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -286,7 +286,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'CU net douane (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -294,7 +294,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = '% droit douane';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             MinValue = 0;
             MaxValue = 100;
@@ -303,7 +303,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Coût transport maritime (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
         }
@@ -311,7 +311,7 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = '% remise ligne';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
             MinValue = 0;
             MaxValue = 100;
@@ -320,14 +320,14 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Frais annexes (devise société)';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
         }
         field(60; "PRT"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'PRT';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
@@ -336,14 +336,14 @@ table 50247 "HistoriquePRTTable"
         {
             DataClassification = CustomerContent;
             Caption = 'Coût unitaire direct';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
         }
         field(62; "Montant taxe anti-dumping"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Montant taxe anti-dumping';
-            Description = 'HISTORIQUE_PRT - REVIMPORT - 10/09/24 REV24';
+            Description = 'HISTORIQUE_PRT - LN - 10/09/24 REV24';
             BlankNumbers = DontBlank;
         }
     }

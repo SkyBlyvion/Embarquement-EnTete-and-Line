@@ -1,10 +1,11 @@
 page 50262 EnTeteEmbarquemen
 {
-    ApplicationArea = All;
-    Caption = 'EnTeteEmbrq';
     PageType = List;
-    Editable = true;
     SourceTable = EnTeteEmbarquement;
+    ApplicationArea = All;
+    Caption = 'Embarquements';
+    Editable = false;
+    RefreshOnActivate = true;
 
     layout
     {
@@ -12,6 +13,7 @@ page 50262 EnTeteEmbarquemen
         {
             repeater(General)
             {
+                ShowCaption = false;
                 field("No. embarquement"; Rec."No. embarquement")
                 {
                     ToolTip = 'Indique le numéro unique associé à l''embarquement.';
@@ -28,42 +30,27 @@ page 50262 EnTeteEmbarquemen
                 {
                     ToolTip = 'Indique la date estimée de réception des marchandises.';
                 }
-                field("Nom du preneur d'ordre"; Rec."Nom du preneur d'ordre")
-                {
-                    ToolTip = 'Affiche le nom du preneur d''ordre (fournisseur).';
-                }
-                field("Adresse preneur d'ordre"; Rec."Adresse preneur d'ordre")
-                {
-                    ToolTip = 'Affiche la première ligne de l''adresse du preneur d''ordre.';
-                }
-                field("Adresse preneur d'ordre 2"; Rec."Adresse preneur d'ordre 2")
-                {
-                    ToolTip = 'Affiche la deuxième ligne de l''adresse du preneur d''ordre.';
-                }
-                field("Adresse preneur d'ordre 3"; Rec."Adresse preneur d'ordre 3")
-                {
-                    ToolTip = 'Affiche la troisième ligne de l''adresse du preneur d''ordre.';
-                }
-                field("Ville preneur d'ordre"; Rec."Ville preneur d'ordre")
-                {
-                    ToolTip = 'Affiche la ville du preneur d''ordre.';
-                }
-                field("Contact preneur d'ordre"; Rec."Contact preneur d'ordre")
-                {
-                    ToolTip = 'Affiche les informations de contact du preneur d''ordre.';
-                }
-                field("Code postal preneur d'ordre"; Rec."Code postal preneur d'ordre")
-                {
-                    ToolTip = 'Affiche le code postal du preneur d''ordre.';
-                }
-                field("Code pays preneur d'ordre"; Rec."Code pays preneur d'ordre")
-                {
-                    ToolTip = 'Affiche le code pays du preneur d''ordre.';
-                }
                 field("Souches de No."; Rec."Souches de No.")
                 {
                     ToolTip = 'Indique la souche de numéro utilisée pour l''embarquement.';
                 }
+            }
+        }
+    }
+    actions
+    {
+        area(Creation)
+        {
+            // Ajoutez des actions ici si besoin
+            action("NewEmbarquement")
+            {
+                Caption = 'Nouvel embarquement';
+                ApplicationArea = All;
+                ToolTip = 'Nouvel embarquement';
+                trigger OnAction()
+                begin
+                    PAGE.RUN(PAGE::"EmbarquementDoc", Rec);
+                end;
             }
         }
     }

@@ -8,7 +8,7 @@ table 50251 "PrestationDossierArrivage"
         {
             DataClassification = CustomerContent;
             Caption = 'No. Dossier';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = true;
             NotBlank = true;
             TableRelation = "DossierArrivage"."No. Dossier";
@@ -17,7 +17,7 @@ table 50251 "PrestationDossierArrivage"
         {
             DataClassification = CustomerContent;
             Caption = 'No. prestation';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = true;
             TableRelation = "Prestation"."No.";
         }
@@ -25,7 +25,7 @@ table 50251 "PrestationDossierArrivage"
         {
             DataClassification = CustomerContent;
             Caption = 'Type';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             NotBlank = true;
             BlankNumbers = DontBlank;
@@ -40,13 +40,13 @@ table 50251 "PrestationDossierArrivage"
         {
             DataClassification = CustomerContent;
             Caption = 'Montant affecté';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = true;
         }
         field(9; "Prévisionnel"; Boolean)
         {
             Caption = 'Prévisionnel';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = lookup("Prestation"."Prévisionnel" WHERE("No." = FIELD("No. prestation")));
@@ -54,7 +54,7 @@ table 50251 "PrestationDossierArrivage"
         field(10; "Mnt total lignes affectées"; Decimal)
         {
             Caption = 'Mnt total lignes affectées';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Sum("PrestationLigneDossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
@@ -62,7 +62,7 @@ table 50251 "PrestationDossierArrivage"
         field(11; "Affectation partielle"; Boolean)
         {
             Caption = 'Affectation partielle';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             BlankNumbers = DontBlank;
@@ -71,7 +71,7 @@ table 50251 "PrestationDossierArrivage"
         field(12; "Mnt affecté total lig affect"; Decimal)
         {
             Caption = 'Mnt affecté total lig affect';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -80,7 +80,7 @@ table 50251 "PrestationDossierArrivage"
         field(13; "Vol total lignes affect"; Decimal)
         {
             Caption = 'Vol total lignes affect';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -89,7 +89,7 @@ table 50251 "PrestationDossierArrivage"
         field(14; "Code devise"; Code[10])
         {
             Caption = 'Code devise';
-            Description = 'PRESTATION_DOSSIER_ARRIVAGE - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Lookup("Prestation"."Code devise" WHERE("No." = FIELD("No. prestation")));

@@ -8,7 +8,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'No. prestation';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = false;
             TableRelation = "Prestation"."No.";
         }
@@ -16,7 +16,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'No. dossier';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = false;
             TableRelation = "LigneDossierArrivage"."No. Dossier"; //TODO: remplir la LigneDossierArrivage
         }
@@ -24,14 +24,14 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'No. ligne dossier';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = false;
         }
         field(6; "Affectation"; Boolean)
         {
             DataClassification = AccountData;
             Caption = 'Affectation';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -39,7 +39,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'Montant affecté';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 10/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -47,7 +47,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'Type';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             NotBlank = true;
             OptionMembers = "Frais de transport","Frais Financiers","Assurances","Commissions","Transit","Douane";
@@ -55,7 +55,7 @@ table 50254 "PrestationLigneDossier"
         field(9; "Prévisionnel"; Boolean)
         {
             Caption = 'Prévisionnel';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -64,7 +64,7 @@ table 50254 "PrestationLigneDossier"
         field(10; "Désignation"; Text[50])
         {
             Caption = 'Désignation';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = lookup("LigneDossierArrivage"."Désignation" where("No. dossier" = field("No. dossier"), "No. ligne" = field("No. ligne dossier")));
@@ -72,7 +72,7 @@ table 50254 "PrestationLigneDossier"
         field(11; "Cout unitaire"; Decimal)
         {
             Caption = 'Cout unitaire';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -81,7 +81,7 @@ table 50254 "PrestationLigneDossier"
         field(12; "Quantité (pièce)"; Decimal)
         {
             Caption = 'Quantité (pièce)';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -92,7 +92,7 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'Montant ligne (dev soc)';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
         }
@@ -100,13 +100,13 @@ table 50254 "PrestationLigneDossier"
         {
             DataClassification = AccountData;
             Caption = 'Volume ligne';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
         }
         field(15; "No. article"; Code[20])
         {
             Caption = 'No. article';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             TableRelation = "Item"."No.";
             FieldClass = FlowField;
@@ -115,7 +115,7 @@ table 50254 "PrestationLigneDossier"
         field(16; "No. réception"; Code[20])
         {
             Caption = 'No. réception';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             TableRelation = "Purch. Rcpt. Header";//TODO: TableRelation "No. reception" > "Purch. Rcpt. Header" table which field ? 
             FieldClass = FlowField;
@@ -124,7 +124,7 @@ table 50254 "PrestationLigneDossier"
         field(17; "Code devise"; Code[10])
         {
             Caption = 'Code devise';
-            Description = 'PRESTATION_LIGNE_DOSSIER - REVIMPORT - 23/09/24 REV24';
+            Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = lookup("Prestation"."Code devise" where("No." = field("No. prestation")));

@@ -9,7 +9,7 @@ table 50257 AvisDossierArrivage
         {
             DataClassification = AccountData;
             Caption = 'No. dossier';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = true;
             NotBlank = true;
             TableRelation = "DossierArrivage"."No. Dossier";
@@ -18,7 +18,7 @@ table 50257 AvisDossierArrivage
         {
             DataClassification = AccountData;
             Caption = 'Code credoc';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = true;
             TableRelation = "Credoc"."Code";
         }
@@ -26,7 +26,7 @@ table 50257 AvisDossierArrivage
         {
             DataClassification = AccountData;
             Caption = 'No. ligne avis';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             TableRelation = "Avis"."No. Ligne" where("Code credoc" = field("Code credoc"));
@@ -35,7 +35,7 @@ table 50257 AvisDossierArrivage
         {
             DataClassification = AccountData;
             Caption = 'Type';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             OptionMembers = "Marchandise","Financier","Avoir qualité","Escompte","Autre";
@@ -44,7 +44,7 @@ table 50257 AvisDossierArrivage
         {
             DataClassification = AccountData;
             Caption = 'Montant affecté';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
@@ -52,7 +52,7 @@ table 50257 AvisDossierArrivage
         field(9; "Prévisionnel"; Boolean)
         {
             Caption = 'Prévisionnel';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -61,7 +61,7 @@ table 50257 AvisDossierArrivage
         field(10; "Mnt total lignes affectées"; Decimal)
         {
             Caption = 'Mnt total lignes affectées';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
@@ -71,7 +71,7 @@ table 50257 AvisDossierArrivage
         field(11; "Affectation partielle"; Boolean)
         {
             Caption = 'Affectation partielle';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -80,7 +80,7 @@ table 50257 AvisDossierArrivage
         field(12; "Mnt affecté total lig affect"; Decimal)
         {
             Caption = 'Mnt affecté total lig affect';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
@@ -90,7 +90,7 @@ table 50257 AvisDossierArrivage
         field(13; "Vol total lignes affectées"; Decimal)
         {
             Caption = 'Vol total lignes affectées';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
@@ -99,7 +99,7 @@ table 50257 AvisDossierArrivage
         field(14; "Code devise"; Code[10])
         {
             Caption = 'Code devise';
-            Description = 'AVIS_DOSSIER_ARRIVAGE - REVIMPORT - 23/09/24 REV24';
+            Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = Lookup(Avis."Code devise" WHERE("Code credoc" = FIELD("Code credoc"), "No. ligne" = FIELD("No. ligne avis")));

@@ -7,7 +7,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
         {
             DataClassification = SystemMetadata;
             Caption = 'Images';
-            Description = 'PARAM_STOCK - REVIMPORT - 13/09/24 REV24';
+            Description = 'PARAM_STOCK - LN - 13/09/24 REV24';
             Editable = true;
         }
         field(50001; "Unité par défault"; Code[10])
@@ -15,7 +15,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
             DataClassification = CustomerContent;
             Editable = true;
             Caption = 'Unité par défault';
-            Description = 'PARAM_STOCK - REVIMPORT - 13/09/24 REV24';
+            Description = 'PARAM_STOCK - LN - 13/09/24 REV24';
             TableRelation = "Unit of Measure"."Code";
         }
         field(50002; "Magasin achat"; Code[10])
@@ -23,7 +23,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
             DataClassification = CustomerContent;
             Editable = true;
             Caption = 'Magasin achat';
-            Description = 'PARAM_STOCK - REVIMPORT - 13/09/24 REV24';
+            Description = 'PARAM_STOCK - LN - 13/09/24 REV24';
             TableRelation = "Location";
         }
         field(50003; "Magasin vente"; Code[10])
@@ -31,7 +31,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
             DataClassification = CustomerContent;
             Editable = true;
             Caption = 'Magasin vente';
-            Description = 'PARAM_STOCK - REVIMPORT - 13/09/24 REV24';
+            Description = 'PARAM_STOCK - LN - 13/09/24 REV24';
             TableRelation = "Location";
         }
         field(50004; "No. Dossier"; Code[10])
@@ -39,7 +39,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
             DataClassification = CustomerContent;
             Editable = true;
             Caption = 'No. Dossier';
-            Description = 'DOSSIER_ARRIVAGE - REVIMPORT - 13/09/24 REV24';
+            Description = 'DOSSIER_ARRIVAGE - LN - 13/09/24 REV24';
             TableRelation = "No. Series";
         }
         field(50005; "Dernier No. Reserv."; Integer)
@@ -47,7 +47,7 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
             DataClassification = CustomerContent;
             Editable = false;
             Caption = 'Dernier No. Reserv.';
-            Description = 'PARAM_STOCK - REVIMPORT - 13/09/24 REV24';
+            Description = 'PARAM_STOCK - LN - 13/09/24 REV24';
             BlankNumbers = DontBlank;
         }
     }
