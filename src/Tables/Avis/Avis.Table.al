@@ -36,6 +36,25 @@ table 50258 Avis
             Editable = true;
             BlankNumbers = DontBlank;
             OptionMembers = "Marchandise","Financier","Avoir qualité","Escompte","Autre";
+
+            trigger OnValidate()
+            begin
+                if xRec.Type <> Type then begin
+                    AvisDossier.RESET();
+                    AvisDossier.SETRANGE("Code credoc", "Code credoc");
+                    AvisDossier.SETRANGE("No. ligne avis", "No. ligne");
+                    if AvisDossier.FIND('-') then
+                        repeat
+                            AvisDossier.VALIDATE(Type, Type);
+                            AvisDossier.MODIFY();
+                        until AvisDossier.NEXT() = 0;
+                    if not (Type in [Type::Escompte, Type::"Avoir qualité"]) and ("%" <> 0) then begin
+                        "%" := 0;
+                        MODIFY();
+                    end;
+
+                end;
+            end;
         }
         field(5; "Montant"; Decimal)
         {
@@ -53,6 +72,22 @@ table 50258 Avis
             Description = 'AVIS - LN - 24/09/24 REV24';
             Editable = true;
             TableRelation = "Currency"."Code";
+
+            trigger OnValidate()
+            begin
+                if CurrFieldNo <> FIELDNO("Code devise") then
+                    MajFacteurDevise()
+                else
+                    if "Code devise" <> xRec."Code devise" then
+                        MajFacteurDevise()
+                    else
+                        if "Code devise" <> '' then begin
+                            MajFacteurDevise();
+                            if "Facteur devise" <> xRec."Facteur devise" then
+                                ConfirmerMajFacteurDevise();
+                        end;
+
+            end;
         }
         field(7; "Facteur devise"; Decimal)
         {
@@ -63,6 +98,24 @@ table 50258 Avis
             BlankNumbers = DontBlank;
             AutoFormatType = 0;
             DecimalPlaces = 1 : 15;
+
+            trigger OnValidate()
+            begin
+                if "Facteur devise" <> xRec."Facteur devise" then
+                    HistPRR.RESET();
+                HistPRR.SETRANGE("Code credoc Avis source", "Code credoc");
+                HistPRR.SETRANGE("No. ligne Avis source", "No. ligne");
+
+                //* NSC2.20 PN 22/03/2000 On n'interdit la modif que si le prr est définitif (P.Revel)
+                //* mail du 22/03/2000
+                // c'est à dire si le dossier est clôturé
+                HistPRR.SETRANGE(Définitif, true);
+                //* NSC2.20 PN 22/03/2000
+
+                if HistPRR.FIND('-') then
+                    ERROR('Il existe des lignes d''historique PRR (définitif) basées sur l''Avis en cours. Pour pouvoir ' +
+                        'changer le taux de devise, il vous faut déclôturer les dossiers d''arrivages associés à cet avis');
+            end;
         }
         field(8; "Imputé"; Boolean)
         {
@@ -147,10 +200,22 @@ table 50258 Avis
     }
 
     var
+        DeviseTauxChange: Record "Currency Exchange Rate";
+        Avis: Record "Avis";
+        AvisDossier: Record "AvisDossierArrivage";
+        Dossier: Record "DossierArrivage";
+        HistPRR: Record "HistoriquePRRTable";
 
     trigger OnInsert()
     begin
-
+        if "No. ligne" = 0 then begin
+            Avis.RESET();
+            Avis.SETRANGE("Code credoc", "Code credoc");
+            if Avis.FIND('+') then
+                "No. ligne" := Avis."No. ligne" + 1
+            else
+                "No. ligne" := 1;
+        end;
     end;
 
     trigger OnModify()
@@ -160,7 +225,19 @@ table 50258 Avis
 
     trigger OnDelete()
     begin
+        AvisDossier.RESET();
+        AvisDossier.SETRANGE("Code credoc", "Code credoc");
+        AvisDossier.SETRANGE("No. ligne avis", "No. ligne");
 
+        Dossier.SETRANGE(Etat, Dossier.Etat::Clôturé);
+        repeat
+            AvisDossier.SETRANGE("No. dossier", Dossier."No. dossier");
+            if AvisDossier.FIND('-') then
+                ERROR('Suppression impossible : cette prestation est associée à des dossiers clôturés');
+        until Avis.NEXT() = 0;
+
+        AvisDossier.SETRANGE("No. dossier");
+        AvisDossier.DELETEALL(true);
     end;
 
     trigger OnRename()
@@ -168,25 +245,19 @@ table 50258 Avis
 
     end;
 
+    procedure MajFacteurDevise()
+    begin
+        if "Code devise" <> '' then
+            "Facteur devise" := DeviseTauxChange.ExchangeRate(WORKDATE(), "Code devise")
+        else
+            "Facteur devise" := 0;
+    end;
 
-    // % - OnValidate()
-    // IF NOT (Type IN [Type::Escompte,Type::"Avoir qualité"]) AND ("%" <> 0) THEN
-    // ERROR('Le pourcentage ne peut-être saisi que pour les avis de type %1 ou %2',Type::Escompte,Type::"Avoir qualité");
-
-    // % - OnLookup()
-
-    // AssistEdit(AncPrest : Record Prestation) : Boolean
-
-    // MajFacteurDevise()
-    // IF "Code devise" <> '' THEN
-    // "Facteur devise" := DeviseTauxChange.ExchangeRate(WORKDATE,"Code devise")
-    // ELSE
-    // "Facteur devise" := 0;
-
-    // ConfirmerMajFacteurDevise()
-    // IF CONFIRM('Voulez-vous mettre à jour le taux de change ?',FALSE) THEN
-    // VALIDATE("Facteur devise")
-    // ELSE
-    // "Facteur devise" := xRec."Facteur devise";
-
+    procedure ConfirmerMajFacteurDevise()
+    begin
+        if CONFIRM('Voulez-vous mettre à jour le taux de change ?', false) then
+            VALIDATE("Facteur devise")
+        else
+            "Facteur devise" := xRec."Facteur devise";
+    end;
 }

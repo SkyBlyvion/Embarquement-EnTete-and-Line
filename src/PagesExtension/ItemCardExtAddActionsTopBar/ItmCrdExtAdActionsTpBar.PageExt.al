@@ -6,6 +6,7 @@ pageextension 50263 ItmCrdExtAdActionsTpBar extends "Item Card"
         {
             group("Historique PRT & PRR")
             {
+                Image = PaymentHistory;
                 action("Historique PRT")
                 {
                     ApplicationArea = All;
