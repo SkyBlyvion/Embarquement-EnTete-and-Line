@@ -30,6 +30,21 @@ table 50257 AvisDossierArrivage
             Editable = true;
             BlankNumbers = DontBlank;
             TableRelation = "Avis"."No. Ligne" where("Code credoc" = field("Code credoc"));
+
+            trigger OnValidate()
+            begin
+
+                IF xRec."No. ligne avis" <> Rec."No. ligne avis" THEN BEGIN
+                    AvisLigneDossier.SETRANGE("Code credoc", Rec."Code credoc");
+                    AvisLigneDossier.SETRANGE("No. ligne avis", Rec."No. ligne avis");
+
+                    IF AvisLigneDossier.FIND('-') THEN
+                        REPEAT
+                            AvisLigneDossier.VALIDATE(Type, Rec.Type);
+                            AvisLigneDossier.MODIFY();
+                        UNTIL AvisLigneDossier.NEXT() = 0;
+                END;
+            end;
         }
         field(4; "Type"; Option)
         {
@@ -126,25 +141,105 @@ table 50257 AvisDossierArrivage
     }
 
     var
+        AvisLigneDossier: Record "AvisLigneDossier";
+        Avis: Record "Avis";
+        LigneDossier: Record "LigneDossierArrivage";
+        AvisDossier: Record "AvisDossierArrivage";
+        Dossier: Record "DossierArrivage";
 
     trigger OnInsert()
     begin
+        IF Dossier.GET("No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+                ERROR('Affectation impossible : ce dossier est clôturé');
 
+        Avis.GET("Code credoc", "No. ligne avis");
+
+        //CREDOC PC 10/05/07 NSC4.28 Autoriser plusierus avis de type avoir qualité
+        // On interdit d'associer plusieurs avis d'escompte ou d'avoir qualité à un dossier
+        IF (Avis.Type = Avis.Type::Escompte) OR (Avis.Type = Avis.Type::"Avoir qualité") THEN BEGIN
+            AvisDossier.RESET();
+            AvisDossier.SETRANGE("No. dossier", Rec."No. dossier");
+            AvisDossier.SETRANGE(Type, Avis.Type);
+            IF AvisDossier.FIND('-') THEN
+                ERROR('Il existe déjà un avis de type %1 associé au dossier %2 (avis n°%3 du Credoc n°%4)',
+                    Format(Avis.Type), Rec."No. dossier", AvisDossier."No. ligne avis", AvisDossier."Code credoc");
+            // Avis.Type, "No. dossier", AvisDossier."No. ligne avis", AvisDossier."Code credoc");
+        end;
+        // Fin CREDOC PC 10/05/07 NSC4.28 Autoriser plusieurs avis de type avoir qualité
+
+        Rec.Type := Avis.Type;
+
+        LigneDossier.SETRANGE("No. dossier", Rec."No. dossier");
+        IF LigneDossier.FIND('-') THEN
+            REPEAT
+                AvisLigneDossier.INIT();
+                AvisLigneDossier."Code credoc" := Rec."Code credoc";
+                AvisLigneDossier."No. ligne avis" := Rec."No. ligne avis";
+                AvisLigneDossier."No. dossier" := Rec."No. dossier";
+                AvisLigneDossier."No. ligne dossier" := LigneDossier."No. ligne";
+                //BUG CC 29/05/10 REV4.14
+                //AvisLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant (dev soc)";
+                AvisLigneDossier."Montant ligne (dev soc)" := LigneDossier.Montant;
+                //Fin BUG CC 29/05/10 REV4.14
+                AvisLigneDossier."Volume ligne" := LigneDossier.Volume;
+                AvisLigneDossier.Type := Type;
+                AvisLigneDossier.Affectation := TRUE;
+                AvisLigneDossier.INSERT();
+            UNTIL LigneDossier.NEXT() = 0;
     end;
+
+
 
     trigger OnModify()
     begin
-
+        IF Dossier.GET(Rec."No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+                ERROR('Modification impossible : ce dossier est clôturé');
     end;
 
     trigger OnDelete()
     begin
+        IF Dossier.GET(Rec."No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+                ERROR('Suppression impossible : ce dossier est clôturé');
 
+        AvisLigneDossier.RESET();
+        AvisLigneDossier.SETRANGE("No. dossier", Rec."No. dossier");
+        AvisLigneDossier.SETRANGE("Code credoc", Rec."Code credoc");
+        AvisLigneDossier.SETRANGE("No. ligne avis", Rec."No. ligne avis");
+        AvisLigneDossier.DELETEALL(TRUE);
     end;
 
     trigger OnRename()
     begin
+        IF Dossier.GET(Rec."No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+                ERROR('Modification impossible : ce dossier est clôturé');
 
+        AvisLigneDossier.RESET();
+        AvisLigneDossier.SETRANGE("No. dossier", xRec."No. dossier");
+        AvisLigneDossier.SETRANGE("Code credoc", xRec."Code credoc");
+        AvisLigneDossier.SETRANGE("No. ligne avis", xRec."No. ligne avis");
+        AvisLigneDossier.DELETEALL(TRUE);
+
+        Avis.GET("Code credoc");
+        Rec.Type := Avis.Type;
+
+        LigneDossier.SETRANGE("No. dossier", "No. dossier");
+        IF LigneDossier.FIND('-') THEN
+            REPEAT
+                AvisLigneDossier.INIT();
+                AvisLigneDossier."Code credoc" := Rec."Code credoc";
+                AvisLigneDossier."No. ligne avis" := Rec."No. ligne avis";
+                AvisLigneDossier."No. dossier" := Rec."No. dossier";
+                AvisLigneDossier."No. ligne dossier" := LigneDossier."No. ligne";
+                AvisLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant (dev soc)";
+                AvisLigneDossier."Volume ligne" := LigneDossier.Volume;
+                AvisLigneDossier.Type := Rec.Type;
+                AvisLigneDossier.Affectation := TRUE;
+                AvisLigneDossier.INSERT();
+            UNTIL LigneDossier.NEXT() = 0;
     end;
 
 }
