@@ -34,16 +34,16 @@ table 50257 AvisDossierArrivage
             trigger OnValidate()
             begin
 
-                IF xRec."No. ligne avis" <> Rec."No. ligne avis" THEN BEGIN
+                if xRec."No. ligne avis" <> Rec."No. ligne avis" then begin
                     AvisLigneDossier.SETRANGE("Code credoc", Rec."Code credoc");
                     AvisLigneDossier.SETRANGE("No. ligne avis", Rec."No. ligne avis");
 
-                    IF AvisLigneDossier.FIND('-') THEN
-                        REPEAT
+                    if AvisLigneDossier.FIND('-') then
+                        repeat
                             AvisLigneDossier.VALIDATE(Type, Rec.Type);
                             AvisLigneDossier.MODIFY();
-                        UNTIL AvisLigneDossier.NEXT() = 0;
-                END;
+                        until AvisLigneDossier.NEXT() = 0;
+                end;
             end;
         }
         field(4; "Type"; Option)
@@ -81,7 +81,7 @@ table 50257 AvisDossierArrivage
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
             FieldClass = FlowField;
-            CalcFormula = Sum("AvisLigneDossier"."Montant ligne (dev soc)" WHERE("Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
+            CalcFormula = sum("AvisLigneDossier"."Montant ligne (dev soc)" where("Code credoc" = field("Code credoc"), "No. ligne avis" = field("No. ligne avis"), "No. dossier" = field("No. dossier"), "Affectation" = CONST(true)));
         }
         field(11; "Affectation partielle"; Boolean)
         {
@@ -90,7 +90,7 @@ table 50257 AvisDossierArrivage
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Exist("AvisLigneDossier" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(false)));
+            CalcFormula = exist("AvisLigneDossier" where("No. dossier" = field("No. dossier"), "Code credoc" = field("Code credoc"), "No. ligne avis" = field("No. ligne avis"), "Affectation" = CONST(false)));
         }
         field(12; "Mnt affecté total lig affect"; Decimal)
         {
@@ -100,7 +100,7 @@ table 50257 AvisDossierArrivage
             BlankNumbers = DontBlank;
             AutoFormatType = 1;
             FieldClass = FlowField;
-            CalcFormula = Sum("AvisLigneDossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(true)));
+            CalcFormula = sum("AvisLigneDossier"."Montant affecté" where("No. dossier" = field("No. dossier"), "Code credoc" = field("Code credoc"), "No. ligne avis" = field("No. ligne avis"), "Affectation" = CONST(true)));
         }
         field(13; "Vol total lignes affectées"; Decimal)
         {
@@ -109,7 +109,7 @@ table 50257 AvisDossierArrivage
             Editable = true;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
-            CalcFormula = Sum("AvisLigneDossier"."Volume ligne" WHERE("No. dossier" = FIELD("No. dossier"), "Code credoc" = FIELD("Code credoc"), "No. ligne avis" = FIELD("No. ligne avis"), "Affectation" = CONST(true)));
+            CalcFormula = sum("AvisLigneDossier"."Volume ligne" where("No. dossier" = field("No. dossier"), "Code credoc" = field("Code credoc"), "No. ligne avis" = field("No. ligne avis"), "Affectation" = CONST(true)));
         }
         field(14; "Code devise"; Code[10])
         {
@@ -117,7 +117,7 @@ table 50257 AvisDossierArrivage
             Description = 'AVIS_DOSSIER_ARRIVAGE - LN - 23/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = Lookup(Avis."Code devise" WHERE("Code credoc" = FIELD("Code credoc"), "No. ligne" = FIELD("No. ligne avis")));
+            CalcFormula = lookup(Avis."Code devise" where("Code credoc" = field("Code credoc"), "No. ligne" = field("No. ligne avis")));
         }
     }
 
@@ -149,19 +149,19 @@ table 50257 AvisDossierArrivage
 
     trigger OnInsert()
     begin
-        IF Dossier.GET("No. dossier") THEN
-            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+        if Dossier.GET("No. dossier") then
+            if Dossier.Etat = Dossier.Etat::Clôturé then
                 ERROR('Affectation impossible : ce dossier est clôturé');
 
         Avis.GET("Code credoc", "No. ligne avis");
 
         //CREDOC PC 10/05/07 NSC4.28 Autoriser plusierus avis de type avoir qualité
         // On interdit d'associer plusieurs avis d'escompte ou d'avoir qualité à un dossier
-        IF (Avis.Type = Avis.Type::Escompte) OR (Avis.Type = Avis.Type::"Avoir qualité") THEN BEGIN
+        if (Avis.Type = Avis.Type::Escompte) OR (Avis.Type = Avis.Type::"Avoir qualité") then begin
             AvisDossier.RESET();
             AvisDossier.SETRANGE("No. dossier", Rec."No. dossier");
             AvisDossier.SETRANGE(Type, Avis.Type);
-            IF AvisDossier.FIND('-') THEN
+            if AvisDossier.FIND('-') then
                 ERROR('Il existe déjà un avis de type %1 associé au dossier %2 (avis n°%3 du Credoc n°%4)',
                     Format(Avis.Type), Rec."No. dossier", AvisDossier."No. ligne avis", AvisDossier."Code credoc");
             // Avis.Type, "No. dossier", AvisDossier."No. ligne avis", AvisDossier."Code credoc");
@@ -171,8 +171,8 @@ table 50257 AvisDossierArrivage
         Rec.Type := Avis.Type;
 
         LigneDossier.SETRANGE("No. dossier", Rec."No. dossier");
-        IF LigneDossier.FIND('-') THEN
-            REPEAT
+        if LigneDossier.FIND('-') then
+            repeat
                 AvisLigneDossier.INIT();
                 AvisLigneDossier."Code credoc" := Rec."Code credoc";
                 AvisLigneDossier."No. ligne avis" := Rec."No. ligne avis";
@@ -184,51 +184,51 @@ table 50257 AvisDossierArrivage
                 //Fin BUG CC 29/05/10 REV4.14
                 AvisLigneDossier."Volume ligne" := LigneDossier.Volume;
                 AvisLigneDossier.Type := Type;
-                AvisLigneDossier.Affectation := TRUE;
+                AvisLigneDossier.Affectation := true;
                 AvisLigneDossier.INSERT();
-            UNTIL LigneDossier.NEXT() = 0;
+            until LigneDossier.NEXT() = 0;
     end;
 
 
 
     trigger OnModify()
     begin
-        IF Dossier.GET(Rec."No. dossier") THEN
-            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+        if Dossier.GET(Rec."No. dossier") then
+            if Dossier.Etat = Dossier.Etat::Clôturé then
                 ERROR('Modification impossible : ce dossier est clôturé');
     end;
 
     trigger OnDelete()
     begin
-        IF Dossier.GET(Rec."No. dossier") THEN
-            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+        if Dossier.GET(Rec."No. dossier") then
+            if Dossier.Etat = Dossier.Etat::Clôturé then
                 ERROR('Suppression impossible : ce dossier est clôturé');
 
         AvisLigneDossier.RESET();
         AvisLigneDossier.SETRANGE("No. dossier", Rec."No. dossier");
         AvisLigneDossier.SETRANGE("Code credoc", Rec."Code credoc");
         AvisLigneDossier.SETRANGE("No. ligne avis", Rec."No. ligne avis");
-        AvisLigneDossier.DELETEALL(TRUE);
+        AvisLigneDossier.DELETEALL(true);
     end;
 
     trigger OnRename()
     begin
-        IF Dossier.GET(Rec."No. dossier") THEN
-            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+        if Dossier.GET(Rec."No. dossier") then
+            if Dossier.Etat = Dossier.Etat::Clôturé then
                 ERROR('Modification impossible : ce dossier est clôturé');
 
         AvisLigneDossier.RESET();
         AvisLigneDossier.SETRANGE("No. dossier", xRec."No. dossier");
         AvisLigneDossier.SETRANGE("Code credoc", xRec."Code credoc");
         AvisLigneDossier.SETRANGE("No. ligne avis", xRec."No. ligne avis");
-        AvisLigneDossier.DELETEALL(TRUE);
+        AvisLigneDossier.DELETEALL(true);
 
         Avis.GET("Code credoc");
         Rec.Type := Avis.Type;
 
         LigneDossier.SETRANGE("No. dossier", "No. dossier");
-        IF LigneDossier.FIND('-') THEN
-            REPEAT
+        if LigneDossier.FIND('-') then
+            repeat
                 AvisLigneDossier.INIT();
                 AvisLigneDossier."Code credoc" := Rec."Code credoc";
                 AvisLigneDossier."No. ligne avis" := Rec."No. ligne avis";
@@ -237,9 +237,9 @@ table 50257 AvisDossierArrivage
                 AvisLigneDossier."Montant ligne (dev soc)" := LigneDossier."Montant (dev soc)";
                 AvisLigneDossier."Volume ligne" := LigneDossier.Volume;
                 AvisLigneDossier.Type := Rec.Type;
-                AvisLigneDossier.Affectation := TRUE;
+                AvisLigneDossier.Affectation := true;
                 AvisLigneDossier.INSERT();
-            UNTIL LigneDossier.NEXT() = 0;
+            until LigneDossier.NEXT() = 0;
     end;
 
 }

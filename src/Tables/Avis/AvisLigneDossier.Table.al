@@ -87,7 +87,7 @@ table 50260 "AvisLigneDossier"
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
             AutoFormatType = 1;
-            CalcFormula = lookup("LigneDossierArrivage"."Cout unitaire" WHERE("No. dossier" = FIELD("No. dossier"), "No. ligne" = FIELD("No. ligne dossier")));
+            CalcFormula = lookup("LigneDossierArrivage"."Cout unitaire" where("No. dossier" = FIELD("No. dossier"), "No. ligne" = FIELD("No. ligne dossier")));
         }
         field(12; "Quantité (pièce)"; Decimal)
         {
@@ -166,6 +166,7 @@ table 50260 "AvisLigneDossier"
     }
 
     var
+        Dossier: Record "DossierArrivage";
 
     trigger OnInsert()
     begin
@@ -175,6 +176,9 @@ table 50260 "AvisLigneDossier"
     trigger OnModify()
     begin
 
+        if Dossier.GET("No. dossier") then
+            if Dossier.Etat = Dossier.Etat::Clôturé then
+                ERROR('Modification impossible : ce dossier est clôturé');
     end;
 
     trigger OnDelete()

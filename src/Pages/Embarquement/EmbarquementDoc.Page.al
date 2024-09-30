@@ -3,6 +3,7 @@ page 50236 "EmbarquementDoc"
     PageType = Document;
     SourceTable = "EnTeteEmbarquement";
     ApplicationArea = All;
+    Caption = 'Embarquement';
 
     layout
     {
@@ -66,6 +67,7 @@ page 50236 "EmbarquementDoc"
                 Editable = true; // or use a variable if there is a condition
                 SubPageLink = "No. embarquement" = field("No. embarquement");
                 UpdatePropagation = Both;
+                Caption = 'Lignes embarquement';
             }
         }
 

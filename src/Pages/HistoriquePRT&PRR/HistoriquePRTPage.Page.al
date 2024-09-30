@@ -16,6 +16,7 @@ page 50245 "HistoriquePRTPage"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de calcul associé à l''historique.';
+                    Visible = false;
                 }
                 field("No. article"; Rec."No. article")
                 {

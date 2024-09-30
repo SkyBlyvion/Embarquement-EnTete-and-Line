@@ -3,6 +3,7 @@ page 50237 "LigneEmbarqmtSubform"
     PageType = ListPart;
     SourceTable = "LigneEmbarquement";
     ApplicationArea = All;
+    Caption = 'Lignes embarquement';
 
     layout
     {
@@ -10,15 +11,15 @@ page 50237 "LigneEmbarqmtSubform"
         {
             repeater(Group)
             {
-                field("No. embarquement"; Rec."No. embarquement")
+                field("No. commande achat"; Rec."No. commande achat")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the shipment number associated with the shipment lines.';
+                    ToolTip = 'Displays the order number associated with the shipment lines.';
                 }
-                field("No. preneur d'ordre"; Rec."No. preneur d'ordre")
+                field("No. ligne commande achat"; Rec."No. ligne commande achat")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the vendor number associated with the shipment lines.';
+                    ToolTip = 'Displays the order line number associated with the shipment lines.';
                 }
                 field("No. Article"; Rec."No. Article")
                 {
@@ -29,10 +30,41 @@ page 50237 "LigneEmbarqmtSubform"
                         PAGE.RUNMODAL(PAGE::"Item Card", Rec);
                     end;
                 }
+                field("Désignation"; Rec."Désignation")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the description of the item being shipped.';
+                }
                 field("Quantité"; Rec."Quantité")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the quantity of the item being shipped.';
+                }
+                //TODO:Trouver comment lier Colisage a ItemsExtensionsTables TableExtension 50018 field 50005
+                // field("Colisage"; "Colisage")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Displays the package size of the item being shipped.';
+                // }
+                field("Quantité (Pièce)"; Rec."Quantité (Pièce)")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the quantity of the item being shipped in pieces.';
+                }
+                field("Référence fournisseur"; Rec."Référence fournisseur")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the supplier reference of the item being shipped.';
+                }
+                field("No. conteneur"; Rec."No. conteneur")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the container number associated with the shipment lines.';
+                }
+                field("Date réception prévue"; Rec."Date réception prévue")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the expected receipt date of the item being shipped.';
                 }
             }
         }

@@ -16,6 +16,7 @@ page 50244 "HistoriquePRRPage"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Numéro de calcul associé au PRR.';
+                    Visible = false;
                 }
                 field("No. article"; Rec."No. article")
                 {
