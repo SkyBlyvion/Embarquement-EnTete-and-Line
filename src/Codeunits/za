@@ -1,0 +1,150 @@
+codeunit 50285 "CalculerPRT"
+{
+    Caption = 'Calculer PRT';
+
+    var
+        EnteteAchat: Record "Purchase Header";
+        LigAchat: Record "Purchase Line";
+        HistoPRT: Record "Historique PRT";
+        DernierNoCalcul: Integer;
+        VolumeCde: Decimal;
+        FnsArt: Record "Item Vendor";
+        ArtAchatRemiseQte: Record "Purchase Price";
+        CondProd2: Record "Item Unit of Measure";
+        Devises: Record "Currency";
+        TauxDevises: Codeunit "Exchange Rate Management";
+        ParamCompta: Record "General Ledger Setup";
+        CoutUnitDirectBase: Decimal;
+        CoutUnitDirectBase2: Decimal;
+        FraisAnnexes: Record "Frais Annexes Achat";
+        Abreviation: Char;
+
+    procedure CalculerPRTDocVente(NoDoc: Code[20])
+    var
+        Mode: Option Insertion, Modification;
+    begin
+        if not EnteteAchat.Get(EnteteAchat."Document Type"::Order, NoDoc) then
+            Error('Le document %1 n°%2 n''existe pas. Le Calcul des PRT ne peut pas être effectué', NoDoc);
+
+        LigAchat.SetCurrentKey("Document Type", "Type", "No.", "Variant Code", "Drop Shipment", "Location Code", "Expected Receipt Date");
+        LigAchat.SetRange("Document Type", EnteteAchat."Document Type"::Order);
+        LigAchat.SetRange("Document No.", NoDoc);
+        LigAchat.SetRange(Type, LigAchat.Type::Item);
+
+        if not LigAchat.Find('-') then
+            exit;
+
+        if HistoPRT.Find('+') then
+            DernierNoCalcul := HistoPRT."N° calcul"
+        else
+            DernierNoCalcul := 0;
+
+        VolumeCde := 0;
+        repeat
+            // NSC1.12: Test des changements de 'Cout Unitaire Direct', 'Remise' et 'Incoterm'
+            FnsArt.Reset();
+            FnsArt.SetRange("Item No.", LigAchat."No.");
+            FnsArt.SetRange("Vendor No.", LigAchat."Buy-from Vendor No.");
+            FnsArt.SetRange("Starting Date", 0D, WorkDate);
+            if FnsArt.Find('+') then begin
+                ArtAchatRemiseQte.Reset();
+                ArtAchatRemiseQte.SetCurrentKey("Item No.", "Vendor No.", "Minimum Quantity");
+                ArtAchatRemiseQte.Ascending(true);
+                ArtAchatRemiseQte.SetRange("Item No.", LigAchat."No.");
+                ArtAchatRemiseQte.SetRange("Vendor No.", LigAchat."Buy-from Vendor No.");
+                ArtAchatRemiseQte.SetRange("Minimum Quantity", 0, abs(LigAchat."Quantity (Base)"));
+
+                if ArtAchatRemiseQte.Find('+') then
+                    if ArtAchatRemiseQte."Line Discount %" <> LigAchat."Line Discount %" then
+                        if Confirm('Voulez-vous modifier la remise %1 dans %2 ?', false,
+                            ArtAchatRemiseQte.FieldName("Line Discount %"), ArtAchatRemiseQte.TableCaption()) then begin
+                            ArtAchatRemiseQte."Line Discount %" := LigAchat."Line Discount %";
+                            ArtAchatRemiseQte.Modify();
+                        end;
+
+                if CondProd2.Get(LigAchat."No.", LigAchat."Variant Code") then
+                    CoutUnitDirectBase := LigAchat."Direct Unit Cost" / CondProd2."Qty. per Unit of Measure"
+                else
+                    CoutUnitDirectBase := LigAchat."Direct Unit Cost";
+
+                // NSC2.14: Application des taux de devises
+                CoutUnitDirectBase2 := TauxDevises.ExchangeAmtFCYToFCY(WorkDate, LigAchat."Currency Code", FnsArt."Currency Code", CoutUnitDirectBase);
+
+                if Devises.Get(FnsArt."Currency Code") then
+                    CoutUnitDirectBase2 := Round(CoutUnitDirectBase2, Devises."Unit-Amount Rounding Precision")
+                else
+                    if FnsArt."Currency Code" = '' then begin
+                        ParamCompta.Get();
+                        CoutUnitDirectBase2 := Round(CoutUnitDirectBase2, ParamCompta."Unit-Amount Rounding Precision");
+                    end else
+                        Error('La devise %1 n''existe pas', FnsArt."Currency Code");
+
+                if CoutUnitDirectBase2 <> FnsArt."Direct Unit Cost" then
+                    if Confirm('Voulez-vous modifier le cout unitaire %1 dans %2 ?', false,
+                        FnsArt.FieldName("Direct Unit Cost"), FnsArt.TableCaption()) then begin
+                        FnsArt."Direct Unit Cost" := CoutUnitDirectBase2;
+                        FnsArt.Modify();
+                    end;
+
+                if LigAchat.Incoterm <> FnsArt.Incoterm then
+                    if Confirm('Voulez-vous modifier l''Incoterm %1 dans %2 ?', false,
+                        FnsArt.FieldName("Incoterm"), FnsArt.TableCaption()) then begin
+                        FnsArt.Incoterm := LigAchat.Incoterm;
+                        FnsArt.Modify();
+                    end;
+            end;
+
+            VolumeCde := VolumeCde + LigAchat.Volume;
+        until LigAchat.Next() = 0;
+
+        LigAchat.Find('-');
+        repeat
+            if LigAchat."Quantity (Base)" <> 0 then begin
+                if not HistoPRT.Get(DernierNoCalcul + 1, LigAchat."No.") then
+                    Mode := Mode::Insertion
+                else
+                    Mode := Mode::Modification;
+
+                if Mode = Mode::Insertion then begin
+                    HistoPRT.Init();
+                    HistoPRT."N° calcul" := DernierNoCalcul + 1;
+                    HistoPRT."N° article" := LigAchat."No.";
+                    HistoPRT.Date := WorkDate;
+                    HistoPRT.Heure := Time;
+                    HistoPRT."N° commande" := LigAchat."Document No.";
+                    HistoPRT."N° fournisseur" := EnteteAchat."Buy-from Vendor No.";
+                    HistoPRT."Date achat" := EnteteAchat."Order Date";
+                    HistoPRT."Code devise cde" := EnteteAchat."Currency Code";
+                    HistoPRT."Facteur devise cde" := EnteteAchat."Currency Factor";
+                    HistoPRT."Volume commande" := VolumeCde;
+                    HistoPRT.Incoterm := EnteteAchat.Incoterm;
+                    HistoPRT.Insert();
+                end else begin
+                    HistoPRT.Modify();
+                end;
+            end;
+        until LigAchat.Next() = 0;
+    end;
+
+    procedure CalculerPRT(var HistoPRTParam: Record "Historique PRT")
+    begin
+        with HistoPRTParam do begin
+            // Calcul des montants et application des formules
+            "Prix achat (dev soc)" := "Montant ligne achat" / "Quantité achetée";
+            // Suite du calcul
+            Modify();
+        end;
+    end;
+
+    procedure MAJFicheTarif(PRTCalcule: Decimal; CodeArticle: Code[20])
+    var
+        PrixArticle: Record "Tarif Article";
+    begin
+        PrixArticle.SetRange("Item No.", CodeArticle);
+        if PrixArticle.FindSet() then
+            repeat
+                PrixArticle.Validate("Dernier PRT (dev soc)", PRTCalcule);
+                PrixArticle.Modify();
+            until PrixArticle.Next() = 0;
+    end;
+}

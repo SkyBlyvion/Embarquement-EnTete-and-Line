@@ -116,7 +116,22 @@ TODO: 02 TODO Dossier Arrivage
 
  table 50283 ReglementCredoc
 
+ codeunit 50285 "CalculerPR"
 
+ pageextension 50286 "PurchaseOrder"
+
+ table 50287 "NDPPays"
+
+ page 50288 "NDPPAYS"
+
+ tableextension 50289 "PurchasePriceCustom"
+
+ pageextension 50290 "PurchasePricePageExt"
+
+
+
+
+------------------ ACTIONS ACCES ------------------
 
                 group("Avis")
                 {
