@@ -78,9 +78,9 @@ codeunit 50285 "CalculerPR"
     end;
 
     /* 
-        CalculerPRTDocVente : S'occupe de parcourir les lignes de commande d'achat, 
-        vérifier et mettre à jour les données (fournisseur, incoterms, remises), 
-        puis enregistre l'historique PRT. Elle finit en appelant CalculerPRT.
+        CalculerPRTDocVente : Parcourt les lignes d'une commande d'achat pour vérifier et mettre à jour les 
+        informations relatives au fournisseur, Incoterm et remises. Met ensuite à jour l'historique 
+        PRT (Prix de Revient Théorique).
     */
     procedure CalculerPRTDocVente(NoDoc: Code[20])
     var
@@ -293,14 +293,14 @@ codeunit 50285 "CalculerPR"
 
         // TRANSPORT ROUTIER ET MARITIME
         HistoPRTParam."Coût transport rout. (dev soc)" := 0;
-        HistoPRTParam."Coût transport marit.(dev soc)" := 0;
+        HistoPRTParam."Coût transport marit. (devsoc)" := 0;
         IF HistoPRTParam."Volume commande" <> 0 THEN BEGIN
             HistoPRTParam."Coût transport rout. (dev soc)" := (HistoPRTParam.Volume / HistoPRTParam."Volume commande") * HistoPRTParam."Montant transport routier" / HistoPRTParam."Quantité achetée";
             IF HistoPRTParam."Facteur devise transp. rout." <> 0 THEN
                 HistoPRTParam."Coût transport rout. (dev soc)" := HistoPRTParam."Coût transport rout. (dev soc)" / HistoPRTParam."Facteur devise transp. rout.";
-            HistoPRTParam."Coût transport marit.(dev soc)" := (HistoPRTParam.Volume / HistoPRTParam."Volume commande") * HistoPRTParam."Montant transport maritime" / HistoPRTParam."Quantité achetée";
+            HistoPRTParam."Coût transport marit. (devsoc)" := (HistoPRTParam.Volume / HistoPRTParam."Volume commande") * HistoPRTParam."Montant transport maritime" / HistoPRTParam."Quantité achetée";
             IF HistoPRTParam."Facteur devise transp. marit." <> 0 THEN
-                HistoPRTParam."Coût transport marit.(dev soc)" := HistoPRTParam."Coût transport marit.(dev soc)" / HistoPRTParam."Facteur devise transp. marit.";
+                HistoPRTParam."Coût transport marit. (devsoc)" := HistoPRTParam."Coût transport marit. (devsoc)" / HistoPRTParam."Facteur devise transp. marit.";
         END;
 
         // % FRAIS : FINANCIERS, ASSURANCE, COMMISSION, TRANSIT
@@ -315,11 +315,11 @@ codeunit 50285 "CalculerPR"
                 HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
                                             HistoPRTParam."Montant assurances (dev soc)" +
                                             HistoPRTParam."Montant commissions (dev soc)" +
-                                            HistoPRTParam."Coût transport marit.(dev soc)";
+                                            HistoPRTParam."Coût transport marit. (devsoc)";
             EnteteAchat.Incoterm::CNI:
                 HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
                                             HistoPRTParam."Montant commissions (dev soc)" +
-                                            HistoPRTParam."Coût transport marit.(dev soc)";
+                                            HistoPRTParam."Coût transport marit. (devsoc)";
             EnteteAchat.Incoterm::CNF:
                 HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
                                             HistoPRTParam."Montant commissions (dev soc)" +
@@ -346,7 +346,7 @@ codeunit 50285 "CalculerPR"
         // TAXE ANTI-DUMPING (REV4.17) 19/06/15
         IF LigAchat."Taxe anti-dumping" <> 0 THEN
             HistoPRTParam."Montant taxe anti-dumping" := (HistoPRTParam."Prix achat (dev soc)" +
-                                        HistoPRTParam."Coût transport marit.(dev soc)" +
+                                        HistoPRTParam."Coût transport marit. (devsoc)" +
                                         HistoPRTParam."Montant frais fin. (dev soc)" +
                                         HistoPRTParam."Montant assurances (dev soc)" +
                                         HistoPRTParam."Montant commissions (dev soc)" +
@@ -362,7 +362,7 @@ codeunit 50285 "CalculerPR"
         /*{
         PRT := "Prix achat (dev soc)" +
                 "Coût transport rout. (dev soc)" +
-                "Coût transport marit.(dev soc)" +
+                "Coût transport marit. (devsoc)" +
                 "Montant frais fin. (dev soc)" +
                 "Montant assurances (dev soc)" +
                 "Montant commissions (dev soc)" +
@@ -371,7 +371,7 @@ codeunit 50285 "CalculerPR"
         }*/
         HistoPRTParam.PRT := HistoPRTParam."Prix achat (dev soc)" +
                 HistoPRTParam."Coût transport rout. (dev soc)" +
-                HistoPRTParam."Coût transport marit.(dev soc)" +
+                HistoPRTParam."Coût transport marit. (devsoc)" +
                 HistoPRTParam."Montant frais fin. (dev soc)" +
                 HistoPRTParam."Montant assurances (dev soc)" +
                 HistoPRTParam."Montant commissions (dev soc)" +
@@ -400,7 +400,8 @@ codeunit 50285 "CalculerPR"
     END;
 
     /* 
-        met à jour le prix standard et le prix de revient dans l'article et le fournisseur.
+        Met à jour le prix de revient ou le prix standard dans la fiche article et dans 
+        la fiche fournisseur pour l'article en question.
     */
     procedure ModifierPR(PrixAMAJ: Text[3]; NoArticle: Code[20]; NoFournisseur: Code[20]; PR: Decimal)
     begin
@@ -623,7 +624,8 @@ codeunit 50285 "CalculerPR"
     end;
 
     /* 
-        Calcule les montants affectés des lignes d'un dossier pour un dossier particulier.
+        Calcule les montants affectés aux lignes d'un dossier en fonction des prestations 
+        associées à un dossier particulier.
     */
     procedure CalcMntPrestLigDosViaPrestDoss(PrestDossier: Record "PrestationDossierArrivage"; DemanderConfirm: Boolean)
     begin
@@ -643,7 +645,8 @@ codeunit 50285 "CalculerPR"
     end;
 
     /* 
-        Calcule le Prix de revient Reel via le dossier
+        Calcule le Prix de Revient Réel (PRR) pour un article en fonction des prestations 
+        et des avis affectés à un dossier d'arrivage.
     */
     procedure CalculerPRRViaDossier(DossierArrivage: Record "DossierArrivage"; Definitif: Boolean)
     begin
@@ -830,7 +833,7 @@ codeunit 50285 "CalculerPR"
     end;
 
     /* 
-    * Retourne l'abreviation du type d'avis
+        Renvoie l'abréviation du type d'avis (marchandise, financier, avoir qualité, escompte, etc.).
     */
     procedure RetournerAbreviationTypeAvis(AvisLigneDossier: Record "AvisLigneDossier") Abreviation: Text[1]
     begin
@@ -849,7 +852,7 @@ codeunit 50285 "CalculerPR"
     end;
 
     /* 
-    * Retourne l'abreviation du type de prestation
+        Renvoie l'abréviation du type de prestation (transport, frais financiers, assurances, etc.)
     */
     procedure RetournerAbreviationTypePrest(PrestLigneDossier: Record "PrestationLigneDossier") Abreviation: Text[1]
     begin
@@ -870,7 +873,8 @@ codeunit 50285 "CalculerPR"
     end;
 
     /* 
-        CalculerPRR : Effectue le calcul du Prix de Revient Reel
+        CalculerPRR : Calcule le Prix de Revient Réel (PRR) pour un article en prenant en compte 
+        les montants affectés des avis et des prestations pour un dossier d'arrivage.
     */
     procedure CalculerPRR(var HistoPRRParam: Record "HistoriquePRRTable")
     var

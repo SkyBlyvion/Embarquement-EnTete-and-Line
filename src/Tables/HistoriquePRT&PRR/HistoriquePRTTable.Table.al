@@ -299,7 +299,7 @@ table 50247 "HistoriquePRTTable"
             MinValue = 0;
             MaxValue = 100;
         }
-        field(53; "Coût transport marit.(dev soc)"; Decimal)
+        field(53; "Coût transport marit. (devsoc)"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Coût transport maritime (devise société)';
