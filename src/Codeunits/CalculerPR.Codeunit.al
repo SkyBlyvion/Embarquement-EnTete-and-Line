@@ -49,7 +49,7 @@ codeunit 50285 "CalculerPR"
         LigneDossier: Record "LigneDossierArrivage";   // Lignes d'un dossier d'arrivage
         HistoPRR: Record "HistoriquePRRTable";               // Historique des Prix de Revient Réels (PRR)
         Dossier: Record "DossierArrivage";            // Dossier d'arrivage (import)
-        Mode: Option;                                    // Mode (option d'insertion ou modification)
+        Mode: Option Insertion,Modification,Suppression;                                    // Mode (option d'insertion ou modification)
         DernierNoCalcul: Integer;                        // Dernier numéro de calcul
         MntLigSelectionnees: Decimal;                    // Montant des lignes sélectionnées
         VolumeCde: Decimal;                              // Volume total de la commande
@@ -399,455 +399,523 @@ codeunit 50285 "CalculerPR"
 
     END;
 
-    
-    ModifierPR(PrixAMAJ : Text[3];NoArticle : Code[20];NoFournisseur : Code[20];PR : Decimal)
-    IF NOT Article.GET(NoArticle) THEN
-    ERROR('L''article n°%1 n''existe pas. Le prix de revient n''a pas été mis à jour',NoArticle);
+    /* 
+        met à jour le prix standard et le prix de revient dans l'article et le fournisseur.
+    */
+    procedure ModifierPR(PrixAMAJ: Text[3]; NoArticle: Code[20]; NoFournisseur: Code[20]; PR: Decimal)
+    begin
+        IF NOT Article.GET(NoArticle) THEN
+            ERROR('L''article n°%1 n''existe pas. Le prix de revient n''a pas été mis à jour', NoArticle);
 
-    Article.VALIDATE("Standard Cost", PR);
-    Article.MODIFY;
+        Article.VALIDATE("Standard Cost", PR);
+        Article.MODIFY();
 
-    FournArt.SETRANGE("Item No.",NoArticle);
-    FournArt.SETRANGE("Vendor No.",NoFournisseur);
-    IF NOT FournArt.FIND('-') THEN
-    ERROR('L''article n°%1 n''existe pas dans le catalogue du fournissseur %2. Le prix de revient n''a pas été mis à jour',
-            NoArticle, NoFournisseur);
-    IF PrixAMAJ = 'PRT' THEN
-    FournArt.VALIDATE(PRT,PR)
-    ELSE
-    FournArt.VALIDATE(PRR,PR);
-    FournArt.MODIFY;
-
-    CalculerMntPrestDossier(PrestDossier : Record "Prestation / dossiers arrivage")
-    PrestDossier.SETRANGE("N° prestation",PrestDossier."N° prestation");
-    IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour tous les montants affectés des dossiers associés à la prestation %1 ?',
-                            PrestDossier."N° prestation")) THEN
-    EXIT;
-
-    IF NOT Prest.GET(PrestDossier."N° prestation") THEN
-    ERROR('La prestation n°%1 n''a pas été trouvée',PrestDossier."N° prestation");
-
-    Prest.CALCFIELDS("Mnt total lig doss affectées","Vol total lig doss affectées");
-
-    IF PrestDossier.FIND('-') THEN
-    REPEAT
-        PrestDossier.CALCFIELDS("Mnt total lignes affectées","Vol total lignes affectées");
-        IF PrestDossier.Type <> PrestDossier.Type::"Frais de transport" THEN BEGIN
-        IF Prest."Mnt total lig doss affectées" <> 0 THEN
-            PrestDossier."Montant affecté" := ROUND(PrestDossier."Mnt total lignes affectées" * Prest.Montant
-                                                    / Prest."Mnt total lig doss affectées", 0.01, '=')
+        FournArt.SETRANGE("Item No.", NoArticle);
+        FournArt.SETRANGE("Vendor No.", NoFournisseur);
+        IF NOT FournArt.FIND('-') THEN
+            ERROR('L''article n°%1 n''existe pas dans le catalogue du fournissseur %2. Le prix de revient n''a pas été mis à jour',
+                    NoArticle, NoFournisseur);
+        IF PrixAMAJ = 'PRT' THEN
+            FournArt.VALIDATE(PRT, PR)
         ELSE
-            PrestDossier."Montant affecté" := 0;
-        END ELSE BEGIN
-        // SI C'EST UNE PRESTATION DE TYPE TRANSPORT ON CALCULE AU PRORATA DU VOLUME DE LA LIGNE
-        IF Prest."Vol total lig doss affectées" <> 0 THEN
-            PrestDossier."Montant affecté" := ROUND(PrestDossier."Vol total lignes affectées" * Prest.Montant
-                                                    / Prest."Vol total lig doss affectées", 0.01, '=')
-        ELSE
-            PrestDossier."Montant affecté" := 0;
-        END;
-        PrestDossier.MODIFY;
-    UNTIL PrestDossier.NEXT = 0;
+            FournArt.VALIDATE(PRR, PR);
+        FournArt.MODIFY();
+    end;
 
-    // Pour compenser l'arrondi on met le reste sur la dernière ligne
-    Prest.CALCFIELDS("Mnt affecté total (doss)");
-    IF Prest."Mnt affecté total (doss)" <> Prest.Montant THEN BEGIN
-        PrestDossier."Montant affecté" := PrestDossier."Montant affecté" +
-                                        (Prest.Montant - Prest."Mnt affecté total (doss)");
-        PrestDossier.MODIFY;
-    END;
+    /* 
+        calcule le montant total affecté d'une prestation pour les dossiers liés à une prestation d'arrivage. 
+        Elle utilise des calculs au prorata selon le type de prestation (par exemple, frais de transport).
+    */
+    procedure CalculerMntPrestDossier(PrestDossier: Record "PrestationDossierArrivage")
+    begin
+        PrestDossier.SETRANGE("No. prestation", PrestDossier."No. prestation");
+        IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour tous les montants affectés des dossiers associés à la prestation %1 ?',
+                                PrestDossier."No. prestation")) THEN
+            EXIT;
 
-    IF CONFIRM(STRSUBSTNO('Attention : la base de calcul du montant affecté de chaque ligne de dossier a changé. \' +
-                'Voulez-vous recalculer également les montants affectés des lignes de dossier ' +
-                'associées à la prestation %1 ?',PrestDossier."N° prestation")) THEN
-        CalcMntPrestLigDosViaPrestDoss(PrestDossier,FALSE);
+        IF NOT Prest.GET(PrestDossier."No. prestation") THEN
+            ERROR('La prestation n°%1 n''a pas été trouvée', PrestDossier."No. prestation");
 
-    CalculerMntPrestLigneDossier(PrestDossier : Record "Prestation / dossiers arrivage";DemanderConfirm : Boolean)
-    IF DemanderConfirm THEN
-    IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes du dossier %1 \' +
-                                'associées à la prestation %2 ?',
-                                PrestDossier."N° dossier",PrestDossier."N° prestation")) THEN
-        EXIT;
+        Prest.CALCFIELDS("Mnt total lig doss affectées", "Vol total lig doss affectées");
 
-    PrestLigneDossier.SETRANGE("N° dossier", PrestDossier."N° dossier");
-    PrestLigneDossier.SETRANGE("N° prestation", PrestDossier."N° prestation");
+        IF PrestDossier.FIND('-') THEN
+            REPEAT
+                PrestDossier.CALCFIELDS("Mnt total lignes affectées", "Vol total lignes affect");
+                IF PrestDossier.Type <> PrestDossier.Type::"Frais de transport" THEN BEGIN
+                    IF Prest."Mnt total lig doss affectées" <> 0 THEN
+                        PrestDossier."Montant affecté" := ROUND(PrestDossier."Mnt total lignes affectées" * Prest.Montant
+                                                                / Prest."Mnt total lig doss affectées", 0.01, '=')
+                    ELSE
+                        PrestDossier."Montant affecté" := 0;
+                END ELSE
+                    // SI C'EST UNE PRESTATION DE TYPE TRANSPORT ON CALCULE AU PRORATA DU VOLUME DE LA LIGNE
+                    IF Prest."Vol total lig doss affectées" <> 0 THEN
+                        PrestDossier."Montant affecté" := ROUND(PrestDossier."Vol total lignes affect" * Prest.Montant
+                                                                / Prest."Vol total lig doss affectées", 0.01, '=')
+                    ELSE
+                        PrestDossier."Montant affecté" := 0;
 
-    // CALCULE LE MONTANT TOTAL DU DOSSIER ET SON VOLUME TOTAL
-    PrestDossier.CALCFIELDS("Mnt total lignes affectées","Vol total lignes affectées");
+                PrestDossier.MODIFY();
+            UNTIL PrestDossier.NEXT() = 0;
 
-    IF PrestLigneDossier.FIND('-') THEN
-    REPEAT
-        IF PrestDossier.Type <> PrestDossier.Type::"Frais de transport" THEN BEGIN
-        // SI CE N'EST PAS UNE PRESTATION DE TYPE TRANSPORT ON CALCULE AU PRORATA DU MONTANT DE LA LIGNE
-        IF (PrestDossier."Mnt total lignes affectées" <> 0) AND (PrestLigneDossier.Affectation) THEN
-            PrestLigneDossier."Montant affecté" := ROUND(PrestDossier."Montant affecté" * PrestLigneDossier."Montant ligne (dev soc)" 
-    /
-                                                        PrestDossier."Mnt total lignes affectées", 0.01, '=')
-        ELSE
-            PrestLigneDossier."Montant affecté" := 0;
-        END ELSE BEGIN
-        // SI C'EST UNE PRESTATION DE TYPE TRANSPORT ON CALCULE AU PRORATA DU VOLUME DE LA LIGNE
-        IF (PrestDossier."Vol total lignes affectées" <> 0) AND (PrestLigneDossier.Affectation) THEN
-            PrestLigneDossier."Montant affecté" := ROUND(PrestDossier."Montant affecté" * PrestLigneDossier."Volume ligne" /
-                                                        PrestDossier."Vol total lignes affectées", 0.01, '=')
-        ELSE
-            PrestLigneDossier."Montant affecté" := 0;
-        END;
-        PrestLigneDossier.MODIFY;
-    UNTIL PrestLigneDossier.NEXT = 0;
-
-    // Pour compenser l'arrondi on met le reste sur la dernière ligne
-    PrestDossier.CALCFIELDS("Mnt affecté total lig affect");
-    IF PrestDossier."Mnt affecté total lig affect" <> PrestDossier."Montant affecté" THEN BEGIN
-        PrestLigneDossier."Montant affecté" := PrestLigneDossier."Montant affecté" +
-                                        (PrestDossier."Montant affecté" - PrestDossier."Mnt affecté total lig affect");
-        PrestLigneDossier.MODIFY;
-    END;
-
-    CalcMntAvisLigDosViaAvisDoss(AvisDossier : Record "Avis / dossiers arrivage";DemanderConfirm : Boolean)
-    AvisDossier.SETRANGE("Code credoc",AvisDossier."Code credoc");
-    AvisDossier.SETRANGE("N° ligne avis",AvisDossier."N° ligne avis");
-    IF DemanderConfirm THEN
-    IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes de dossier ' +
-                                'associées à l''avis n° %1 du Credoc n° %2 ?',
-                                AvisDossier."N° ligne avis",AvisDossier."Code credoc")) THEN
-
-        EXIT;
-
-    IF AvisDossier.FIND('-') THEN
-    REPEAT
-        IF Dossier.GET(AvisDossier."N° dossier") THEN
-        IF Dossier.Etat <> Dossier.Etat::Clôturé THEN
-            CalculerMntAvisLigneDossier(AvisDossier,FALSE);
-    UNTIL AvisDossier.NEXT = 0;
-
-    CalculerMntAvisDossier(AvisDossier : Record "Avis / dossiers arrivage")
-    AvisDossier.SETRANGE("Code credoc",AvisDossier."Code credoc");
-    AvisDossier.SETRANGE("N° ligne avis",AvisDossier."N° ligne avis");
-    IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour tous les montants affectés des dossiers associés ' +
-                            'à l''avis n° %1 du Credoc n° %2 ?',AvisDossier."N° ligne avis",AvisDossier."Code credoc")) THEN
-    EXIT;
-
-    IF NOT Avis.GET(AvisDossier."Code credoc",AvisDossier."N° ligne avis") THEN
-    ERROR('L''avis n° %1 du Credoc n° %2 n''a pas été trouvée',AvisDossier."N° ligne avis",AvisDossier."Code credoc");
-
-    Avis.CALCFIELDS("Mnt total lig doss affectées","Vol total lig doss affectées");
-
-    IF AvisDossier.FIND('-') THEN
-    REPEAT
-        AvisDossier.CALCFIELDS("Mnt total lignes affectées","Vol total lignes affectées");
-        IF Avis."Mnt total lig doss affectées" <> 0 THEN
-        AvisDossier."Montant affecté" := ROUND(AvisDossier."Mnt total lignes affectées" * Avis.Montant
-                                                / Avis."Mnt total lig doss affectées", 0.01, '=')
-        ELSE
-        AvisDossier."Montant affecté" := 0;
-        AvisDossier.MODIFY;
-    UNTIL AvisDossier.NEXT = 0;
-
-    // Pour compenser l'arrondi on met le reste sur la dernière ligne
-    Avis.CALCFIELDS("Mnt affecté total (doss)");
-    IF Avis."Mnt affecté total (doss)" <> Avis.Montant THEN BEGIN
-        AvisDossier."Montant affecté" := AvisDossier."Montant affecté" +
-                                        (Avis.Montant - Avis."Mnt affecté total (doss)");
-        AvisDossier.MODIFY;
-    END;
-
-    IF CONFIRM(STRSUBSTNO('Attention : la base de calcul du montant affecté de chaque ligne de dossier a changé. \' +
-                'Voulez-vous recalculer également les montants affectés des lignes de dossier ' +
-                'associées à l''avis n° %1 du Credoc n° %2 ?',AvisDossier."N° ligne avis",AvisDossier."Code credoc")) THEN
-        CalcMntAvisLigDosViaAvisDoss(AvisDossier,FALSE);
-
-    CalculerMntAvisLigneDossier(AvisDossier : Record "Avis / dossiers arrivage";DemanderConfirm : Boolean)
-    IF DemanderConfirm THEN
-    IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes du dossier %1 ' +
-                                'associées à l''avis n° %2 du Credoc n° %3 ?',
-                                AvisDossier."N° dossier", AvisDossier."N° ligne avis",AvisDossier."Code credoc")) THEN
-        EXIT;
-
-    AvisLigneDossier.SETRANGE("N° dossier", AvisDossier."N° dossier");
-    AvisLigneDossier.SETRANGE("Code credoc", AvisDossier."Code credoc");
-    AvisLigneDossier.SETRANGE("N° ligne avis", AvisDossier."N° ligne avis");
-
-    // CALCULE LE MONTANT TOTAL DU DOSSIER ET SON VOLUME TOTAL
-    AvisDossier.CALCFIELDS("Mnt total lignes affectées","Vol total lignes affectées");
-
-    IF AvisLigneDossier.FIND('-') THEN
-    REPEAT
-        IF (AvisDossier."Mnt total lignes affectées" <> 0) AND (AvisLigneDossier.Affectation) THEN
-        AvisLigneDossier."Montant affecté" := ROUND(AvisDossier."Montant affecté" * AvisLigneDossier."Montant ligne (dev soc)" /
-                                                    AvisDossier."Mnt total lignes affectées", 0.01, '=')
-        ELSE
-        AvisLigneDossier."Montant affecté" := 0;
-        AvisLigneDossier.MODIFY;
-    UNTIL AvisLigneDossier.NEXT = 0;
-
-    // Pour compenser l'arrondi on met le reste sur la dernière ligne
-    AvisDossier.CALCFIELDS("Mnt affecté total lig affect");
-    IF AvisDossier."Mnt affecté total lig affect" <> AvisDossier."Montant affecté" THEN BEGIN
-        AvisLigneDossier."Montant affecté" := AvisLigneDossier."Montant affecté" +
-                                            (AvisDossier."Montant affecté" - AvisDossier."Mnt affecté total lig affect");
-        AvisLigneDossier.MODIFY;
-    END;
-
-    CalcMntPrestLigDosViaPrestDoss(PrestDossier : Record "Prestation / dossiers arrivage";DemanderConfirm : Boolean)
-    PrestDossier.SETRANGE("N° prestation", PrestDossier."N° prestation");
-
-    IF DemanderConfirm THEN
-    IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes de dossier ' +
-                                'associées à la prestation n° %1 ?',PrestDossier."N° prestation")) THEN
-        EXIT;
-
-    IF PrestDossier.FIND('-') THEN
-    REPEAT
-        IF Dossier.GET(PrestDossier."N° dossier") THEN
-        IF Dossier.Etat <> Dossier.Etat::Clôturé THEN
-            CalculerMntPrestLigneDossier(PrestDossier,FALSE);
-    UNTIL PrestDossier.NEXT = 0;
-
-    CalculerPRRViaDossier(DossierArrivage : Record "Dossier d'arrivage";Definitif : Boolean)
-    // On part du dossier.
-    // Pour chaque ligne de ce dossier, on additionne les prestations et les avis
-    // auxquels elle est affectée.
-
-    //* NSC2.16 PN 18/02/2000 Initialisation
-
-    LigneDossier.RESET;
-    HistoPRR.RESET;
-    AvisLigneDossier.RESET;
-    Avis.RESET;
-    PrestLigneDossier.RESET;
-    Prest.RESET;
-    //* FIN NSC2.16 PN 18/02/2000 Initialisation
-
-    //*NSC1.11
-    ErreurPasDAvis := TRUE;
-    //*FIN NSC1.11
-
-    LigneDossier.SETRANGE("N° dossier",DossierArrivage."N° dossier");
-    IF NOT LigneDossier.FIND('-') THEN
-    EXIT;
-
-    IF HistoPRR.FIND('+') THEN
-    DernierNoCalcul := HistoPRR."N° calcul"
-    ELSE
-    DernierNoCalcul := 0;
-
-    //* PN NSC2.15 17/2/2000 initialisation volume dossier
-    VolumeDossier := 0;
-    //* FIN PN NSC2.15
-    REPEAT
-    VolumeDossier := VolumeDossier + LigneDossier.Volume;
-    UNTIL LigneDossier.NEXT = 0;
-
-    LigneDossier.FIND('-');
-    REPEAT
-    // PR = (Montant + somme des montants affectés des prestations + sommes des montants affectés des avis) / Qté pièce
-        IF LigneDossier."Quantité (pièce)" <> 0 THEN BEGIN
-        IF NOT HistoPRR.GET(DernierNoCalcul + 1,LigneDossier."N° article") THEN
-            Mode := Mode::Insertion
-        ELSE
-            Mode := Mode::Modification;
-
-        IF Mode = Mode::Insertion THEN BEGIN
-            HistoPRR.INIT;
-            HistoPRR."N° calcul" := DernierNoCalcul + 1;
-            HistoPRR."N° article" := LigneDossier."N° article";
-            HistoPRR.Date := WORKDATE;
-            HistoPRR.Heure := TIME;
-            HistoPRR."Volume dossier" := VolumeDossier;
-            HistoPRR."N° fournisseur" := LigneDossier."N° preneur d'ordre";
-            HistoPRR."N° dossier" := LigneDossier."N° dossier";
-            IF Definitif THEN
-            HistoPRR.Définitif := TRUE;
-
-
-            //NSC1.14
-            Dossier.GET(LigneDossier."N° dossier");
-            HistoPRR."Date création Dossier" :=  Dossier."Date d'ouverture";
-
-            //*NSC1.11 :Il faut rechercher le Code devise (et son taux) lié au dernier avis de l'article
-            AvisLigneDossierArrivage.RESET;
-            AvisLigneDossierArrivage.ASCENDING(TRUE);
-            AvisLigneDossierArrivage.SETRANGE("N° dossier",LigneDossier."N° dossier");
-            AvisLigneDossierArrivage.SETRANGE("N° ligne dossier",LigneDossier."N° ligne");
-            AvisLigneDossierArrivage.SETRANGE(Type,AvisLigneDossier.Type::Marchandise);
-            //* REV1.34 CC 14/06/06 : ajout filtre : Affectation=TRUE
-            AvisLigneDossierArrivage.SETRANGE(Affectation,TRUE);
-            //* REV1.34 CC 14/06/06 : ajout filtre : Affectation=TRUE
-            IF AvisLigneDossierArrivage.FIND('+') THEN BEGIN
-            IF Avis2.GET(AvisLigneDossierArrivage."Code credoc",AvisLigneDossierArrivage."N° ligne avis") THEN BEGIN
-                HistoPRR."Code devise" := Avis2."Code devise";
-                HistoPRR."Facteur devise" := Avis2."Facteur devise";
-                HistoPRR."Code credoc Avis source" := Avis2."Code credoc";
-                HistoPRR."N° ligne Avis source" := Avis2."N° ligne";
-                ErreurPasDAvis := FALSE;
-            END;
-            END;
-            //*FIN NSC1.11 :Il faut recherche le Code devise (et son taux) lié au dernier avis de l'article
-
+        // Pour compenser l'arrondi on met le reste sur la dernière ligne
+        Prest.CALCFIELDS("Mnt affecté total (doss)");
+        IF Prest."Mnt affecté total (doss)" <> Prest.Montant THEN BEGIN
+            PrestDossier."Montant affecté" := PrestDossier."Montant affecté" +
+                                            (Prest.Montant - Prest."Mnt affecté total (doss)");
+            PrestDossier.MODIFY();
         END;
 
-        IF STRPOS(HistoPRR."N° réception", FORMAT(LigneDossier."N° réception")) = 0 THEN
-            HistoPRR."N° réception" := COPYSTR(HistoPRR."N° réception" + FORMAT(LigneDossier."N° réception") + ' ', 1, 250);
+        IF CONFIRM(StrSubstNo('Attention : la base de calcul du montant affecté de chaque ligne de dossier a changé. \' +
+                    'Voulez-vous recalculer également les montants affectés des lignes de dossier ' +
+                    'associées à la prestation %1 ?', PrestDossier."No. prestation")) THEN
+            CalcMntPrestLigDosViaPrestDoss(PrestDossier, FALSE);
 
-        IF STRPOS(HistoPRR."N° ligne dossier", FORMAT(LigneDossier."N° ligne")) = 0 THEN
-            HistoPRR."N° ligne dossier" := COPYSTR(HistoPRR."N° ligne dossier" + FORMAT(LigneDossier."N° ligne") + ' ', 1, 250);
+    end;
 
-        AvisLigneDossier.SETRANGE("N° dossier",LigneDossier."N° dossier");
-        AvisLigneDossier.SETRANGE("N° ligne dossier",LigneDossier."N° ligne");
+    /* 
+        Cette procédure calcule les montants affectés des lignes d'un dossier pour une prestation particulière.
+    */
+    procedure CalculerMntPrestLigneDossier(PrestDossier: Record "PrestationDossierArrivage"; DemanderConfirm: Boolean)
+    begin
+        IF DemanderConfirm THEN
+            IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes du dossier %1 \' +
+                                        'associées à la prestation %2 ?',
+                                        PrestDossier."No. dossier", PrestDossier."No. prestation")) THEN
+                EXIT;
+
+        PrestLigneDossier.SETRANGE("No. dossier", PrestDossier."No. dossier");
+        PrestLigneDossier.SETRANGE("No. prestation", PrestDossier."No. prestation");
+
+        // CALCULE LE MONTANT TOTAL DU DOSSIER ET SON VOLUME TOTAL
+        PrestDossier.CALCFIELDS("Mnt total lignes affectées", "Vol total lignes affect");
+
+        IF PrestLigneDossier.FIND('-') THEN
+            REPEAT
+                IF PrestDossier.Type <> PrestDossier.Type::"Frais de transport" THEN BEGIN
+                    // SI CE N'EST PAS UNE PRESTATION DE TYPE TRANSPORT ON CALCULE AU PRORATA DU MONTANT DE LA LIGNE
+                    IF (PrestDossier."Mnt total lignes affectées" <> 0) AND (PrestLigneDossier.Affectation) THEN
+                        PrestLigneDossier."Montant affecté" := ROUND(PrestDossier."Montant affecté" * PrestLigneDossier."Montant ligne (dev soc)" /
+                                                                    PrestDossier."Mnt total lignes affectées", 0.01, '=')
+                    ELSE
+                        PrestLigneDossier."Montant affecté" := 0;
+                END ELSE
+                    // SI C'EST UNE PRESTATION DE TYPE TRANSPORT ON CALCULE AU PRORATA DU VOLUME DE LA LIGNE
+                    IF (PrestDossier."Vol total lignes affect" <> 0) AND (PrestLigneDossier.Affectation) THEN
+                        PrestLigneDossier."Montant affecté" := ROUND(PrestDossier."Montant affecté" * PrestLigneDossier."Volume ligne" /
+                                                                    PrestDossier."Vol total lignes affect", 0.01, '=')
+                    ELSE
+                        PrestLigneDossier."Montant affecté" := 0;
+
+                PrestLigneDossier.MODIFY();
+            UNTIL PrestLigneDossier.NEXT() = 0;
+
+        // Pour compenser l'arrondi on met le reste sur la dernière ligne
+        PrestDossier.CALCFIELDS("Mnt affecté total lig affect");
+        IF PrestDossier."Mnt affecté total lig affect" <> PrestDossier."Montant affecté" THEN BEGIN
+            PrestLigneDossier."Montant affecté" := PrestLigneDossier."Montant affecté" +
+                                            (PrestDossier."Montant affecté" - PrestDossier."Mnt affecté total lig affect");
+            PrestLigneDossier.MODIFY();
+        END;
+
+    end;
+
+    /* 
+        Calcule les montants affectés des lignes d'un dossier pour un avis particulier.
+    */
+    procedure CalcMntAvisLigDosViaAvisDoss(AvisDossier: Record "AvisDossierArrivage"; DemanderConfirm: Boolean)
+    begin
+        AvisDossier.SETRANGE("Code credoc", AvisDossier."Code credoc");
+        AvisDossier.SETRANGE("No. ligne avis", AvisDossier."No. ligne avis");
+        IF DemanderConfirm THEN
+            IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes de dossier ' +
+                                        'associées à l''avis n° %1 du Credoc n° %2 ?',
+                                        AvisDossier."No. ligne avis", AvisDossier."Code credoc")) THEN
+                EXIT;
+
+        IF AvisDossier.FIND('-') THEN
+            REPEAT
+                IF Dossier.GET(AvisDossier."No. dossier") THEN
+                    IF Dossier.Etat <> Dossier.Etat::Clôturé THEN
+                        CalculerMntAvisLigneDossier(AvisDossier, FALSE);
+            UNTIL AvisDossier.NEXT = 0;
+
+    end;
+
+    /* 
+        Calcule les montants affectés des lignes d'un dossier pour un dossier particulier.
+    */
+    procedure CalculerMntAvisDossier(AvisDossier: Record "AvisDossierArrivage")
+    begin
+        AvisDossier.SETRANGE("Code credoc", AvisDossier."Code credoc");
+        AvisDossier.SETRANGE("No. ligne avis", AvisDossier."No. ligne avis");
+        IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour tous les montants affectés des dossiers associés ' +
+                                'à l''avis n° %1 du Credoc n° %2 ?', AvisDossier."No. ligne avis", AvisDossier."Code credoc")) THEN
+            EXIT;
+
+        IF NOT Avis.GET(AvisDossier."Code credoc", AvisDossier."No. ligne avis") THEN
+            ERROR('L''avis n° %1 du Credoc n° %2 n''a pas été trouvée', AvisDossier."No. ligne avis", AvisDossier."Code credoc");
+
+        Avis.CALCFIELDS("Mnt total lig doss affectées", "Vol total lig doss affectées");
+
+        IF AvisDossier.FIND('-') THEN
+            REPEAT
+                AvisDossier.CALCFIELDS("Mnt total lignes affectées", "Vol total lignes affectées");
+                IF Avis."Mnt total lig doss affectées" <> 0 THEN
+                    AvisDossier."Montant affecté" := ROUND(AvisDossier."Mnt total lignes affectées" * Avis.Montant
+                                                            / Avis."Mnt total lig doss affectées", 0.01, '=')
+                ELSE
+                    AvisDossier."Montant affecté" := 0;
+                AvisDossier.MODIFY();
+            UNTIL AvisDossier.NEXT() = 0;
+
+        // Pour compenser l'arrondi on met le reste sur la dernière ligne
+        Avis.CALCFIELDS("Mnt affecté total (doss)");
+        IF Avis."Mnt affecté total (doss)" <> Avis.Montant THEN BEGIN
+            AvisDossier."Montant affecté" := AvisDossier."Montant affecté" +
+                                            (Avis.Montant - Avis."Mnt affecté total (doss)");
+            AvisDossier.MODIFY();
+        END;
+
+        IF CONFIRM(STRSUBSTNO('Attention : la base de calcul du montant affecté de chaque ligne de dossier a changé. \' +
+                    'Voulez-vous recalculer également les montants affectés des lignes de dossier ' +
+                    'associées à l''avis n° %1 du Credoc n° %2 ?', AvisDossier."No. ligne avis", AvisDossier."Code credoc")) THEN
+            CalcMntAvisLigDosViaAvisDoss(AvisDossier, FALSE);
+
+    end;
+
+    /* 
+        Calcule les montants affectés des lignes d'un dossier pour un dossier particulier.
+    */
+    procedure CalculerMntAvisLigneDossier(AvisDossier: Record "AvisDossierArrivage"; DemanderConfirm: Boolean)
+    begin
+        IF DemanderConfirm THEN
+            IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes du dossier %1 ' +
+                                        'associées à l''avis n° %2 du Credoc n° %3 ?',
+                                        AvisDossier."No. dossier", AvisDossier."No. ligne avis", AvisDossier."Code credoc")) THEN
+                EXIT;
+
+        AvisLigneDossier.SETRANGE("No. dossier", AvisDossier."No. dossier");
+        AvisLigneDossier.SETRANGE("Code credoc", AvisDossier."Code credoc");
+        AvisLigneDossier.SETRANGE("No. ligne avis", AvisDossier."No. ligne avis");
+
+        // CALCULE LE MONTANT TOTAL DU DOSSIER ET SON VOLUME TOTAL
+        AvisDossier.CALCFIELDS("Mnt total lignes affectées", "Vol total lignes affectées");
+
         IF AvisLigneDossier.FIND('-') THEN
             REPEAT
-            AvisLigneDossier.CALCFIELDS(Prévisionnel);
-                IF AvisLigneDossier.Prévisionnel THEN
-                IF STRPOS(HistoPRR."Eléments estimés",RetournerAbreviationTypeAvis(AvisLigneDossier)) = 0 THEN
-                    HistoPRR."Eléments estimés" := HistoPRR."Eléments estimés" + RetournerAbreviationTypeAvis(AvisLigneDossier) + ' ';
-                IF Avis.GET(AvisLigneDossier."Code credoc",AvisLigneDossier."N° ligne avis") THEN BEGIN
-                IF NOT (Avis.Type IN [Avis.Type::"Avoir qualité",Avis.Type::Escompte]) THEN BEGIN
-                    IF Avis."Facteur devise" = 0 THEN
-                    HistoPRR."Mnt affecté total / avis" := HistoPRR."Mnt affecté total / avis" + AvisLigneDossier."Montant affecté"
-                    ELSE
-                    HistoPRR."Mnt affecté total / avis" := HistoPRR."Mnt affecté total / avis" +
-                                                            AvisLigneDossier."Montant affecté" / Avis."Facteur devise";
-                END ELSE BEGIN
-                    IF Avis."Facteur devise" = 0 THEN
-                    HistoPRR."Mnt affecté total déduction" := HistoPRR."Mnt affecté total déduction" +
-                                                                AvisLigneDossier."Montant affecté"
-                    ELSE
-                    HistoPRR."Mnt affecté total déduction" := HistoPRR."Mnt affecté total déduction" +
-                                                            AvisLigneDossier."Montant affecté" / Avis."Facteur devise";
-                    IF Avis.Type = Avis.Type::"Avoir qualité" THEN
-                        HistoPRR."% avoir qualité" := Avis."%"
-                    ELSE
-                        HistoPRR."% escompte" := Avis."%";
-                END;
-
-                END;
-            UNTIL AvisLigneDossier.NEXT = 0;
-
-            PrestLigneDossier.SETRANGE("N° dossier",LigneDossier."N° dossier");
-            PrestLigneDossier.SETRANGE("N° ligne dossier",LigneDossier."N° ligne");
-            IF PrestLigneDossier.FIND('-') THEN
-            REPEAT
-                PrestLigneDossier.CALCFIELDS(Prévisionnel);
-                IF PrestLigneDossier.Prévisionnel THEN
-                IF STRPOS(HistoPRR."Eléments estimés", RetournerAbreviationTypePrest(PrestLigneDossier)) = 0 THEN
-                    HistoPRR."Eléments estimés" := HistoPRR."Eléments estimés" +
-                                                            RetournerAbreviationTypePrest(PrestLigneDossier) + ' ';
-                IF Prest.GET(PrestLigneDossier."N° prestation") THEN BEGIN
-                IF Prest."Facteur devise" = 0 THEN
-                    HistoPRR."Mnt affecté total / prest" := HistoPRR."Mnt affecté total / prest" +
-                                                            PrestLigneDossier."Montant affecté"
+                IF (AvisDossier."Mnt total lignes affectées" <> 0) AND (AvisLigneDossier.Affectation) THEN
+                    AvisLigneDossier."Montant affecté" := ROUND(AvisDossier."Montant affecté" * AvisLigneDossier."Montant ligne (dev soc)" /
+                                                                AvisDossier."Mnt total lignes affectées", 0.01, '=')
                 ELSE
-                    HistoPRR."Mnt affecté total / prest" := HistoPRR."Mnt affecté total / prest" +
-                                                            PrestLigneDossier."Montant affecté" / Prest."Facteur devise";
-                END;
-            UNTIL PrestLigneDossier.NEXT = 0;
+                    AvisLigneDossier."Montant affecté" := 0;
+                AvisLigneDossier.MODIFY();
+            UNTIL AvisLigneDossier.NEXT() = 0;
 
-            //*NSC1.11 :suite à modification sur Code devise
-            HistoPRR.Montant := HistoPRR.Montant + LigneDossier.Montant;
-            IF HistoPRR."Facteur devise" <> 0 THEN
-                HistoPRR."Montant (dev soc)" := HistoPRR."Montant (dev soc)" + (LigneDossier.Montant / HistoPRR."Facteur devise")
-            ELSE
-                HistoPRR."Montant (dev soc)" := HistoPRR."Montant (dev soc)" + LigneDossier.Montant;
-            //*FIN NSC1.11 :suite à modification sur Code devise
-
-            HistoPRR.Volume := HistoPRR.Volume + LigneDossier.Volume;
-
-            HistoPRR."% remise moyen" := ((HistoPRR.Quantité * HistoPRR."% remise moyen") +
-                                        (LigneDossier."Quantité (pièce)" * LigneDossier."% remise ligne")) /
-                                        (HistoPRR.Quantité + LigneDossier."Quantité (pièce)");
-
-
-            // attention, à ne pas mettre avant le calcul de remise moyenne ni après celui du Prix d'achat
-            HistoPRR.Quantité := HistoPRR.Quantité + LigneDossier."Quantité (pièce)";
-
-            HistoPRR."Prix achat (dev soc)" := HistoPRR."Montant (dev soc)" / HistoPRR.Quantité;
-
-            //* NSC1.14
-            //* ajout du prix d'achat en devise d'achat , remise non déduite, issue de al commande d'achat
-            //* REV1.31 : changement du calcul de "Cout unitaire direct"
-            //* HistoPRR."Cout unitaire direct" := HistoPRR."Cout unitaire direct" + LigneDossier."Coût unitaire direct";
-            HistoPRR."Cout unitaire direct" := LigneDossier."Coût unitaire direct";
-            //* Fin REV1.31
-
-            IF ErreurPasDAvis = FALSE THEN BEGIN//*NSC1.11
-
-            IF Mode = Mode::Insertion THEN
-                HistoPRR.INSERT
-            ELSE
-                HistoPRR.MODIFY;
-
-            CalculerPRR(HistoPRR);
-
-            END ELSE LigneDossier.FIND('+');//*FIN :NSC1.11
-
+        // Pour compenser l'arrondi on met le reste sur la dernière ligne
+        AvisDossier.CALCFIELDS("Mnt affecté total lig affect");
+        IF AvisDossier."Mnt affecté total lig affect" <> AvisDossier."Montant affecté" THEN BEGIN
+            AvisLigneDossier."Montant affecté" := AvisLigneDossier."Montant affecté" +
+                                                (AvisDossier."Montant affecté" - AvisDossier."Mnt affecté total lig affect");
+            AvisLigneDossier.MODIFY();
         END;
-    UNTIL LigneDossier.NEXT = 0;
 
-    RetournerAbreviationTypeAvis(AvisLigneDossier : Record "Avis / ligne dossier") Abreviation : Text[1]
-    CASE AvisLigneDossier.Type OF
-    AvisLigneDossier.Type::Marchandise:
-        Abreviation := 'P';
-    AvisLigneDossier.Type::Financier:
-        Abreviation := 'F';
-    AvisLigneDossier.Type::"Avoir qualité":
-        Abreviation := 'Q';
-    AvisLigneDossier.Type::Escompte:
-        Abreviation := 'E';
-    ELSE
-        Abreviation := 'A';
+    end;
+
+    /* 
+        Calcule les montants affectés des lignes d'un dossier pour un dossier particulier.
+    */
+    procedure CalcMntPrestLigDosViaPrestDoss(PrestDossier: Record "PrestationDossierArrivage"; DemanderConfirm: Boolean)
+    begin
+        PrestDossier.SETRANGE("No. prestation", PrestDossier."No. prestation");
+
+        IF DemanderConfirm THEN
+            IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour les montants affectés des lignes de dossier ' +
+                                        'associées à la prestation n° %1 ?', PrestDossier."No. prestation")) THEN
+                EXIT;
+
+        IF PrestDossier.FIND('-') THEN
+            REPEAT
+                IF Dossier.GET(PrestDossier."No. dossier") THEN
+                    IF Dossier.Etat <> Dossier.Etat::Clôturé THEN
+                        CalculerMntPrestLigneDossier(PrestDossier, FALSE);
+            UNTIL PrestDossier.NEXT() = 0;
+    end;
+
+    /* 
+        Calcule le Prix de revient Reel via le dossier
+    */
+    procedure CalculerPRRViaDossier(DossierArrivage: Record "DossierArrivage"; Definitif: Boolean)
+    begin
+        // On part du dossier.
+        // Pour chaque ligne de ce dossier, on additionne les prestations et les avis
+        // auxquels elle est affectée.
+
+        //* NSC2.16 PN 18/02/2000 Initialisation
+
+        LigneDossier.RESET();
+        HistoPRR.RESET();
+        AvisLigneDossier.RESET();
+        Avis.RESET();
+        PrestLigneDossier.RESET();
+        Prest.RESET();
+        //* FIN NSC2.16 PN 18/02/2000 Initialisation
+
+        //*NSC1.11
+        ErreurPasDAvis := TRUE;
+        //*FIN NSC1.11
+
+        LigneDossier.SETRANGE("No. dossier", DossierArrivage."No. dossier");
+        IF NOT LigneDossier.FIND('-') THEN
+            EXIT;
+
+        IF HistoPRR.FIND('+') THEN
+            DernierNoCalcul := HistoPRR."No. calcul"
+        ELSE
+            DernierNoCalcul := 0;
+
+        //* PN NSC2.15 17/2/2000 initialisation volume dossier
+        VolumeDossier := 0;
+        //* FIN PN NSC2.15
+        REPEAT
+            VolumeDossier := VolumeDossier + LigneDossier.Volume;
+        UNTIL LigneDossier.NEXT() = 0;
+
+        LigneDossier.FIND('-');
+        REPEAT
+            // PR = (Montant + somme des montants affectés des prestations + sommes des montants affectés des avis) / Qté pièce
+            IF LigneDossier."Quantité (piece)" <> 0 THEN BEGIN
+                IF NOT HistoPRR.GET(DernierNoCalcul + 1, LigneDossier."No. article") THEN
+                    Mode := Mode::Insertion
+                ELSE
+                    Mode := Mode::Modification;
+
+                IF Mode = Mode::Insertion THEN BEGIN
+                    HistoPRR.INIT();
+                    HistoPRR."No. calcul" := DernierNoCalcul + 1;
+                    HistoPRR."No. article" := LigneDossier."No. article";
+                    HistoPRR.Date := WORKDATE();
+                    HistoPRR.Heure := TIME;
+                    HistoPRR."Volume dossier" := VolumeDossier;
+                    HistoPRR."No. fournisseur" := LigneDossier."No. preneur d'ordre";
+                    HistoPRR."No. dossier" := LigneDossier."No. dossier";
+                    IF Definitif THEN
+                        HistoPRR.Définitif := TRUE;
+
+
+                    //NSC1.14
+                    Dossier.GET(LigneDossier."No. dossier");
+                    HistoPRR."Date creation Dossier" := Dossier."Date d'ouverture";
+
+                    //*NSC1.11 :Il faut rechercher le Code devise (et son taux) lié au dernier avis de l'article
+                    AvisLigneDossierArrivage.RESET();
+                    AvisLigneDossierArrivage.ASCENDING(TRUE);
+                    AvisLigneDossierArrivage.SETRANGE("No. dossier", LigneDossier."No. dossier");
+                    AvisLigneDossierArrivage.SETRANGE("No. ligne dossier", LigneDossier."No. ligne");
+                    AvisLigneDossierArrivage.SETRANGE(Type, AvisLigneDossier.Type::Marchandise);
+                    //* REV1.34 CC 14/06/06 : ajout filtre : Affectation=TRUE
+                    AvisLigneDossierArrivage.SETRANGE(Affectation, TRUE);
+                    //* REV1.34 CC 14/06/06 : ajout filtre : Affectation=TRUE
+                    IF AvisLigneDossierArrivage.FIND('+') THEN
+                        IF Avis2.GET(AvisLigneDossierArrivage."Code credoc", AvisLigneDossierArrivage."No. ligne avis") THEN BEGIN
+                            HistoPRR."Code devise" := Avis2."Code devise";
+                            HistoPRR."Facteur devise" := Avis2."Facteur devise";
+                            HistoPRR."Code credoc Avis source" := Avis2."Code credoc";
+                            HistoPRR."No. ligne Avis source" := Avis2."No. ligne";
+                            ErreurPasDAvis := FALSE;
+                        END;
+
+                    //*FIN NSC1.11 :Il faut recherche le Code devise (et son taux) lié au dernier avis de l'article
+
+                END;
+
+                IF STRPOS(HistoPRR."No. réception", FORMAT(LigneDossier."No. réception")) = 0 THEN
+                    HistoPRR."No. réception" := COPYSTR(HistoPRR."No. réception" + FORMAT(LigneDossier."No. réception") + ' ', 1, 250);
+
+                IF STRPOS(HistoPRR."No. ligne dossier", FORMAT(LigneDossier."No. ligne")) = 0 THEN
+                    HistoPRR."No. ligne dossier" := COPYSTR(HistoPRR."No. ligne dossier" + FORMAT(LigneDossier."No. ligne") + ' ', 1, 250);
+
+                AvisLigneDossier.SETRANGE("No. dossier", LigneDossier."No. dossier");
+                AvisLigneDossier.SETRANGE("No. ligne dossier", LigneDossier."No. ligne");
+                IF AvisLigneDossier.FIND('-') THEN
+                    REPEAT
+                        AvisLigneDossier.CALCFIELDS(Prévisionnel);
+                        IF AvisLigneDossier.Prévisionnel THEN
+                            IF STRPOS(HistoPRR."Eléments estimés", RetournerAbreviationTypeAvis(AvisLigneDossier)) = 0 THEN
+                                HistoPRR."Eléments estimés" := HistoPRR."Eléments estimés" + RetournerAbreviationTypeAvis(AvisLigneDossier) + ' ';
+                        IF Avis.GET(AvisLigneDossier."Code credoc", AvisLigneDossier."No. ligne avis") THEN
+                            IF NOT (Avis.Type IN [Avis.Type::"Avoir qualité", Avis.Type::Escompte]) THEN BEGIN
+                                IF Avis."Facteur devise" = 0 THEN
+                                    HistoPRR."Mnt affecté total / avis" := HistoPRR."Mnt affecté total / avis" + AvisLigneDossier."Montant affecté"
+                                ELSE
+                                    HistoPRR."Mnt affecté total / avis" := HistoPRR."Mnt affecté total / avis" +
+                                                                            AvisLigneDossier."Montant affecté" / Avis."Facteur devise";
+                            END ELSE BEGIN
+                                IF Avis."Facteur devise" = 0 THEN
+                                    HistoPRR."Mnt affecté total déduction" := HistoPRR."Mnt affecté total déduction" +
+                                                                                AvisLigneDossier."Montant affecté"
+                                ELSE
+                                    HistoPRR."Mnt affecté total déduction" := HistoPRR."Mnt affecté total déduction" +
+                                                                            AvisLigneDossier."Montant affecté" / Avis."Facteur devise";
+                                IF Avis.Type = Avis.Type::"Avoir qualité" THEN
+                                    HistoPRR."% avoir qualité" := Avis."%"
+                                ELSE
+                                    HistoPRR."% escompte" := Avis."%";
+                            END;
+
+
+                    UNTIL AvisLigneDossier.NEXT() = 0;
+
+                PrestLigneDossier.SETRANGE("No. dossier", LigneDossier."No. dossier");
+                PrestLigneDossier.SETRANGE("No. ligne dossier", LigneDossier."No. ligne");
+                IF PrestLigneDossier.FIND('-') THEN
+                    REPEAT
+                        PrestLigneDossier.CALCFIELDS(Prévisionnel);
+                        IF PrestLigneDossier.Prévisionnel THEN
+                            IF STRPOS(HistoPRR."Eléments estimés", RetournerAbreviationTypePrest(PrestLigneDossier)) = 0 THEN
+                                HistoPRR."Eléments estimés" := HistoPRR."Eléments estimés" +
+                                                                        RetournerAbreviationTypePrest(PrestLigneDossier) + ' ';
+                        IF Prest.GET(PrestLigneDossier."No. prestation") THEN
+                            IF Prest."Facteur devise" = 0 THEN
+                                HistoPRR."Mnt affecté total / prest" := HistoPRR."Mnt affecté total / prest" +
+                                                                        PrestLigneDossier."Montant affecté"
+                            ELSE
+                                HistoPRR."Mnt affecté total / prest" := HistoPRR."Mnt affecté total / prest" +
+                                                                        PrestLigneDossier."Montant affecté" / Prest."Facteur devise";
+
+                    UNTIL PrestLigneDossier.NEXT() = 0;
+
+                //*NSC1.11 :suite à modification sur Code devise
+                HistoPRR.Montant := HistoPRR.Montant + LigneDossier.Montant;
+                IF HistoPRR."Facteur devise" <> 0 THEN
+                    HistoPRR."Montant (dev soc)" := HistoPRR."Montant (dev soc)" + (LigneDossier.Montant / HistoPRR."Facteur devise")
+                ELSE
+                    HistoPRR."Montant (dev soc)" := HistoPRR."Montant (dev soc)" + LigneDossier.Montant;
+                //*FIN NSC1.11 :suite à modification sur Code devise
+
+                HistoPRR.Volume := HistoPRR.Volume + LigneDossier.Volume;
+
+                HistoPRR."% remise moyen" := ((HistoPRR.Quantité * HistoPRR."% remise moyen") +
+                                            (LigneDossier."Quantité (piece)" * LigneDossier."% remise ligne")) /
+                                            (HistoPRR.Quantité + LigneDossier."Quantité (piece)");
+
+
+                // attention, à ne pas mettre avant le calcul de remise moyenne ni après celui du Prix d'achat
+                HistoPRR.Quantité := HistoPRR.Quantité + LigneDossier."Quantité (piece)";
+
+                HistoPRR."Prix achat (dev soc)" := HistoPRR."Montant (dev soc)" / HistoPRR.Quantité;
+
+                //* NSC1.14
+                //* ajout du prix d'achat en devise d'achat , remise non déduite, issue de al commande d'achat
+                //* REV1.31 : changement du calcul de "Cout unitaire direct"
+                //* HistoPRR."Cout unitaire direct" := HistoPRR."Cout unitaire direct" + LigneDossier."Coût unitaire direct";
+                HistoPRR."Cout unitaire direct" := LigneDossier."Cout unitaire direct";
+                //* Fin REV1.31
+
+                IF ErreurPasDAvis = FALSE THEN BEGIN//*NSC1.11
+
+                    IF Mode = Mode::Insertion THEN
+                        HistoPRR.INSERT()
+                    ELSE
+                        HistoPRR.MODIFY();
+
+                    CalculerPRR(HistoPRR);
+
+                END ELSE
+                    LigneDossier.FIND('+');//*FIN :NSC1.11
+
+            END;
+        UNTIL LigneDossier.NEXT = 0;
+
+    end;
+
+    /* 
+    * Retourne l'abreviation du type d'avis
+    */
+    procedure RetournerAbreviationTypeAvis(AvisLigneDossier: Record "AvisLigneDossier") Abreviation: Text[1]
+    begin
+        CASE AvisLigneDossier.Type OF
+            AvisLigneDossier.Type::Marchandise:
+                Abreviation := 'P';
+            AvisLigneDossier.Type::Financier:
+                Abreviation := 'F';
+            AvisLigneDossier.Type::"Avoir qualité":
+                Abreviation := 'Q';
+            AvisLigneDossier.Type::Escompte:
+                Abreviation := 'E';
+            ELSE
+                Abreviation := 'A';
+        END;
+    end;
+
+    /* 
+    * Retourne l'abreviation du type de prestation
+    */
+    procedure RetournerAbreviationTypePrest(PrestLigneDossier: Record "PrestationLigneDossier") Abreviation: Text[1]
+    begin
+        CASE PrestLigneDossier.Type OF
+            PrestLigneDossier.Type::"Frais de transport":
+                Abreviation := 'T';
+            PrestLigneDossier.Type::"Frais financiers":
+                Abreviation := 'F';
+            PrestLigneDossier.Type::Assurances:
+                Abreviation := 'A';
+            PrestLigneDossier.Type::Commissions:
+                Abreviation := 'C';
+            PrestLigneDossier.Type::Transit:
+                Abreviation := 'R';
+            PrestLigneDossier.Type::Douane:
+                Abreviation := 'D';
+        END;
+    end;
+
+    /* 
+        CalculerPRR : Effectue le calcul du Prix de Revient Reel
+    */
+    procedure CalculerPRR(var HistoPRRParam: Record "HistoriquePRRTable")
+    var
+        HistoPRR2: Record "HistoriquePRRTable";
+        PRR: Decimal;
+    begin
+
+        // Calcul PRT
+        //* NSC2.01
+        //*
+        //*PRR := "Prix achat (dev soc)" +
+        //*       ("Mnt affecté total / avis" +
+        //*       "Mnt affecté total / prest") / HistoPRR.Quantité;
+
+        PRR := (HistoPRRParam."Mnt affecté total / avis" + HistoPRRParam."Mnt affecté total / prest") / HistoPRR.Quantité;
+
+        HistoPRRParam.MODIFY();
+
+        // NSC1.14
+        // on calcul le PRR même si le dossier d'arrivage n'est pas cloturé
+        //IF HistoPRR.Définitif THEN
+
+        HistoPRR2.RESET();
+        HistoPRR2.SETRANGE("No. article", HistoPRR."No. article");
+        HistoPRR2.SETFILTER("Date creation Dossier", '>%1', HistoPRR."Date creation Dossier");
+
+        IF NOT HistoPRR2.Find('-') THEN
+            ModifierPR('PRR', HistoPRR."No. article", HistoPRR."No. fournisseur", PRR);
     END;
 
-    RetournerAbreviationTypePrest(PrestLigneDossier : Record "Prestation / ligne dossier") Abreviation : Text[1]
-    CASE PrestLigneDossier.Type OF
-    PrestLigneDossier.Type::"Frais de transport":
-        Abreviation := 'T';
-    PrestLigneDossier.Type::"Frais financiers":
-        Abreviation := 'F';
-    PrestLigneDossier.Type::Assurances:
-        Abreviation := 'A';
-    PrestLigneDossier.Type::Commissions:
-        Abreviation := 'C';
-    PrestLigneDossier.Type::Transit:
-        Abreviation := 'R';
-    PrestLigneDossier.Type::Douane:
-        Abreviation := 'D';
-    END;
+    /* 
+        MAJFicheTarif : MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
+    */
+    procedure MAJFicheTarif(PRTCalcule: Decimal; CodeArticle: Code[20])
+    begin
+        //* NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
+        PrixArticle.RESET();
+        PrixArticle.SETRANGE("Item No.", CodeArticle);
 
-    CalculerPRR(VAR HistoPRRParam : Record "Historique PRR")
-    WITH HistoPRRParam DO BEGIN
-    // Calcul PRT
-    //* NSC2.01
-    //*
-    //*PRR := "Prix achat (dev soc)" +
-    //*       ("Mnt affecté total / avis" +
-    //*       "Mnt affecté total / prest") / HistoPRR.Quantité;
-
-    PRR := ("Mnt affecté total / avis" +
-            "Mnt affecté total / prest") / HistoPRR.Quantité;
-
-    MODIFY;
-
-    // NSC1.14
-    // on calcul le PRR même si le dossier d'arrivage n'est pas cloturé
-    //IF HistoPRR.Définitif THEN
-
-    HistoPRR2.RESET;
-    HistoPRR2.SETRANGE("N° article",HistoPRR."N° article");
-    HistoPRR2.SETFILTER("Date création Dossier",'>%1',HistoPRR."Date création Dossier");
-    IF NOT HistoPRR2.FIND('-') THEN
-        ModifierPR('PRR',HistoPRR."N° article",HistoPRR."N° fournisseur",PRR);
-    END;
-
-    MAJFicheTarif(PRTCalcule : Decimal;CodeArticle : Code[20])
-    //* NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
-    PrixArticle.RESET;
-    PrixArticle.SETRANGE("Item No.",CodeArticle);
-    IF PrixArticle.FIND('-') THEN
-    REPEAT
-        PrixArticle.VALIDATE("Dernier PRT (dev soc)",PRTCalcule);
-        PrixArticle.MODIFY;
-    UNTIL PrixArticle.NEXT = 0;
-    //*FIN NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
+        IF PrixArticle.FIND('-') THEN
+            REPEAT
+                PrixArticle.VALIDATE("Dernier PRT (dev soc)", PRTCalcule);
+                PrixArticle.MODIFY();
+            UNTIL PrixArticle.NEXT() = 0;
+        //*FIN NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
+    end;
 
 }

@@ -140,6 +140,10 @@ TODO: 02 TODO Dossier Arrivage
 
  pageextension 50296 "NomenclatureDouaneItemCard"
 
+ tableextension 50297 "Sales Price Extension"
+
+ pageextension 50298 "SalesPriceListExtension" 
+
 
 
 
