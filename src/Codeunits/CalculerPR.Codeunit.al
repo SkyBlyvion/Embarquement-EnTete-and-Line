@@ -399,7 +399,7 @@ codeunit 50285 "CalculerPR"
 
     END;
 
-    ----------------------------------------------------------------------------------------------------------------------
+    
     ModifierPR(PrixAMAJ : Text[3];NoArticle : Code[20];NoFournisseur : Code[20];PR : Decimal)
     IF NOT Article.GET(NoArticle) THEN
     ERROR('L''article n°%1 n''existe pas. Le prix de revient n''a pas été mis à jour',NoArticle);
