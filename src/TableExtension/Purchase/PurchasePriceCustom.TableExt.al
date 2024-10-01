@@ -34,7 +34,7 @@ tableextension 50289 "PurchasePriceCustom" extends "Purchase Price"
             Caption = 'Date dernière Commande';
             DataClassification = ToBeClassified;
         }
-        field(50006; "N° dernière Commande"; Code[20])
+        field(50006; "No. dernière Commande"; Code[20])
         {
             Caption = 'N° dernière Commande';
             DataClassification = ToBeClassified;

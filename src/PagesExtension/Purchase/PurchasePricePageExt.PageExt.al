@@ -40,7 +40,7 @@ pageextension 50290 "PurchasePricePageExt" extends "Purchase Prices"
                 Caption = 'Date dernière Commande';
                 ToolTip = 'Date dernière Commande';
             }
-            field("N° dernière Commande"; Rec."N° dernière Commande")
+            field("No. dernière Commande"; Rec."No. dernière Commande")
             {
                 ApplicationArea = All;
                 Caption = 'N° dernière Commande';

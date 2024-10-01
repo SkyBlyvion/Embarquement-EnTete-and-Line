@@ -28,7 +28,7 @@ codeunit 50285 "CalculerPR"
 
     ----------------------------------------------------------------------------------------------
 
-    Mise a jour du codeunit "Calculer PR" le 30/09/24 - LN - REV24
+    Mise a jour du codeunit "Calculer PR" débutée le 30/09/24 - LN - REV24
 
     */
     var
@@ -72,13 +72,16 @@ codeunit 50285 "CalculerPR"
         REV4_11: Integer;                                // Numéro de version de révision (historique)
         FraisAnnexes: Record "FraisAnnexesAchat";      // Frais annexes liés à l'achat
 
-
-
     trigger OnRun()
     begin
-        CalculerPRTDocVente('');
+        //CalculerPRTDocVente('');
     end;
 
+    /* 
+        CalculerPRTDocVente : S'occupe de parcourir les lignes de commande d'achat, 
+        vérifier et mettre à jour les données (fournisseur, incoterms, remises), 
+        puis enregistre l'historique PRT. Elle finit en appelant CalculerPRT.
+    */
     procedure CalculerPRTDocVente(NoDoc: Code[20])
     var
         Mode: Option Insertion,Modification;
@@ -268,140 +271,135 @@ codeunit 50285 "CalculerPR"
         UNTIL LigAchat.NEXT() = 0;
     end;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /* 
+        CalculerPRT : Effectue le calcul détaillé du Prix de Revient Théorique 
+        pour un article donné en prenant en compte différents coûts comme le transport, 
+        les frais financiers, et les droits de douane.
+        
+        il est fortement recommandé de spécifier explicitement l'objet de chaque méthode ou propriété pour améliorer 
+        la lisibilité et éviter les ambiguïtés. C'est pour cela que la préfixation avec le nom de la variable 
+        (HistoPRTParam.) est nécessaire. Le 01/10/24 - LN - REV24
+    */
     procedure CalculerPRT(VAR HistoPRTParam: Record "HistoriquePRTTable")
     BEGIN
 
         // Prix d'achat
-        "Prix achat (dev soc)" := 0;
-        IF "Quantité achetée" <> 0 THEN
-            IF "Facteur devise cde" <> 0 THEN
-                "Prix achat (dev soc)" := ("Montant ligne achat" / "Quantité achetée") / "Facteur devise cde"
+        HistoPRTParam."Prix achat (dev soc)" := 0;
+        IF HistoPRTParam."Quantité achetée" <> 0 THEN
+            IF HistoPRTParam."Facteur devise cde" <> 0 THEN
+                HistoPRTParam."Prix achat (dev soc)" := (HistoPRTParam."Montant ligne achat" / HistoPRTParam."Quantité achetée") / HistoPRTParam."Facteur devise cde"
             ELSE
-                "Prix achat (dev soc)" := ("Montant ligne achat" / "Quantité achetée");
+                HistoPRTParam."Prix achat (dev soc)" := (HistoPRTParam."Montant ligne achat" / HistoPRTParam."Quantité achetée");
 
         // TRANSPORT ROUTIER ET MARITIME
-        "Coût transport rout. (dev soc)" := 0;
-        "Coût transport marit.(dev soc)" := 0;
-        IF "Volume commande" <> 0 THEN BEGIN
-            "Coût transport rout. (dev soc)" := (Volume / "Volume commande") * "Montant transport routier" / "Quantité achetée";
-            IF "Facteur devise transp. rout." <> 0 THEN
-                "Coût transport rout. (dev soc)" := "Coût transport rout. (dev soc)" / "Facteur devise transp. rout.";
-            "Coût transport marit.(dev soc)" := (Volume / "Volume commande") * "Montant transport maritime" / "Quantité achetée";
-            IF "Facteur devise transp. marit." <> 0 THEN
-                "Coût transport marit.(dev soc)" := "Coût transport marit.(dev soc)" / "Facteur devise transp. marit.";
+        HistoPRTParam."Coût transport rout. (dev soc)" := 0;
+        HistoPRTParam."Coût transport marit.(dev soc)" := 0;
+        IF HistoPRTParam."Volume commande" <> 0 THEN BEGIN
+            HistoPRTParam."Coût transport rout. (dev soc)" := (HistoPRTParam.Volume / HistoPRTParam."Volume commande") * HistoPRTParam."Montant transport routier" / HistoPRTParam."Quantité achetée";
+            IF HistoPRTParam."Facteur devise transp. rout." <> 0 THEN
+                HistoPRTParam."Coût transport rout. (dev soc)" := HistoPRTParam."Coût transport rout. (dev soc)" / HistoPRTParam."Facteur devise transp. rout.";
+            HistoPRTParam."Coût transport marit.(dev soc)" := (HistoPRTParam.Volume / HistoPRTParam."Volume commande") * HistoPRTParam."Montant transport maritime" / HistoPRTParam."Quantité achetée";
+            IF HistoPRTParam."Facteur devise transp. marit." <> 0 THEN
+                HistoPRTParam."Coût transport marit.(dev soc)" := HistoPRTParam."Coût transport marit.(dev soc)" / HistoPRTParam."Facteur devise transp. marit.";
         END;
 
         // % FRAIS : FINANCIERS, ASSURANCE, COMMISSION, TRANSIT
-        "Montant frais fin. (dev soc)" := "Prix achat (dev soc)" * "% frais financiers" / 100;
-        "Montant assurances (dev soc)" := "Prix achat (dev soc)" * "% assurances" / 100;
-        "Montant commissions (dev soc)" := "Prix achat (dev soc)" * "% commissions" / 100;
-        "Montant transit (dev soc)" := "Prix achat (dev soc)" * "% transit" / 100;
+        HistoPRTParam."Montant frais fin. (dev soc)" := HistoPRTParam."Prix achat (dev soc)" * HistoPRTParam."% frais financiers" / 100;
+        HistoPRTParam."Montant assurances (dev soc)" := HistoPRTParam."Prix achat (dev soc)" * HistoPRTParam."% assurances" / 100;
+        HistoPRTParam."Montant commissions (dev soc)" := HistoPRTParam."Prix achat (dev soc)" * HistoPRTParam."% commissions" / 100;
+        HistoPRTParam."Montant transit (dev soc)" := HistoPRTParam."Prix achat (dev soc)" * HistoPRTParam."% transit" / 100;
 
         // FRAIS DE DOUANE
         CASE EnteteAchat.Incoterm OF
             EnteteAchat.Incoterm::FOB:
-                "CU net douane (dev soc)" := "Prix achat (dev soc)" +
-                                            "Montant assurances (dev soc)" +
-                                            "Montant commissions (dev soc)" +
-                                            "Coût transport marit.(dev soc)";
+                HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
+                                            HistoPRTParam."Montant assurances (dev soc)" +
+                                            HistoPRTParam."Montant commissions (dev soc)" +
+                                            HistoPRTParam."Coût transport marit.(dev soc)";
             EnteteAchat.Incoterm::CNI:
-                "CU net douane (dev soc)" := "Prix achat (dev soc)" +
-                                            "Montant commissions (dev soc)" +
-                                            "Coût transport marit.(dev soc)";
+                HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
+                                            HistoPRTParam."Montant commissions (dev soc)" +
+                                            HistoPRTParam."Coût transport marit.(dev soc)";
             EnteteAchat.Incoterm::CNF:
-                "CU net douane (dev soc)" := "Prix achat (dev soc)" +
-                                            "Montant commissions (dev soc)" +
-                                            "Montant assurances (dev soc)";
+                HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
+                                            HistoPRTParam."Montant commissions (dev soc)" +
+                                            HistoPRTParam."Montant assurances (dev soc)";
             EnteteAchat.Incoterm::CIF:
-                "CU net douane (dev soc)" := "Prix achat (dev soc)" +
-                                            "Montant commissions (dev soc)";
+                HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)" +
+                                            HistoPRTParam."Montant commissions (dev soc)";
             ELSE
-                "CU net douane (dev soc)" := "Prix achat (dev soc)";
+                HistoPRTParam."CU net douane (dev soc)" := HistoPRTParam."Prix achat (dev soc)";
 
         END;
         // Recherche du TEC à appliquer
-        "% droit douane" := 0;
-        IF Article.GET(LigAchat."No.") THEN BEGIN
+        HistoPRTParam."% droit douane" := 0;
+        IF Article.GET(LigAchat."No.") THEN
             IF Article."Tariff No." <> '' THEN
-                IF NDPPays.GET(Article."Tariff No.", Article."Country of Origin Code") THEN
-                    "% droit douane" := NDPPays."Taux réduit douane"
+                IF NDPPays.GET(Article."Tariff No.", Article."Country/Region of Origin Code") THEN
+                    HistoPRTParam."% droit douane" := NDPPays."Taux réduit douane"
                 ELSE
                     IF NomenclDouane.GET(Article."Tariff No.") THEN
-                        "% droit douane" := NomenclDouane.TEC;
-        END;
-        "Montant frais douane (dev soc)" := "CU net douane (dev soc)" * "% droit douane" / 100;
+                        HistoPRTParam."% droit douane" := NomenclDouane.TEC;
+
+        HistoPRTParam."Montant frais douane (dev soc)" := HistoPRTParam."CU net douane (dev soc)" * HistoPRTParam."% droit douane" / 100;
 
         // TAXE ANTI-DUMPING (REV4.17) 19/06/15
         IF LigAchat."Taxe anti-dumping" <> 0 THEN
-            "Montant taxe anti-dumping" := ("Prix achat (dev soc)" +
-                                        "Coût transport marit.(dev soc)" +
-                                        "Montant frais fin. (dev soc)" +
-                                        "Montant assurances (dev soc)" +
-                                        "Montant commissions (dev soc)" +
-                                        "Montant transit (dev soc)" +
-                                        "Montant frais douane (dev soc)" +
-                                        "Frais annexes (dev soc)") * LigAchat."Taxe anti-dumping" / 100
+            HistoPRTParam."Montant taxe anti-dumping" := (HistoPRTParam."Prix achat (dev soc)" +
+                                        HistoPRTParam."Coût transport marit.(dev soc)" +
+                                        HistoPRTParam."Montant frais fin. (dev soc)" +
+                                        HistoPRTParam."Montant assurances (dev soc)" +
+                                        HistoPRTParam."Montant commissions (dev soc)" +
+                                        HistoPRTParam."Montant transit (dev soc)" +
+                                        HistoPRTParam."Montant frais douane (dev soc)" +
+                                        HistoPRTParam."Frais annexes (dev soc)") * LigAchat."Taxe anti-dumping" / 100
         ELSE
-            "Montant taxe anti-dumping" := 0;
-    //Fin TAXE ANTI-DUMPING (REV4.17) 19/06/15
+            HistoPRTParam."Montant taxe anti-dumping" := 0;
+        //Fin TAXE ANTI-DUMPING (REV4.17) 19/06/15
 
-    // Calcul PRT
-    //FRAIS_ANNEXES CC 27/06/08 REV4.11 : gestion des frais annexes
-    {
-    PRT := "Prix achat (dev soc)" +
-            "Coût transport rout. (dev soc)" +
-            "Coût transport marit.(dev soc)" +
-            "Montant frais fin. (dev soc)" +
-            "Montant assurances (dev soc)" +
-            "Montant commissions (dev soc)" +
-            "Montant transit (dev soc)" +
-            "Montant frais douane (dev soc)";
-    }
-    PRT := "Prix achat (dev soc)" +
-            "Coût transport rout. (dev soc)" +
-            "Coût transport marit.(dev soc)" +
-            "Montant frais fin. (dev soc)" +
-            "Montant assurances (dev soc)" +
-            "Montant commissions (dev soc)" +
-            "Montant transit (dev soc)" +
-            "Montant frais douane (dev soc)" +
-            "Frais annexes (dev soc)" + 
-            "Montant taxe anti-dumping";  // REV4.17
+        // Calcul PRT
+        //FRAIS_ANNEXES CC 27/06/08 REV4.11 : gestion des frais annexes
+        /*{
+        PRT := "Prix achat (dev soc)" +
+                "Coût transport rout. (dev soc)" +
+                "Coût transport marit.(dev soc)" +
+                "Montant frais fin. (dev soc)" +
+                "Montant assurances (dev soc)" +
+                "Montant commissions (dev soc)" +
+                "Montant transit (dev soc)" +
+                "Montant frais douane (dev soc)";
+        }*/
+        HistoPRTParam.PRT := HistoPRTParam."Prix achat (dev soc)" +
+                HistoPRTParam."Coût transport rout. (dev soc)" +
+                HistoPRTParam."Coût transport marit.(dev soc)" +
+                HistoPRTParam."Montant frais fin. (dev soc)" +
+                HistoPRTParam."Montant assurances (dev soc)" +
+                HistoPRTParam."Montant commissions (dev soc)" +
+                HistoPRTParam."Montant transit (dev soc)" +
+                HistoPRTParam."Montant frais douane (dev soc)" +
+                HistoPRTParam."Frais annexes (dev soc)" +
+                HistoPRTParam."Montant taxe anti-dumping";  // REV4.17
 
-    // REV4.17
-    IF "Montant taxe anti-dumping"<>0 THEN
-        PRT := PRT + (PRT * 0.2 / 100) ; // Taxe fiscale de 0.2%
+        // REV4.17
+        IF HistoPRTParam."Montant taxe anti-dumping" <> 0 THEN
+            HistoPRTParam.PRT := HistoPRTParam.PRT + (HistoPRTParam.PRT * 0.2 / 100); // Taxe fiscale de 0.2%
 
-    MODIFY;
+        HistoPRTParam.MODIFY();
 
-    // NSC1.14 : Maj uniquement sir Dernier Prix revient est vide
-    IF NOT Article.GET(LigAchat."No.") THEN
-        ERROR('L''article n°%1 n''existe pas. Le prix de revient n''a pas été mis à jour',LigAchat."No.");
+        // NSC1.14 : Maj uniquement sir Dernier Prix revient est vide
+        IF NOT Article.GET(LigAchat."No.") THEN
+            ERROR('L''article n°%1 n''existe pas. Le prix de revient n''a pas été mis à jour', LigAchat."No.");
 
-    IF Article."Standard Cost" = 0 THEN
-        ModifierPR('PRT',LigAchat."No.",EnteteAchat."Buy-from Vendor No.",PRT);
+        IF Article."Standard Cost" = 0 THEN
+            ModifierPR('PRT', LigAchat."No.", EnteteAchat."Buy-from Vendor No.", HistoPRTParam.PRT);
 
-    //* NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
-    MAJFicheTarif(PRT,LigAchat."No.");
-    //*FIN NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
+        //* NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
+        MAJFicheTarif(HistoPRTParam.PRT, LigAchat."No.");
+        //*FIN NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
 
     END;
 
+    ----------------------------------------------------------------------------------------------------------------------
     ModifierPR(PrixAMAJ : Text[3];NoArticle : Code[20];NoFournisseur : Code[20];PR : Decimal)
     IF NOT Article.GET(NoArticle) THEN
     ERROR('L''article n°%1 n''existe pas. Le prix de revient n''a pas été mis à jour',NoArticle);

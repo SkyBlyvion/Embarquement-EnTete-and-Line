@@ -11,10 +11,25 @@ page 50288 "NDPPAYS"
         {
             repeater(GroupName)
             {
-                field(Name; NameSource)
+                field("No. nomenclature douanière"; Rec."No. nomenclature douanière")
                 {
-                    ApplicationArea = All;
-
+                    ToolTip = 'No. nomenclature douanière';
+                }
+                field("Code pays origine"; Rec."Code pays origine")
+                {
+                    ToolTip = 'Code pays origine';
+                }
+                field("Taux réduit douane"; Rec."Taux réduit douane")
+                {
+                    ToolTip = 'Taux réduit douane';
+                }
+                field("License"; Rec."License")
+                {
+                    ToolTip = 'License';
+                }
+                field("Document surveillance"; Rec."Document surveillance")
+                {
+                    ToolTip = 'Document surveillance';
                 }
             }
         }
@@ -24,19 +39,5 @@ page 50288 "NDPPAYS"
         }
     }
 
-    actions
-    {
-        area(Processing)
-        {
-            action(ActionName)
-            {
-                ApplicationArea = All;
 
-                trigger OnAction()
-                begin
-
-                end;
-            }
-        }
-    }
 }

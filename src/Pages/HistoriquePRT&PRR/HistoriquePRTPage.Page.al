@@ -193,7 +193,7 @@ page 50245 "HistoriquePRTPage"
                     ApplicationArea = All;
                     ToolTip = 'Pourcentage du droit de douane appliqué.';
                 }
-                field("Coût transport marit. (devsoc)"; Rec."Coût transport marit. (devsoc)")
+                field("Coût transport marit.(dev soc)"; Rec."Coût transport marit.(dev soc)")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Coût du transport maritime dans la devise de la société.';
