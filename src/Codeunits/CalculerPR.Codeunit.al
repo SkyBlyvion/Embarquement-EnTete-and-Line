@@ -929,4 +929,4 @@ codeunit 50285 "CalculerPR"
         //*FIN NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
     end;
 
-}
+} 

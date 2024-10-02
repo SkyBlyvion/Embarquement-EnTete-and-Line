@@ -191,7 +191,7 @@ table 50249 "DossierArrivage"
         PrestDossier: Record "PrestationDossierArrivage";
         HistoPR: Record "HistoriquePRRTable";
         LigDossier: Record "Lignedossierarrivage";
-        // CalculerPr: Codeunit "Calculer PR"; TODO: Créer le CodeUnit "Calculer PR"
+        CalculerPr: Codeunit "CalculerPR";
         GestionNoSouche: Codeunit "NoSeriesManagement";
         NoArticlePrec: Code[20];
         NoCalcul: Integer;

@@ -6,6 +6,9 @@ page 50271 "DossierArrivagePage"
     SourceTable = "DossierArrivage";
     Editable = true;
 
+    //TODO: Subform LigneDossierArrivage
+
+
     layout
     {
         area(Content)

@@ -117,7 +117,7 @@ table 50254 "PrestationLigneDossier"
             Caption = 'No. réception';
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
-            TableRelation = "Purch. Rcpt. Header";//TODO: TableRelation "No. reception" > "Purch. Rcpt. Header" table which field ? 
+            TableRelation = "Purch. Rcpt. Header"."No.";//TODO: TableRelation "No. reception" > "Purch. Rcpt. Header" table which field ? 
             FieldClass = FlowField;
             CalcFormula = lookup("LigneDossierArrivage"."No. réception" where("No. dossier" = field("No. dossier"), "No. ligne" = field("No. ligne dossier")));
         }

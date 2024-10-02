@@ -10,7 +10,7 @@
 
 12/09/24 = 2350 lignes de code
 
-TODO: 02 TODO Dossier Arrivage
+
  . . .
  {
       "from": 50235,
@@ -128,7 +128,7 @@ TODO: 02 TODO Dossier Arrivage
 
  pageextension 50290 "PurchasePricePageExt"
 
-
+ pageextension 50290 "PurchaseOrderSubForm"
 
  
 
