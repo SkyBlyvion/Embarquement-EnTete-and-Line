@@ -128,17 +128,9 @@ TODO: 02 TODO Dossier Arrivage
 
  pageextension 50290 "PurchasePricePageExt"
 
- table 50291 NomenclatureDouaniere
 
- tableextension 50292 TariffNumber260
 
- pageextension 50293 TariffNumber260
-
- page 50294 "NomenclatureDouaniereList"
-
- page 50295 "NomenclatureDouaniereItemCard"
-
- pageextension 50296 "NomenclatureDouaneItemCard"
+ 
 
  tableextension 50297 "Sales Price Extension"
 

@@ -49,32 +49,32 @@ codeunit 50285 "CalculerPR"
         LigneDossier: Record "LigneDossierArrivage";   // Lignes d'un dossier d'arrivage
         HistoPRR: Record "HistoriquePRRTable";               // Historique des Prix de Revient Réels (PRR)
         Dossier: Record "DossierArrivage";            // Dossier d'arrivage (import)
-        Mode: Option Insertion,Modification,Suppression;                                    // Mode (option d'insertion ou modification)
-        DernierNoCalcul: Integer;                        // Dernier numéro de calcul
-        MntLigSelectionnees: Decimal;                    // Montant des lignes sélectionnées
-        VolumeCde: Decimal;                              // Volume total de la commande
-        VolumeDossier: Decimal;                          // Volume total du dossier
         LigneDossierArrivage: Record "LigneDossierArrivage"; // Lignes du dossier d'arrivage
         AvisLigneDossierArrivage: Record "AvisLigneDossier"; // Avis liés aux lignes du dossier d'arrivage
         Avis2: Record "Avis";                            // Deuxième avis
         TauxDevises: Record "Currency Exchange Rate";    // Taux de change
         Devises: Record "Currency";                      // Devises
         ParamCompta: Record "General Ledger Setup";      // Param/location et Param/compta
-        ErreurPasDAvis: Boolean;                         // Booléen pour indiquer si un avis est manquant
         Article2: Record "Item";                         // Deuxième fiche article
         FnsArt: Record "Purchase Price";                 // Prix d'achat du fournisseur (2ème enregistrement)
         ArtAchatRemiseQte: Record "Purchase Line Discount"; // Remise sur la quantité d'achat
+        PrixArticle: Record "Sales Price";               // Prix de vente de l'article
+        FraisAnnexes: Record "FraisAnnexesAchat";      // Frais annexes liés à l'achat
         CondProd2: Record "Item Variant";                // Deuxième variante d'article
+        Mode: Option Insertion,Modification,Suppression;  // Mode (option d'insertion ou modification)
+        DernierNoCalcul: Integer;                        // Dernier numéro de calcul
+        MntLigSelectionnees: Decimal;                    // Montant des lignes sélectionnées
+        VolumeCde: Decimal;                              // Volume total de la commande
+        VolumeDossier: Decimal;                          // Volume total du dossier
+        ErreurPasDAvis: Boolean;                         // Booléen pour indiquer si un avis est manquant
         RemQte: Decimal;                                 // Remise en fonction de la quantité
         CoutUnitDirectBase: Decimal;                     // Coût unitaire direct de base
         CoutUnitDirectBase2: Decimal;                    // Coû unitaire direct de base (2ème enregistrement)
-        PrixArticle: Record "Sales Price";               // Prix de vente de l'article
         REV4_11: Integer;                                // Numéro de version de révision (historique)
-        FraisAnnexes: Record "FraisAnnexesAchat";      // Frais annexes liés à l'achat
 
     trigger OnRun()
     begin
-        //CalculerPRTDocVente('');
+
     end;
 
     /* 
@@ -82,13 +82,18 @@ codeunit 50285 "CalculerPR"
         informations relatives au fournisseur, Incoterm et remises. Met ensuite à jour l'historique 
         PRT (Prix de Revient Théorique).
     */
-    procedure CalculerPRTDocVente(NoDoc: Code[20])
     var
-        Mode: Option Insertion,Modification;
-    begin
-        IF NOT EnteteAchat.GET(EnteteAchat."Document Type"::Order, NoDoc) THEN
-            ERROR(STRSUBSTNO('Le document %1 n°%2 n''existe pas. Le Calcul des PRT ne paut pas être effectué', NoDoc));
+        TxtErrorDocNonExistantErr: Label 'Le document %1 n°%2 n''existe pas. Le Calcul des PRT ne peut pas être effectué', Locked = true; // Message d'erreur
+        ErrorMessage: Text;  // Variable temporaire pour stocker le message d'erreur
 
+    procedure CalculerPRTDocVente(NoDoc: Code[20])
+    begin
+        IF NOT EnteteAchat.GET(EnteteAchat."Document Type"::Order, NoDoc) THEN begin
+            ErrorMessage := StrSubstNo(TxtErrorDocNonExistantErr, 'Order', NoDoc);
+            ERROR(ErrorMessage); // Lève l'erreur et arrête l'exécution ici
+        end;
+
+        // Le reste du code ne sera exécuté que si la condition précédente n'est pas vraie
         LigAchat.SETCURRENTKEY("Document Type", Type, "No.", "Variant Code", "Drop Shipment", "Location Code", "Expected Receipt Date");
         LigAchat.SETRANGE("Document Type", EnteteAchat."Document Type"::Order);
         LigAchat.SETRANGE("Document No.", NoDoc);
@@ -124,7 +129,7 @@ codeunit 50285 "CalculerPR"
                     IF ArtAchatRemiseQte."Line Discount %" <> LigAchat."Line Discount %" THEN
                         IF CONFIRM('Voulez vous modifier %1 dans %2 \'
                                 + 'Clef : %3 , %4 , %5', FALSE,
-                                ArtAchatRemiseQte.FIELDNAME("Line Discount %"), ArtAchatRemiseQte.TABLENAME,
+                                ArtAchatRemiseQte.FieldCaption("Line Discount %"), ArtAchatRemiseQte.TableCaption(),
                                 ArtAchatRemiseQte."Item No.", ArtAchatRemiseQte."Vendor No.",
                                 ArtAchatRemiseQte."Minimum Quantity") THEN BEGIN
                             ArtAchatRemiseQte."Line Discount %" := LigAchat."Line Discount %";
@@ -153,7 +158,7 @@ codeunit 50285 "CalculerPR"
                 IF CoutUnitDirectBase2 <> FnsArt."Direct Unit Cost" THEN
                     IF CONFIRM('Voulez vous modifier %1 dans %2 \'
                                 + 'Clef : %3 , %4 , %5 , %6 , %7', FALSE,
-                                FnsArt.FIELDNAME("Direct Unit Cost"), FnsArt.TABLENAME,
+                                FnsArt.FieldCaption("Direct Unit Cost"), FnsArt.TableCaption(),
                                 FnsArt."Item No.", FnsArt."Vendor No.",
                                 FnsArt."Unit of Measure Code", FnsArt."Starting Date") THEN BEGIN
 
@@ -167,7 +172,7 @@ codeunit 50285 "CalculerPR"
                 IF (LigAchat.Incoterm <> FnsArt.Incoterm) THEN
                     IF CONFIRM('Voulez vous modifier %1 dans %2 \'
                                 + 'Clef : %3 , %4 , %5 , %6 , %7', FALSE,
-                                FnsArt.FIELDNAME(Incoterm), FnsArt.TABLENAME,
+                                FnsArt.FieldCaption(Incoterm), FnsArt.TableCaption(),
                                 FnsArt."Item No.", FnsArt."Vendor No.",
                                 FnsArt."Unit of Measure Code", FnsArt."Starting Date") THEN BEGIN
                         FnsArt.Incoterm := LigAchat.Incoterm;
@@ -427,11 +432,13 @@ codeunit 50285 "CalculerPR"
         calcule le montant total affecté d'une prestation pour les dossiers liés à une prestation d'arrivage. 
         Elle utilise des calculs au prorata selon le type de prestation (par exemple, frais de transport).
     */
-    procedure CalculerMntPrestDossier(PrestDossier: Record "PrestationDossierArrivage")
+    var
+        ConfirmErr: Label 'Voulez-vous mettre à jour tous les montants affectés des dossiers associés à la prestation %1 ?', Locked = true;
+
+    procedure CalculerMntPrestDossier()
     begin
         PrestDossier.SETRANGE("No. prestation", PrestDossier."No. prestation");
-        IF NOT CONFIRM(STRSUBSTNO('Voulez-vous mettre à jour tous les montants affectés des dossiers associés à la prestation %1 ?',
-                                PrestDossier."No. prestation")) THEN
+        IF NOT CONFIRM(STRSUBSTNO(ConfirmErr, PrestDossier."No. prestation")) THEN
             EXIT;
 
         IF NOT Prest.GET(PrestDossier."No. prestation") THEN
@@ -828,7 +835,7 @@ codeunit 50285 "CalculerPR"
                     LigneDossier.FIND('+');//*FIN :NSC1.11
 
             END;
-        UNTIL LigneDossier.NEXT = 0;
+        UNTIL LigneDossier.NEXT() = 0;
 
     end;
 

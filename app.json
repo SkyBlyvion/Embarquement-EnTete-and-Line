@@ -2,7 +2,7 @@
   "id": "6a9dc1c3-f34e-420a-af99-365af079266c",
   "name": "Hist PRT PRR, Prestat, Embarq, Avis, Dossr, Arrvge",
   "publisher": "Lopez Nicolas - REVIMPORT",
-  "version": "1.0.1.6",
+  "version": "1.0.1.7",
   "brief": "",
   "description": "Extension contenant, Historique PRR & PRT, Prestations",
   "privacyStatement": "",
@@ -10,7 +10,14 @@
   "help": "",
   "url": "",
   "logo": "",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "6db3fcc3-d445-442d-b502-9bf21fa38d38",
+      "name": "TariffNumber&NomenclatureDouaniere",
+      "publisher": "Lopez Nicolas - REVIMPORT",
+      "version": "1.0.1.0"
+    }
+  ],
   "screenshots": [],
   "platform": "1.0.0.0",
   "application": "24.0.0.0",
