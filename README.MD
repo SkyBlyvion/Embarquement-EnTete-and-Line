@@ -128,8 +128,11 @@
 
  pageextension 50290 "PurchasePricePageExt"
 
- pageextension 50290 "PurchaseOrderSubForm"
+ pageextension 50291 "PurchaseOrderSubForm"
 
+ tableextension 50292 PurchRcptHeader
+
+ tableextension 50293 PurchRcptLine
  
 
  tableextension 50297 "Sales Price Extension"

@@ -4,7 +4,7 @@ table 50249 "DossierArrivage"
 
     fields
     {
-        field(1; "No. Dossier"; Code[10])
+        field(1; "No. dossier"; Code[10])
         {
             DataClassification = ToBeClassified;
             Caption = 'No. Dossier';
@@ -122,40 +122,40 @@ table 50249 "DossierArrivage"
             Editable = true;
             OptionMembers = "En attente de facturation","Facturé","Clôturé";
 
-            // trigger OnValidate()
-            // begin
+            trigger OnValidate()
+            begin
 
-            //     IF xRec.Etat <> Etat THEN BEGIN
+                IF xRec.Etat <> Etat THEN BEGIN
 
-            //         // Si on clôture le dossier
-            //         IF Etat = Etat::Clôturé THEN
-            //             IF NOT CONFIRM('Voulez-vous clôturer ce dossier d''arrivage ?') THEN
-            //                 ERROR('Changement d''état annulé');
-            //         BEGIN
-            //             CalculerPR.CalculerPRRViaDossier(Rec, TRUE);
-            //             "Date de clôture" := WORKDATE();
-            //             MODIFY();
-            //         END;
+                    // Si on clôture le dossier
+                    IF Etat = Etat::Clôturé THEN
+                        IF NOT CONFIRM('Voulez-vous clôturer ce dossier d''arrivage ?') THEN
+                            ERROR('Changement d''état annulé');
+                    BEGIN
+                        CalculerPR.CalculerPRRViaDossier(Rec, TRUE);
+                        "Date de clôture" := WORKDATE();
+                        MODIFY();
+                    END;
 
-            //         // Si on ré-ouvre le dossier
-            //         IF xRec.Etat = Etat::Clôturé THEN
-            //             IF NOT CONFIRM('Attention : ce dossier d''arrivage est clôturé. Voulez-vous changer son état ?') THEN
-            //                 ERROR('Changement d''état annulé');
-            //         BEGIN
-            //             "Date de clôture" := 0D;
-            //             HistoPRR.SETCURRENTKEY(Définitif);
-            //             HistoPRR.SETRANGE("No. dossier", "No. dossier");
-            //             HistoPRR.SETRANGE(Définitif, TRUE);
-            //             IF HistoPRR.FIND('-') THEN
-            //                 REPEAT
-            //                     HistoPRR.Définitif := FALSE;
-            //                     HistoPRR.MODIFY;
-            //                 UNTIL HistoPRR.NEXT = 0;
+                    // Si on ré-ouvre le dossier
+                    IF xRec.Etat = Etat::Clôturé THEN
+                        IF NOT CONFIRM('Attention : ce dossier d''arrivage est clôturé. Voulez-vous changer son état ?') THEN
+                            ERROR('Changement d''état annulé');
+                    BEGIN
+                        "Date de clôture" := 0D;
+                        HistoPRR.SETCURRENTKEY(Définitif);
+                        HistoPRR.SETRANGE("No. dossier", "No. dossier");
+                        HistoPRR.SETRANGE(Définitif, TRUE);
+                        IF HistoPRR.FIND('-') THEN
+                            REPEAT
+                                HistoPRR.Définitif := FALSE;
+                                HistoPRR.MODIFY();
+                            UNTIL HistoPRR.NEXT() = 0;
 
-            //             MODIFY();
-            //         END;
-            //     END;
-            // end;
+                        MODIFY();
+                    END;
+                END;
+            end;
         }
         field(15; "Mnt total lig doss (dev soc)"; Decimal)
         {
@@ -189,21 +189,27 @@ table 50249 "DossierArrivage"
         ParamStock: Record "Inventory Setup";
         AvisDossier: Record "AvisDossierArrivage";
         PrestDossier: Record "PrestationDossierArrivage";
-        HistoPR: Record "HistoriquePRRTable";
+        HistoPRR: Record "HistoriquePRRTable";
         LigDossier: Record "Lignedossierarrivage";
         CalculerPr: Codeunit "CalculerPR";
-        GestionNoSouche: Codeunit "NoSeriesManagement";
+        GestionNoSouche: Codeunit "No. Series";
         NoArticlePrec: Code[20];
         NoCalcul: Integer;
         BonReceptions: Record "Purch. Rcpt. Header";
 
     trigger OnInsert()
+    var
+        NoSeries: Codeunit "No. Series";
     begin
 
         IF "No. dossier" = '' THEN BEGIN
             ParamStock.GET();
             ParamStock.TESTFIELD("No. Dossier");
-            GestionNoSouche.InitSeries(ParamStock."No. Dossier", xRec."Souches de No.", 0D, "No. dossier", "Souches de No.");
+
+            //GestionNoSouche.InitSeries(ParamStock."No. Dossier", xRec."Souches de No.", 0D, "No. dossier", "Souches de No."); // OLD CODE
+
+            // Use GetNextNo to generate the next number in the series for "No. dossier"
+            "No. dossier" := NoSeries.GetNextNo(ParamStock."No. Dossier", TODAY, true);
         END;
 
         "Date d'ouverture" := TODAY;
@@ -216,45 +222,49 @@ table 50249 "DossierArrivage"
 
     trigger OnDelete()
     begin
+        // Destruction des Bons de réception liés
+        BonReceptions.RESET();
+        BonReceptions.SETRANGE("No. dossier", Rec."No. dossier");
+        if BonReceptions.FINDSET() then
+            repeat
+                BonReceptions.DELETE(true);
+            until BonReceptions.NEXT() = 0;
 
-        // //* NSC1.08 :Destruction des Bons de reception liés
-        // BonReceptions.RESET();
-        // BonReceptions.SETRANGE("No. dossier", "No. dossier");
-        // IF BonReceptions.FIND('-') THEN
-        //     REPEAT
-        //         BonReceptions.DELETE(TRUE);
-        //     UNTIL BonReceptions.NEXT() = 0;
-        // //* FIN NSC1.08 :Destruction des Bons de reception liés
+        // Check for linked records in Ligne Dossier
+        LigDossier.RESET();
+        LigDossier.SETRANGE("No. dossier", "No. dossier");
+        if LigDossier.FINDFIRST() then
+            ERROR(
+                'Vous ne pouvez pas supprimer le %1 %2 car il y a des %3 liées à ce %1.',
+                TABLECAPTION, "No. dossier", LigDossier.TABLECAPTION);
 
-        // LigDossier.RESET();
-        // LigDossier.SETRANGE("No. dossier", "No. dossier");
-        // IF LigDossier.FIND('-') THEN
-        //     ERROR(
-        //         'Vous ne pouvez pas supprimer le %1 %2 car il y a des %3 liées à ce %1.',
-        //         TABLENAME, "No. dossier", LigDossier.TABLENAME);
+        // Check for linked records in EcritureArticle
+        EcrArt.RESET();
+        EcrArt.SETRANGE(EcrArt."No. dossier", "No. dossier");
+        if EcrArt.FINDFIRST() then
+            ERROR(
+                'Vous ne pouvez pas supprimer le %1 %2 car il y a des %3 liées à ce %1.',
+                TABLECAPTION, "No. dossier", EcrArt.TABLECAPTION);
 
-        // EcrArt.RESET();
-        // EcrArt.SETRANGE("No. dossier", "No. dossier");
-        // IF EcrArt.FIND('-') THEN
-        //     ERROR(
-        //         'Vous ne pouvez pas supprimer le %1 %2 car il y a des %3 liées à ce %1.',
-        //         TABLENAME, "No. dossier", EcrArt.TABLENAME);
+        // Check for linked records in EnteteAchat
+        EnteteAchat.RESET();
+        EnteteAchat.SETRANGE("No. dossier", "No. dossier");
+        if EnteteAchat.FINDFIRST() then
+            ERROR(
+                'Vous ne pouvez pas supprimer le %1 %2 car il y a des %3 liées à ce %1.',
+                TABLECAPTION, "No. dossier", EnteteAchat.TABLECAPTION);
 
-        // EnteteAchat.RESET();
-        // EnteteAchat.SETRANGE("No. dossier", "No. dossier");
-        // IF EnteteAchat.FIND('-') THEN
-        //     ERROR(
-        //         'Vous ne pouvez pas supprimer le %1 %2 car il y a des %3 liées à ce %1.',
-        //         TABLENAME, "No. dossier", EnteteAchat.TABLENAME);
+        // Deleting related records in AvisDossier
+        AvisDossier.RESET();
+        AvisDossier.SETRANGE("No. dossier", "No. dossier");
+        AvisDossier.DELETEALL();
 
-        // AvisDossier.RESET();
-        // AvisDossier.SETRANGE("No. dossier", "No. dossier");
-        // AvisDossier.DELETEALL();
-
-        // PrestDossier.RESET();
-        // PrestDossier.SETRANGE("No. dossier", "No. dossier");
-        // PrestDossier.DELETEALL();
+        // Deleting related records in PrestDossier
+        PrestDossier.RESET();
+        PrestDossier.SETRANGE("No. dossier", "No. dossier");
+        PrestDossier.DELETEALL();
     end;
+
 
     trigger OnRename()
     begin

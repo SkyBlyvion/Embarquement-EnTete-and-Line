@@ -109,6 +109,11 @@ table 50251 "PrestationDossierArrivage"
             Enabled = true;
             SumIndexFields = "Montant affecté";
         }
+        key(SIFT; "No. Dossier", "Type", "Montant affecté")
+        {
+            Enabled = true;
+        }
+
     }
 
     fieldgroups
