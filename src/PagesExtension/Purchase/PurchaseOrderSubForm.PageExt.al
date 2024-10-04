@@ -4,21 +4,21 @@ pageextension 50291 "PurchaseOrderSubForm" extends "Purchase Order SubForm"
     {
         addbefore(Description)
         {
-            // field("Colisage"; Rec."Colisage") // TODO: Colisage
-            // {
-            //     ApplicationArea = All;
-            //     ToolTip = 'colisage de cette commande.';
-            // }
+            field("Colisage"; Rec."Quantité/Conditionnement")
+            {
+                ApplicationArea = All;
+                ToolTip = 'colisage de cette commande.';
+            }
             field("Date d'embarquement prévue"; Rec."Date d'embarquement prévue")
             {
                 ApplicationArea = All;
                 ToolTip = 'Indiquez la date prévue pour l''embarquement des articles.';
             }
-            // field("Date de rangement"; Rec."Date de rangement") // TODO: Date de rangement
-            // {
-            //     ApplicationArea = All;
-            //     ToolTip = 'Indiquez la date à laquelle les articles seront disponibles à Perpignan.';
-            // }
+            field("Date de rangement"; Rec."Expected Receipt Date")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Indiquez la date à laquelle les articles seront disponibles à Perpignan.';
+            }
 
         }
         addafter(Quantity)

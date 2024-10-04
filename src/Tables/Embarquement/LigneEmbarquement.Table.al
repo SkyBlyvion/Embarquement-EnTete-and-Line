@@ -326,6 +326,18 @@ table 50235 "LigneEmbarquement"
             Description = 'LIGNE_EMBARQUEMENT - LN - 12/09/24 REV24';
             Editable = true;
         }
+        field(50014; "Colisage"; Integer)
+        {
+            FieldClass = FlowField;
+            CalcFormula = Lookup("Purchase Line"."Quantité/Conditionnement"
+                                WHERE("Document No." = FIELD("No. commande achat"),
+                                    "Line No." = FIELD("No. ligne commande achat")));
+            Caption = 'Colisage';
+            Description = 'Colisage lié à la ligne d''achat';
+            Editable = false;
+            ToolTip = 'Displays the packaging size related to the purchase line.';
+        }
+
     }
 
     keys

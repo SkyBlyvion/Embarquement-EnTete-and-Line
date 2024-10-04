@@ -40,12 +40,11 @@ page 50237 "LigneEmbarqmtSubform"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the quantity of the item being shipped.';
                 }
-                //TODO:Trouver comment lier Colisage a ItemsExtensionsTables TableExtension 50018 field 50005
-                // field("Colisage"; "Colisage")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Displays the package size of the item being shipped.';
-                // }
+                field("Colisage"; Rec."Colisage") // S'agit de la quantité de conditionnement et ce champ précis est défini depuis table LigneEmbarquement FlowField
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the package size of the item being shipped.';
+                }
                 field("Quantité (Pièce)"; Rec."Quantité (Pièce)")
                 {
                     ApplicationArea = All;

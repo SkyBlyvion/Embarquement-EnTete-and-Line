@@ -42,7 +42,7 @@ pageextension 50286 "PurchaseOrder" extends "Purchase Order"
                     ApplicationArea = All;
                     ToolTip = 'Indiquez la date prévue pour l''embarquement des articles.';
                 }
-                field("Date disponibilité Perpignan"; Rec."Date disponibilité Perpignan") // Date de rangement
+                field("Date de rangement"; Rec."Expected Receipt Date") // Date de rangement
                 {
                     ApplicationArea = All;
                     ToolTip = 'Indiquez la date à laquelle les articles seront disponibles à Perpignan.';
