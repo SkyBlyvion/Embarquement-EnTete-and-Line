@@ -1,3 +1,4 @@
+/* Liste les embarquements dans une liste.*/
 page 50262 EnTeteEmbarquemen
 {
     PageType = List;

@@ -20,23 +20,23 @@ pageextension 50280 ExtendBusnMngRoleCntr extends "Business Manager Role Center"
             {
                 Caption = 'Dossiers d''arrivage';
 
-                action("Fiche Dossier Structure")
+                action("Fiches Dossiers Arrivage")
                 {
-                    Caption = 'Gestion des Dossiers';
+                    Caption = 'Fiches Dossiers Arrivage';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "DossierArrivagePage";
                     ToolTip = 'Accéder à la gestion des dossiers d''arrivage pour les achats.';
                 }
                 action("Prestations")
                 {
-                    Caption = 'Gestion des Avis';
+                    Caption = 'Prestations';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "PrestationPage";
                     ToolTip = 'Accéder à la gestion des dossiers d''arrivage pour les achats.';
                 }
                 action("Fiche Credoc")
                 {
-                    Caption = 'Gestion des Prestations';
+                    Caption = 'Fiche Credoc';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "CredocPage";
                     ToolTip = 'Accéder à la gestion des dossiers d''arrivage pour les achats.';
