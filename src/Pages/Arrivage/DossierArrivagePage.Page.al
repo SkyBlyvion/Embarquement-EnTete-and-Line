@@ -1,13 +1,31 @@
 page 50271 "DossierArrivagePage"
 {
+    /*
+    ====================================
+    PAGE: Liste des Dossiers d'Arrivage
+    ====================================
+    Description :
+    Cette page affiche la liste des dossiers d'arrivage. 
+    L'utilisateur peut voir les informations principales comme 
+    le numéro de dossier, la date d'ouverture et de clôture, 
+    ainsi que le fournisseur associé. 
+    
+    Fonctionnement :
+    - La page utilise la table "DossierArrivage" comme source.
+    - L'utilisateur peut cliquer sur un dossier pour ouvrir sa page détaillée (CardPageID).
+    - Les champs affichés incluent les numéros de dossier, les dates et les informations sur le fournisseur.
+    
+    Note :
+    Utilisez la page "DossierArrivageDoc" pour gérer les détails d'un dossier spécifique.
+    */
+
     ApplicationArea = All;
     Caption = 'Dossier Arrivage';
     PageType = List;
     SourceTable = "DossierArrivage";
     Editable = true;
 
-    //TODO: Subform LigneDossierArrivage
-
+    CardPageID = "DossierArrivageDoc"; // Lié à la page Document du dossier
 
     layout
     {
@@ -29,49 +47,15 @@ page 50271 "DossierArrivagePage"
                 }
                 field("No. Fournisseur"; Rec."No. Fournisseur")
                 {
-                    ToolTip = 'Le numéro unique du fournisseur associé à ce dossier.';
-                }
-                field("Souches de No."; Rec."Souches de No.")
-                {
-                    ToolTip = 'La souche de numéro utilisée pour ce dossier.';
-                }
-                field("Frais de transport"; Rec."Frais de transport")
-                {
-                    ToolTip = 'Le montant des frais de transport affectés à ce dossier.';
-                }
-                field("Frais Financiers"; Rec."Frais Financiers")
-                {
-                    ToolTip = 'Le montant des frais financiers affectés à ce dossier.';
-                }
-                field("Assurances"; Rec."Assurances")
-                {
-                    ToolTip = 'Le montant des assurances affectées à ce dossier.';
-                }
-                field("Commissions"; Rec."Commissions")
-                {
-                    ToolTip = 'Le montant des commissions affectées à ce dossier.';
-                }
-                field("Transit"; Rec."Transit")
-                {
-                    ToolTip = 'Le montant des frais de transit affectés à ce dossier.';
-                }
-                field("Douane"; Rec."Douane")
-                {
-                    ToolTip = 'Le montant des frais de douane affectés à ce dossier.';
+                    ToolTip = 'Le fournisseur associé à ce dossier.';
                 }
                 field("Nom Fournisseur"; Rec."Nom Fournisseur")
                 {
                     ToolTip = 'Le nom du fournisseur associé à ce dossier.';
                 }
-                field("Etat"; Rec."Etat")
-                {
-                    ToolTip = 'L''état actuel du dossier, comme "En attente de facturation" ou "Clôturé".';
-                }
-                field("Mnt total lig doss (dev soc)"; Rec."Mnt total lig doss (dev soc)")
-                {
-                    ToolTip = 'Le montant total des lignes de dossier dans la devise de la société.';
-                }
+
             }
         }
     }
+
 }

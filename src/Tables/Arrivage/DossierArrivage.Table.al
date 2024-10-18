@@ -4,12 +4,12 @@ table 50249 "DossierArrivage"
 
     fields
     {
-        field(1; "No. dossier"; Code[10])
+        field(1; "No. Dossier"; Code[10])
         {
             DataClassification = ToBeClassified;
             Caption = 'No. Dossier';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
-            Editable = false;
+            Editable = true; //TODO:passer a false aprés debugg
             NotBlank = true;
         }
         field(3; "Date d'ouverture"; Date)
@@ -40,6 +40,8 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
             TableRelation = "No. Series"."Code";
+            ObsoleteState = Removed;
+            ObsoleteReason = 'removed "Souches de N°" because it''s no longer needed, as the NoSeries codeunit can handle everything, including generating the next number in the series based on ParamStock."No. Dossier". ';
         }
         field(7; "Frais de transport"; Decimal)
         {

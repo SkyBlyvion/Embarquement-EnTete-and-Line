@@ -139,6 +139,8 @@
 
  pageextension 50298 "SalesPriceListExtension" 
 
+ page 50300 DossierArrivageDoc
+
 
 
 
