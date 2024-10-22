@@ -73,6 +73,32 @@ page 50300 "DossierArrivageDoc"
     {
         area(Processing)
         {
+            action("Liste des Avis de la ligne de dossier")
+            {
+                Caption = 'Liste des Avis - ligne de dossier';
+                ToolTip = 'Cliquez pour voir la liste des aviss de la ligne de dossier.';
+
+                trigger OnAction()
+                var
+                    AvisDossierArrivageRec: Record "LigneDossierArrivage";
+                begin
+                    AvisDossierArrivageRec.AfficherAvis(); // Call the procedure from the table
+
+                end;
+            }
+            action("Liste des Prestations de la ligne de dossier")
+            {
+                Caption = 'Liste des Prestations - ligne de dossier';
+                ToolTip = 'Cliquez pour voir la liste des prestations de la ligne de dossier.';
+
+                trigger OnAction()
+                var
+                    LigneDossierArrivageRec: Record "LigneDossierArrivage";
+                begin
+                    LigneDossierArrivageRec.AfficherPrestations(); // Call the procedure from the table
+                end;
+            }
+
             action("Calculer PRR")
             {
                 Caption = 'Calculer PRR';
@@ -83,9 +109,45 @@ page 50300 "DossierArrivageDoc"
                     CalculerPR: Codeunit "CalculerPR"; // Reference to codeunit
                 begin
                     // Call the method and pass the current dossier record and a boolean value
-                    CalculerPR.CalculerPRRViaDossier(Rec, TRUE); // TRUE indicates a definitive calculation
+                    CalculerPR.CalculerPRRViaDossier(Rec, false); // TRUE indicates a definitive calculation
                     Message('Le PRR a été calculé pour le dossier %1.', Rec."No. Dossier");
                 end;
+            }
+            action("Liste des Avis associés au dossier")
+            {
+                Caption = 'Liste des Avis associés au dossier';
+                ToolTip = 'Cliquez pour voir la liste des aviss associés au dossier.';
+
+                trigger OnAction()
+                var
+                begin
+
+                end;
+
+            }
+            action("Liste des Prestations associées au dossier")
+            {
+                Caption = 'Liste des Prestations associées au dossier';
+                ToolTip = 'Cliquez pour voir la liste des prestations associées au dossier.';
+
+                trigger OnAction()
+                var
+                begin
+
+                end;
+
+            }
+            action("Contenu dossier arrivage")
+            {
+                Caption = 'Contenu dossier arrivage';
+                ToolTip = 'Cliquez pour voir le contenu du dossier d''arrivage.';
+
+                trigger OnAction()
+                var
+                begin
+
+                end;
+
             }
 
         }

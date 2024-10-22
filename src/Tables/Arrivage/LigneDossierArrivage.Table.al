@@ -84,6 +84,29 @@ table 50255 "LigneDossierArrivage"
             Editable = true;
             DecimalPlaces = 0 : 5;
             BlankNumbers = DontBlank;
+
+            trigger OnValidate()
+            begin
+                //*NSC1.10
+                IF Quantité <> xRec.Quantité THEN BEGIN
+                    IF Quantité > xRec.Quantité THEN
+                        ERROR('La nouvelle quantité doit être inférieure à l''ancienne')
+                    ELSE
+                        IF CondProduit.GET("No. article", "Conditionnement produit") THEN
+                            "Quantité (piece)" := Quantité * CondProduit."Quantité Conditionnement"
+                        ELSE
+                            "Quantité (piece)" := Quantité * "Quantité par unité";
+                    CU := xRec.Montant / xRec."Quantité (piece)";
+                    CUDevSoc := xRec."Montant (dev soc)" / xRec."Quantité (piece)";
+                    Montant := CU * "Quantité (piece)";
+                    "Montant (dev soc)" := CUDevSoc * "Quantité (piece)";
+                    VALIDATE(Volume);
+                    MODIFY();
+                    COMMIT();
+                    MAJStock(Rec, xRec, 1);
+                END;
+                //*FIN :NSC1.10
+            end;
         }
         field(11; "Cout unitaire direct"; Decimal)
         {
@@ -93,6 +116,13 @@ table 50255 "LigneDossierArrivage"
             Editable = true;
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
+
+            trigger OnValidate()
+            begin
+                //*NSC2.14
+                MAJLigne();
+                //*Fin NSC2.14
+            end;
         }
         field(12; "Cout unitaire (dev soc)"; Decimal)
         {
@@ -144,6 +174,27 @@ table 50255 "LigneDossierArrivage"
             Description = 'LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
             Editable = true;
             TableRelation = "Item Variant".Code where("Item No." = field("No. article"), Choix = filter('Achat | Achats/Ventes'));
+
+            trigger OnValidate()
+            begin
+                //*NSC1.10
+                IF "Conditionnement produit" <> xRec."Conditionnement produit" THEN BEGIN
+                    IF CondProduit.GET("No. article", "Conditionnement produit") THEN BEGIN
+                        "Quantité (piece)" := Quantité * CondProduit."Quantité Conditionnement";
+                        "Quantité par unité" := CondProduit."Quantité Conditionnement";
+                    END ELSE
+                        "Quantité (piece)" := Quantité * "Quantité par unité";
+                    CU := xRec.Montant / xRec."Quantité (piece)";
+                    CUDevSoc := xRec."Montant (dev soc)" / xRec."Quantité (piece)";
+                    Montant := CU * "Quantité (piece)";
+                    "Montant (dev soc)" := CUDevSoc * "Quantité (piece)";
+                    VALIDATE(Volume);
+                    MODIFY();
+                    COMMIT();
+                    MAJStock(Rec, xRec, 1);
+                END;
+                //*FIN :NSC1.10
+            end;
         }
         field(19; "Quantité (piece)"; Decimal)
         {
@@ -177,6 +228,27 @@ table 50255 "LigneDossierArrivage"
             Description = 'soit volume PCB * Qté, si pas de PCB Volume article * Qté (pièce) - - LIGNE_DOSSIER_ARRIVAGE LN 23/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
+
+            trigger OnValidate()
+            begin
+                //*NSC1.10
+                IF "Conditionnement produit" <> '' THEN BEGIN
+                    CondProduit.GET("No. article", "Conditionnement produit");
+                    Volume := CondProduit.Volume * Quantité;
+                END ELSE BEGIN
+                    Articles.GET("No. article");
+                    Volume := Articles."Unit Volume" * "Quantité (piece)";
+                END;
+                //*FIN :NSC1.10
+
+                //* NSC2.21 : MAJ du volume
+                /*{IF xRec.Volume <> 0 THEN BEGIN
+
+                    Volume := xRec.Volume / xRec."Quantité (pièce)" * "Quantité (pièce)";
+
+                END;}*/
+                //*Fin NSC2.21 : MAJ du volume
+            end;
         }
         field(23; "% Remise ligne"; Decimal)
         {
@@ -187,6 +259,13 @@ table 50255 "LigneDossierArrivage"
             BlankNumbers = DontBlank;
             MinValue = 0;
             MaxValue = 100;
+
+            trigger OnValidate()
+            begin
+                //*NSC2.14
+                MAJLigne();
+                //*Fin NSC2.14
+            end;
         }
         field(24; "No. commande"; Code[20])
         {
@@ -242,6 +321,15 @@ table 50255 "LigneDossierArrivage"
     }
 
     var
+        AvisLigneDossier: Record AvisLigneDossier;
+        PrestLigneDossier: Record PrestationLigneDossier;
+        CondProduit: Record "Item Variant";
+        Articles: Record Item;
+        Devise: Record Currency;
+        ParamCompta: Record "General Ledger Setup";
+        NLigne: Integer;
+        CU: Decimal;
+        CuDevSoc: Decimal;
 
     trigger OnInsert()
     begin
@@ -256,11 +344,176 @@ table 50255 "LigneDossierArrivage"
     trigger OnDelete()
     begin
 
+        AvisLigneDossier.SETRANGE("No. dossier", "No. dossier");
+        AvisLigneDossier.SETRANGE("No. ligne dossier", "No. ligne");
+        PrestLigneDossier.SETRANGE("No. dossier", "No. dossier");
+        PrestLigneDossier.SETRANGE("No. ligne dossier", "No. ligne");
+
+        IF (Quantité <> 0) AND ("Quantité (piece)" <> 0) THEN
+            MAJStock(Rec, Rec, 0);
     end;
 
     trigger OnRename()
     begin
 
     end;
+
+    //TODO: Créer les Pages
+    procedure AfficherPrestations()
+    begin
+        PrestLigneDossier.RESET();
+        PrestLigneDossier.SETRANGE("No. dossier", Rec."No. dossier");
+        PrestLigneDossier.SETRANGE("No. ligne dossier", Rec."No. ligne");
+        //Page.RUNMODAL(Page::"Liste prestations/lig. dossier", PrestLigneDossier);
+    end;
+
+    procedure AfficherAvis()
+    begin
+        AvisLigneDossier.RESET();
+        AvisLigneDossier.SETRANGE("No. dossier", "No. dossier");
+        AvisLigneDossier.SETRANGE("No. ligne dossier", "No. ligne");
+        //Page.RUNMODAL(Page::"Avis / ligne dossier", AvisLigneDossier);
+    end;
+
+
+    procedure MAJStock(Nouveau: Record "Lignedossierarrivage"; Ancien: Record "Lignedossierarrivage"; Mode: Integer)
+    var
+        LigneFeuilleArticle: Record "Item Journal Line";
+        ModeleFeuilleArticle: Record "Item Journal Template";
+        NomFeuillesArticle: Record "Item Journal Batch";
+        ValiderFeuillesArticle: Codeunit "Item Jnl.-Post Batch";
+        GestionNoSouche: Codeunit "No. Series";
+        NDoc: Code[20];
+    begin
+        NDoc := GestionNoSouche.GetNextNo('FSART-GEN', WORKDATE(), FALSE);
+        //*FIN NSC1.10 :Recherche du numéro de document
+
+        //*NSC1.10 :création du modèle temporaire
+        IF NOT ModeleFeuilleArticle.GET('') THEN BEGIN
+            ModeleFeuilleArticle.INIT();
+            ModeleFeuilleArticle.Name := '';
+            ModeleFeuilleArticle.Description := 'feuille d''ajustement automatique';
+            ModeleFeuilleArticle."Test Report ID" := 702;
+            ModeleFeuilleArticle."Page ID" := 40;
+            ModeleFeuilleArticle."Posting Report ID" := 703;
+            ModeleFeuilleArticle.Type := ModeleFeuilleArticle.Type::Item;
+            ModeleFeuilleArticle."Source Code" := 'STOCKS';
+            ModeleFeuilleArticle."No. Series" := 'FSART-GEN';
+            ModeleFeuilleArticle."Test Report Caption" := 'F. article : Impression test';
+            ModeleFeuilleArticle."Page Caption" := 'Feuille de saisie articles';
+            ModeleFeuilleArticle."Posting Report Caption" := 'Journal écritures articles';
+            ModeleFeuilleArticle.INSERT();
+        END;
+        //*FIN NSC1.10 :création du modèle temporaire
+
+        //*NSC1.10 :création de la feuille de saisie temporaire
+        IF NOT NomFeuillesArticle.GET('', '') THEN BEGIN
+            NomFeuillesArticle.INIT();
+            NomFeuillesArticle."Journal Template Name" := '';
+            NomFeuillesArticle.Name := '';
+            NomFeuillesArticle.Description := 'feuille d''ajustement automatique';
+            NomFeuillesArticle."No. Series" := 'FSART-GEN';
+            NomFeuillesArticle.INSERT();
+        END;
+        //*FIN NSC1.10 :création de la feuille de saisie temporaire
+
+        //*NSC1.10 :remplissage des deux lignes dans la feuille de saisie article
+        NLigne := 10000;
+        LigneFeuilleArticle.INIT();
+
+        //*NSC2.43 SL 05/10/01 : Mise en commentaire de la ligne suivante
+        //*LigneFeuilleArticle.AjouterNouvLig(LigneFeuilleArticle);
+
+        LigneFeuilleArticle.VALIDATE("Document No.", NDoc);
+        LigneFeuilleArticle."Line No." := NLigne;
+        LigneFeuilleArticle."Posting Date" := WORKDATE();
+        LigneFeuilleArticle."Entry Type" := LigneFeuilleArticle."Entry Type"::"Negative Adjmt.";
+        LigneFeuilleArticle.VALIDATE("Entry Type");
+        LigneFeuilleArticle."Item No." := Ancien."No. article";
+        LigneFeuilleArticle.VALIDATE("Item No.");
+        LigneFeuilleArticle."Variant Code" := Ancien."Conditionnement produit";
+        LigneFeuilleArticle.VALIDATE("Variant Code");
+
+        IF Ancien."Conditionnement produit" = '' THEN
+            LigneFeuilleArticle.Quantity := Ancien."Quantité (piece)"
+        ELSE
+            LigneFeuilleArticle.Quantity := Ancien.Quantité;
+
+        LigneFeuilleArticle.VALIDATE(Quantity);
+        LigneFeuilleArticle."No. dossier" := Ancien."No. dossier";
+        LigneFeuilleArticle.Description := 'ajustement automatique';
+        LigneFeuilleArticle."Location Code" := Ancien."Code magasin";
+        LigneFeuilleArticle."Unit Cost" := Ancien."Cout unitaire";
+        LigneFeuilleArticle.Amount := Ancien.Montant;
+        LigneFeuilleArticle."Qty. per Unit of Measure" := Ancien."Quantité par unité";
+        LigneFeuilleArticle.INSERT();
+
+        IF Mode <> 0 THEN BEGIN
+            LigneFeuilleArticle.INIT();
+
+            //*NSC2.43 SL 05/10/01 : Mise en commentaire de la ligne suivante
+            //LigneFeuilleArticle.AjouterNouvLig(LigneFeuilleArticle);
+
+            LigneFeuilleArticle.VALIDATE("Document No.", NDoc);
+            LigneFeuilleArticle."Line No." := NLigne + 10000;
+            LigneFeuilleArticle."Posting Date" := WORKDATE();
+            LigneFeuilleArticle."Entry Type" := LigneFeuilleArticle."Entry Type"::"Positive Adjmt.";
+            LigneFeuilleArticle.VALIDATE("Entry Type");
+            LigneFeuilleArticle."Item No." := Nouveau."No. article";
+            LigneFeuilleArticle.VALIDATE("Item No.");
+            LigneFeuilleArticle."Variant Code" := Nouveau."Conditionnement produit";
+            LigneFeuilleArticle.VALIDATE("Variant Code");
+
+            IF Nouveau."Conditionnement produit" = '' THEN
+                LigneFeuilleArticle.Quantity := Nouveau."Quantité (piece)"
+            ELSE
+                LigneFeuilleArticle.Quantity := Nouveau.Quantité;
+
+            LigneFeuilleArticle.VALIDATE(Quantity);
+            LigneFeuilleArticle."No. dossier" := Nouveau."No. dossier";
+            LigneFeuilleArticle.Description := 'ajustement automatique';
+            LigneFeuilleArticle."Location Code" := Nouveau."Code magasin";
+            LigneFeuilleArticle."Unit Cost" := Nouveau."Cout unitaire";
+            LigneFeuilleArticle.Amount := Nouveau.Montant;
+            LigneFeuilleArticle."Qty. per Unit of Measure" := Nouveau."Quantité par unité";
+            LigneFeuilleArticle.INSERT();
+        END;
+        //*FIN NSC1.10 :remplissage des deux lignes dans la feuille de saisie article
+
+        ValiderFeuillesArticle.RUN(LigneFeuilleArticle);
+
+        //*NSC1.10 :suppression des modèles et des feuilles de saisie
+        ModeleFeuilleArticle.GET('');
+        ModeleFeuilleArticle.DELETE();
+
+        NomFeuillesArticle.GET('', '');
+        NomFeuillesArticle.DELETE();
+        //*FIN NSC1.10 :suppression des modèles et des feuilles de saisie
+
+    end;
+    //*NSC1.10 :Recherche du numéro de document
+
+    procedure MAJLigne()
+    begin
+        "Cout unitaire (piece)" := "Cout unitaire direct" / "Quantité par unité";
+        "Cout unitaire" := "Cout unitaire direct" * (100 - "% remise ligne") / 100;
+
+        ParamCompta.GET();
+
+        IF Devise.GET("Code devise") THEN
+            Montant := ROUND("Quantité (piece)" * "Cout unitaire", Devise."Amount Rounding Precision")
+        ELSE
+            Montant := ROUND("Quantité (piece)" * "Cout unitaire", ParamCompta."Amount Rounding Precision");
+
+        IF "Facteur devise" <> 0 THEN
+            "Montant (dev soc)" := ROUND(Montant / "Facteur devise", ParamCompta."Amount Rounding Precision")
+        ELSE
+            "Montant (dev soc)" := ROUND(Montant, ParamCompta."Amount Rounding Precision");
+
+    end;
+
+
+
+
 
 }
