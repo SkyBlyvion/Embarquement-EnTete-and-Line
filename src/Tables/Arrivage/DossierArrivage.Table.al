@@ -40,8 +40,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
             TableRelation = "No. Series"."Code";
-            ObsoleteState = Removed;
-            ObsoleteReason = 'removed "Souches de N°" because it''s no longer needed, as the NoSeries codeunit can handle everything, including generating the next number in the series based on ParamStock."No. Dossier". ';
+
         }
         field(7; "Frais de transport"; Decimal)
         {

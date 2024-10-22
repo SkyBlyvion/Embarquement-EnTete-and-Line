@@ -33,8 +33,15 @@ table 50251 "PrestationDossierArrivage"
 
             trigger OnValidate()
             begin
-                TypeValidate();
+                if xRec.Type <> Type then
+                    PrestLigneDossier.SETRANGE("No. prestation", "No. prestation");
+                if PrestLigneDossier.FIND('-') then
+                    repeat
+                        PrestLigneDossier.VALIDATE(Type, Type); // Apply validation on the Type field
+                        PrestLigneDossier.MODIFY(true); // Always set MODIFY to true to ensure it locks and updates the record
+                    until PrestLigneDossier.NEXT() = 0;
             end;
+
         }
         field(8; "Montant affecté"; Decimal)
         {
@@ -204,28 +211,5 @@ table 50251 "PrestationDossierArrivage"
         UNTIL LigneDossier.NEXT() = 0;
     end;
 
-    // Code C/AL
-    // Type - OnValidate()
-    // IF xRec.Type <> Type THEN BEGIN
-    // PrestLigneDossier.SETRANGE("N° prestation","N° prestation");
-    // IF PrestLigneDossier.FIND('-') THEN
-    //     REPEAT
-    //     PrestLigneDossier.VALIDATE(Type,Type);
-    //     PrestLigneDossier.MODIFY;
-    //     UNTIL PrestLigneDossier.NEXT = 0;
-    // END;
-
-    procedure TypeValidate()
-    begin
-        if xRec.Type <> Type then begin
-            PrestLigneDossier.SETRANGE("No. prestation", "No. prestation");
-            if PrestLigneDossier.FIND('-') then
-                repeat
-                    PrestLigneDossier.VALIDATE(Type, Type); // Apply validation on the Type field
-                    PrestLigneDossier.MODIFY(true); // Always set MODIFY to true to ensure it locks and updates the record
-                until PrestLigneDossier.NEXT() = 0;
-
-        end;
-    end;
 
 }

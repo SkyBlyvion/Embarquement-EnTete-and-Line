@@ -435,7 +435,7 @@ codeunit 50285 "CalculerPR"
     var
         ConfirmErr: Label 'Voulez-vous mettre à jour tous les montants affectés des dossiers associés à la prestation %1 ?', Locked = true;
 
-    procedure CalculerMntPrestDossier()
+    procedure CalculerMntPrestDossier(PrestDossier: Record "PrestationDossierArrivage")
     begin
         PrestDossier.SETRANGE("No. prestation", PrestDossier."No. prestation");
         IF NOT CONFIRM(STRSUBSTNO(ConfirmErr, PrestDossier."No. prestation")) THEN
@@ -929,4 +929,4 @@ codeunit 50285 "CalculerPR"
         //*FIN NSC1.12 :Fonction de MAJ du champ 'dernier PRT calculé' dans la fiche tarif de l'article
     end;
 
-} 
+}

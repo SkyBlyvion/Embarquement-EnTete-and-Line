@@ -6,6 +6,8 @@ page 50268 "PrestationPage"
     SourceTable = "Prestation";
     Editable = true;
 
+    CardPageID = "PrestationDossierArrivagePage";
+
     layout
     {
         area(Content)
@@ -15,6 +17,10 @@ page 50268 "PrestationPage"
                 field("No."; Rec."No.")
                 {
                     ToolTip = 'Indique le numéro de la prestation.';
+                }
+                field("Prévisionnel"; Rec."Prévisionnel")
+                {
+                    ToolTip = 'Indique si cette prestation est prévisionnelle ou non.';
                 }
                 field("No. document"; Rec."No. document")
                 {
@@ -36,10 +42,6 @@ page 50268 "PrestationPage"
                 {
                     ToolTip = 'Indique le code de la devise utilisée pour la prestation.';
                 }
-                field("Facteur devise"; Rec."Facteur devise")
-                {
-                    ToolTip = 'Facteur de conversion pour la devise associée à la prestation.';
-                }
                 field("Imputé"; Rec."Imputé")
                 {
                     ToolTip = 'Indique si la prestation a été imputée ou non.';
@@ -47,26 +49,6 @@ page 50268 "PrestationPage"
                 field("Mnt affecté total (doss)"; Rec."Mnt affecté total (doss)")
                 {
                     ToolTip = 'Montant total affecté pour ce dossier de prestation.';
-                }
-                field("Mnt affecté total (lig doss)"; Rec."Mnt affecté total (lig doss)")
-                {
-                    ToolTip = 'Montant total affecté pour les lignes de dossier de la prestation.';
-                }
-                field("Mnt total lig doss affectées"; Rec."Mnt total lig doss affectées")
-                {
-                    ToolTip = 'Montant total des lignes de dossier affectées à cette prestation.';
-                }
-                field("Vol total lig doss affectées"; Rec."Vol total lig doss affectées")
-                {
-                    ToolTip = 'Volume total des lignes de dossier affectées à cette prestation.';
-                }
-                field("Prévisionnel"; Rec."Prévisionnel")
-                {
-                    ToolTip = 'Indique si cette prestation est prévisionnelle ou non.';
-                }
-                field("Souches de No."; Rec."Souches de No.")
-                {
-                    ToolTip = 'Indique la souche de numéro utilisée pour cette prestation.';
                 }
             }
         }

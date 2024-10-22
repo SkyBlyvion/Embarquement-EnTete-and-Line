@@ -11,6 +11,31 @@ table 50253 Prestation
             Description = 'PRESTATION - LN - 09/09/24 REV24';
             Editable = true;
             NotBlank = false;
+
+            /*
+            Trigger cause des erreurs empechant la creation de numeros
+
+            trigger OnValidate()
+            var
+                ParamAchat: Record "Purchases & Payables Setup";
+                NoSeriesMgt: Codeunit "No. Series";
+            begin
+                // Check if the No. field is empty to avoid validation errors
+                if "No." = '' then
+                    exit;
+
+                // Check if the No. has been changed manually
+                if "No." <> xRec."No." then begin
+                    // Get the purchasing parameters and ensure "No. prestation" series is set
+                    ParamAchat.GET();
+                    NoSeriesMgt.TestManual(ParamAchat."No. prestation"); // Verifies if the number series allows manual numbering
+
+                    // Clear the number series reference since this is a manual change
+                    "Souches de No." := '';
+                end;
+            end;
+
+            */
         }
         field(2; "No. document"; Code[20])
         {
@@ -38,6 +63,20 @@ table 50253 Prestation
             NotBlank = true;
             BlankNumbers = DontBlank;
             OptionMembers = "Frais de transport","Frais Financiers","Assurances","Commissions","Transit","Douane";
+
+            trigger OnValidate()
+            var
+                PrestDossier: Record "PrestationDossierArrivage";
+            begin
+                if xRec.Type <> Type then begin
+                    PrestDossier.SETRANGE("No. prestation", "No.");
+                    IF PrestDossier.FINDSET() THEN
+                        REPEAT
+                            PrestDossier.VALIDATE(Type, Type);
+                            PrestDossier.MODIFY(true);
+                        UNTIL PrestDossier.NEXT() = 0;
+                end;
+            end;
         }
         field(5; "Montant"; Decimal)
         {
@@ -55,6 +94,22 @@ table 50253 Prestation
             Editable = true;
             NotBlank = false;
             TableRelation = "Currency"."Code";
+
+            trigger OnValidate()
+            begin
+                if CurrFieldNo <> FIELDNO("Code devise") then
+                    MajFacteurDevise()
+                else
+                    if "Code devise" <> xRec."Code devise" then
+                        MajFacteurDevise()
+                    else
+                        if "Code devise" <> '' then begin
+                            MajFacteurDevise();
+                            if "Facteur devise" <> xRec."Facteur devise" then
+                                ConfirmerMajFacteurDevise();
+                        end;
+
+            end;
         }
         field(7; "Facteur devise"; Decimal)
         {
@@ -126,7 +181,6 @@ table 50253 Prestation
             Caption = 'Souche de No.';
             Description = 'PRESTATION - LN - 09/09/24 REV24';
             Editable = false;
-            TableRelation = "No. Series"."Code";
         }
     }
 
@@ -146,18 +200,57 @@ table 50253 Prestation
     }
 
     var
-    // Dossier: Record "DossierArrivage";
-    // DeviseTauxChange: Record "Currency Exchange Rate";
-    // Prest: Record "Prestation";
-    // ParamAchat: Record "Purchases & Payables Setup";
-    // PrestDossier: Record "PrestationDossierArrivage";
-    // GestionNoSouche: Codeunit "NoSeriesManagement";
-
+        Dossier: Record "DossierArrivage";
+        DeviseTauxChange: Record "Currency Exchange Rate";
+        Prest: Record "Prestation";
+        ParamAchat: Record "Purchases & Payables Setup";
+        PrestDossier: Record "PrestationDossierArrivage";
+        //GestionNoSouche: Codeunit "NoSeriesManagement";
+        NoSeries: Codeunit "No. Series";
 
     trigger OnInsert()
     begin
+        if "No." = '' then begin
+            MESSAGE('OnInsert Trigger Hit: No. is empty, attempting to generate a new number.');
+
+            // Retrieve the Purchases & Payables Setup
+            ParamAchat.GET();
+
+            // Check if No. prestation is set
+            ParamAchat.TESTFIELD("No. prestation");
+
+            // Debugging message to confirm the number series being used
+            MESSAGE('Using Number Series Code: %1', ParamAchat."No. prestation");
+
+            // Try peeking the next number to see if one exists before modifying the series
+            MESSAGE('PeekNextNo: %1', NoSeries.PeekNextNo(ParamAchat."No. prestation", WORKDATE()));
+
+            // Generate the next available number from the series
+            "No." := NoSeries.GetNextNo(ParamAchat."No. prestation", WORKDATE(), true);
+
+            // Log the generated number
+            MESSAGE('Generated No.: %1', "No.");
+
+            // Validate the "No." field to trigger any validation logic
+            VALIDATE("No.");
+
+            // Assign the number series reference if necessary
+            "Souches de No." := ParamAchat."No. prestation";
+
+            // Log the number series being assigned
+            MESSAGE('Assigned Souches de No.: %1', "Souches de No.");
+
+            // Final check if the "No." was properly assigned
+            if "No." = '' then
+                ERROR('Error: No. was not generated properly.');
+        end else
+            // Log if No. already has a value and doesn't need generation
+            MESSAGE('OnInsert Trigger: No. field already has a value: %1', "No.");
 
     end;
+
+
+
 
     trigger OnModify()
     begin
@@ -166,12 +259,60 @@ table 50253 Prestation
 
     trigger OnDelete()
     begin
+        // Prevent deletion if the prestation is linked to a closed dossier
+        Dossier.SETRANGE(Etat, Dossier.Etat::Clôturé);
+        REPEAT
+            PrestDossier.SETRANGE("No. dossier", Dossier."No. dossier");
+            PrestDossier.SETRANGE("No. prestation", "No.");
+            IF PrestDossier.FINDFIRST() THEN
+                ERROR('Suppression impossible : cette prestation est associée à des dossiers clôturés');
+        UNTIL Dossier.NEXT() = 0;
 
+        // If no restrictions, delete the linked records
+        PrestDossier.RESET();
+        PrestDossier.SETRANGE("No. prestation", "No.");
+        PrestDossier.DELETEALL(true);
     end;
 
     trigger OnRename()
     begin
 
     end;
+
+    procedure MajFacteurDevise()
+    begin
+        if "Code devise" <> '' then
+            "Facteur devise" := DeviseTauxChange.ExchangeRate(WORKDATE(), "Code devise")
+        else
+            "Facteur devise" := 0;
+    end;
+
+    procedure ConfirmerMajFacteurDevise()
+    begin
+        if CONFIRM('Voulez-vous mettre à jour le taux de change ?', FALSE) then
+            VALIDATE("Facteur devise")
+        else
+            "Facteur devise" := xRec."Facteur devise";
+    end;
+
+    /*
+        procedure AssistEdit(var AncPrest: Record Prestation): Boolean
+        var
+
+            NoSeriesMgt: Codeunit "No. Series";
+        begin
+            // Assurez-vous que les paramètres d'achat sont disponibles et corrects
+            ParamAchat.GET();
+            ParamAchat.TESTFIELD("No. prestation");
+
+            // Assigner directement le prochain numéro généré au champ "No."
+            "No." := NoSeriesMgt.GetNextNo(ParamAchat."No. prestation", WORKDATE(), true);
+
+            // Mettre à jour l'enregistrement avec les informations de AncPrest
+            Rec := AncPrest;
+
+            exit(true); // Retourne true si l'opération s'est bien déroulée
+        end;
+    */
 
 }
