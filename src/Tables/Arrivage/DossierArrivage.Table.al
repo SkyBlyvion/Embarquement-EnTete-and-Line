@@ -9,8 +9,8 @@ table 50249 "DossierArrivage"
             DataClassification = ToBeClassified;
             Caption = 'No. Dossier';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
-            Editable = true; //TODO:passer a false aprés debugg
-            NotBlank = true;
+            Editable = false; //passer à false aprés debugg
+            NotBlank = false;
         }
         field(3; "Date d'ouverture"; Date)
         {
@@ -39,8 +39,6 @@ table 50249 "DossierArrivage"
             Caption = 'Souche de No.';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
-            TableRelation = "No. Series"."Code";
-
         }
         field(7; "Frais de transport"; Decimal)
         {
@@ -193,27 +191,50 @@ table 50249 "DossierArrivage"
         HistoPRR: Record "HistoriquePRRTable";
         LigDossier: Record "Lignedossierarrivage";
         CalculerPr: Codeunit "CalculerPR";
+        NoSeries: Codeunit "No. Series";
         GestionNoSouche: Codeunit "No. Series";
         NoArticlePrec: Code[20];
         NoCalcul: Integer;
         BonReceptions: Record "Purch. Rcpt. Header";
 
     trigger OnInsert()
-    var
-        NoSeries: Codeunit "No. Series";
     begin
+        // Check if the "No. dossier" is empty before generating a new one
+        if "No. dossier" = '' then begin
+            //MESSAGE('OnInsert Trigger Hit: "No. dossier" is empty, attempting to generate a new number.');
 
-        IF "No. dossier" = '' THEN BEGIN
+            // Retrieve the stock parameters
             ParamStock.GET();
+            //MESSAGE('ParamStock retrieved successfully.');
+
+            // Ensure that "No. Dossier" in ParamStock is set
             ParamStock.TESTFIELD("No. Dossier");
+            //MESSAGE('Using Number Series Code: %1', ParamStock."No. Dossier");
 
-            //GestionNoSouche.InitSeries(ParamStock."No. Dossier", xRec."Souches de No.", 0D, "No. dossier", "Souches de No."); // OLD CODE
+            // Try peeking the next number to see if one exists before modifying the series
+            //MESSAGE('PeekNextNo: %1', NoSeries.PeekNextNo(ParamStock."No. Dossier", WORKDATE()));
 
-            // Use GetNextNo to generate the next number in the series for "No. dossier"
-            "No. dossier" := NoSeries.GetNextNo(ParamStock."No. Dossier", TODAY, true);
-        END;
+            // Generate the next available number for "No. dossier"
+            "No. dossier" := NoSeries.GetNextNo(ParamStock."No. Dossier", WORKDATE(), true);
+            //MESSAGE('Generated No. dossier: %1', "No. dossier");
 
+            // Assign the number series reference for "Souches de No."
+            "Souches de No." := ParamStock."No. Dossier";
+            //MESSAGE('Assigned Souches de No.: %1', "Souches de No.");
+
+            // Validate the "No. dossier" to trigger any additional logic
+            VALIDATE("No. dossier");
+
+            // Final check if the "No. dossier" was properly assigned
+            if "No. dossier" = '' then
+                ERROR('Error: No. dossier was not generated properly.');
+        end else
+            // Log if "No. dossier" already has a value and doesn't need generation
+            MESSAGE('OnInsert Trigger: "No. dossier" already has a value: %1', "No. dossier");
+
+        // Set the opening date
         "Date d'ouverture" := TODAY;
+        //MESSAGE('Opening date set to: %1', FORMAT("Date d'ouverture"));
     end;
 
     trigger OnModify()

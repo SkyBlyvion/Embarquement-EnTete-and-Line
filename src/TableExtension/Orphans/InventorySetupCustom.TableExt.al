@@ -2,7 +2,6 @@ tableextension 50250 "InventorySetupCustom" extends "Inventory Setup"
 {
     fields
     {
-
         field(50000; "Images"; Text[250])
         {
             DataClassification = SystemMetadata;

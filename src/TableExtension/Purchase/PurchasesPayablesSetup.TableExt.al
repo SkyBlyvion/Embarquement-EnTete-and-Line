@@ -9,6 +9,8 @@ tableextension 50237 "PurchasesPayablesSetup" extends "Purchases & Payables Setu
             Caption = 'No. dossier';
             Description = 'PARAM_ACHAT - LN - 10/09/24';
             TableRelation = "No. Series".Code;
+            ObsoleteState = Removed;
+            ObsoleteReason = 'No. dossier est géré directement dans InventorySetupCustom';
         }
         field(50000; "No. prestation"; Code[10])
         {

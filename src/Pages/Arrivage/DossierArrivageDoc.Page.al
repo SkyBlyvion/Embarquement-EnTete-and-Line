@@ -90,5 +90,53 @@ page 50300 "DossierArrivageDoc"
 
         }
     }
+    trigger OnAfterGetCurrRecord()
+    var
+        PrestationDossier: Record "PrestationDossierArrivage";
+        TauxDevise: Record "Currency Exchange Rate";
+        FraisTransport: Decimal;
+        FraisFinancier: Decimal;
+    begin
+        // Initialize the totals
+        FraisTransport := 0;
+        FraisFinancier := 0;
+
+        // Reset and set ranges for calculating "Frais de transport"
+        PrestationDossier.Reset();
+        PrestationDossier.SetCurrentKey("No. Dossier", "No. prestation");
+        PrestationDossier.SetRange("No. Dossier", Rec."No. Dossier");
+        PrestationDossier.SetCurrentKey(Type);
+        PrestationDossier.SetRange(Type, PrestationDossier.Type::"Frais de transport");
+
+        if PrestationDossier.FindSet() then
+            repeat
+                // Calculate exchange rate for "Frais de transport"
+                PrestationDossier.CalcFields("Code devise");
+                FraisTransport := FraisTransport + TauxDevise.ExchangeAmtFCYToFCY(
+                    Rec."Date d'ouverture",
+                    PrestationDossier."Code devise",
+                    '',
+                    PrestationDossier."Montant affecté"
+                );
+            until PrestationDossier.Next() = 0;
+
+
+        // Reset and set ranges for calculating "Frais financiers"
+        PrestationDossier.SetRange(Type, PrestationDossier.Type::"Frais financiers");
+
+        if PrestationDossier.FindSet() then
+            repeat
+                // Calculate exchange rate for "Frais financiers"
+                PrestationDossier.CalcFields("Code devise");
+                FraisFinancier := FraisFinancier + TauxDevise.ExchangeAmtFCYToFCY(
+                    Rec."Date d'ouverture",
+                    PrestationDossier."Code devise",
+                    '',
+                    PrestationDossier."Montant affecté"
+                );
+            until PrestationDossier.Next() = 0;
+
+    end;
+
 
 }

@@ -130,6 +130,8 @@ table 50253 Prestation
             FieldClass = FlowField;
             InitValue = false;
             CalcFormula = Exist("PrestationDossierArrivage" WHERE("No. prestation" = FIELD("No.")));
+            // checks if there is any record in the "PrestationDossierArrivage" table where 
+            // the "No. prestation" field matches the current "No." in the "Prestation" table.
         }
         field(9; "Mnt affecté total (doss)"; Decimal)
         {

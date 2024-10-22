@@ -18,7 +18,7 @@ table 50254 "PrestationLigneDossier"
             Caption = 'No. dossier';
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = false;
-            TableRelation = "LigneDossierArrivage"."No. Dossier"; //TODO: remplir la LigneDossierArrivage
+            TableRelation = "LigneDossierArrivage"."No. Dossier";
         }
         field(5; "No. ligne dossier"; Integer)
         {
