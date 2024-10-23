@@ -75,8 +75,8 @@ page 50300 "DossierArrivageDoc"
         {
             action("Liste des Avis de la ligne de dossier")
             {
-                Caption = 'Liste des Avis - ligne de dossier';
-                ToolTip = 'Cliquez pour voir la liste des aviss de la ligne de dossier.';
+                Caption = 'Liste des Avis associés à la ligne de dossier';
+                ToolTip = 'Cliquez pour voir la liste des avis de la ligne de dossier.';
 
                 trigger OnAction()
                 var
@@ -88,7 +88,7 @@ page 50300 "DossierArrivageDoc"
             }
             action("Liste des Prestations de la ligne de dossier")
             {
-                Caption = 'Liste des Prestations - ligne de dossier';
+                Caption = 'Liste des Prestations associées à la ligne de dossier';
                 ToolTip = 'Cliquez pour voir la liste des prestations de la ligne de dossier.';
 
                 trigger OnAction()

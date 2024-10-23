@@ -6,8 +6,6 @@ page 50268 "PrestationPage"
     SourceTable = "Prestation";
     Editable = true;
 
-    CardPageID = "PrestationDossierArrivagePage";
-
     layout
     {
         area(Content)
@@ -41,6 +39,17 @@ page 50268 "PrestationPage"
                 field("Code devise"; Rec."Code devise")
                 {
                     ToolTip = 'Indique le code de la devise utilisée pour la prestation.';
+                    trigger OnAssistEdit()
+                    var
+                        ModifierTauxChange: Page "Change Exchange Rate";
+                    begin
+
+                        ModifierTauxChange.SetParameter(Rec."Code devise", Rec."Facteur devise", WORKDATE());
+                        IF ModifierTauxChange.RUNMODAL() = ACTION::OK THEN
+                            Rec.VALIDATE(Rec."Facteur devise", ModifierTauxChange.GetParameter());
+
+                        CLEAR(ModifierTauxChange);
+                    end;
                 }
                 field("Imputé"; Rec."Imputé")
                 {
@@ -50,6 +59,31 @@ page 50268 "PrestationPage"
                 {
                     ToolTip = 'Montant total affecté pour ce dossier de prestation.';
                 }
+            }
+        }
+    }
+    /*
+        RunPageOnRec = false;
+        Default = true
+        If not specified, the page will run on the current record by default (drill-down behavior). 
+        If you want to run the page for a filtered set of records rather than just the current one, you must set it to false 
+    */
+    actions
+    {
+        area(Processing)
+        {
+            action("Dossiers d'arrivages")
+            {
+                Caption = 'Affecter Partiellement';
+                ToolTip = 'Affecte une quantité partiellement de la quantité totale de la prestation.';
+                RunObject = Page "PrestationDossierArrivagePage";
+                RunPageLink = "No. prestation" = field("No.");
+                RunPageOnRec = false; // turn on to activate DrillDown
+
+                // trigger OnAction()
+                // begin
+                //     Page.Run(Page::PrestationDossierArrivagePage);
+                // end;
             }
         }
     }

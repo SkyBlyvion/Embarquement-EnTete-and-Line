@@ -6,8 +6,6 @@ page 50270 "PrestationDossierArrivagePage"
     SourceTable = "PrestationDossierArrivage";
     Editable = true;
 
-    //CardPageID = "PrestationLigneDossierPage";
-
     layout
     {
         area(Content)
@@ -54,11 +52,14 @@ page 50270 "PrestationDossierArrivagePage"
             {
                 Caption = 'Affecter Partiellement';
                 ToolTip = 'Affecte une quantité partiellement de la quantité totale de la prestation.';
+                RunObject = Page "PrestationLigneDossierPage";
+                RunPageLink = "No. dossier" = field("No. Dossier"), "No. prestation" = field("No. prestation");
+                RunPageOnRec = false; // turn on to activate DrillDown and run the page for the current record
 
-                trigger OnAction()
-                begin
-                    Page.Run(Page::PrestationLigneDossierPage);
-                end;
+                // trigger OnAction()
+                // begin
+                //     Page.Run(Page::PrestationLigneDossierPage);
+                // end;
             }
 
             action("Calculer les montants par dossier")

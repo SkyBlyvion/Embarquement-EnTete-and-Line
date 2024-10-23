@@ -9,6 +9,7 @@
  - CREDOC 50012
 
 12/09/24 = 2350 lignes de code
+22/10/24 = 9099 lignes de code
 
 
  . . .
@@ -134,10 +135,15 @@
 
  tableextension 50293 PurchRcptLine
  
+ 50294
+ 50295
+ 50296
 
  tableextension 50297 "Sales Price Extension"
 
  pageextension 50298 "SalesPriceListExtension" 
+
+ tableextension 50299 "ItemJournalLineCustom"
 
  page 50300 DossierArrivageDoc
 

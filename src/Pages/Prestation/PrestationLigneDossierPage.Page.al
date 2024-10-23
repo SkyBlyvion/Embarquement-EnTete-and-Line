@@ -75,4 +75,59 @@ page 50269 "PrestationLigneDossierPage"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action("Calculer les montants par ligne de dossier")
+            {
+                Caption = 'Calculer les montants par ligne de dossier';
+                ToolTip = 'Calculer les montants par ligne de dossier';
+
+                trigger OnAction()
+                var
+                    PrestDossier: Record "PrestationDossierArrivage";
+                    Dossier: Record "DossierArrivage";
+                    CalculerPR: Codeunit "CalculerPR";
+
+                    TextDOSSIER_ARRIVAGE01: Text[100]; // Use Text for variable messages
+                    TextDOSSIER_ARRIVAGE02: Text[100];
+                    TextDOSSIER_ARRIVAGE03: Text[100];
+                begin
+                    TextDOSSIER_ARRIVAGE01 := 'Modifications interdites : ce dossier est clôturé';
+                    TextDOSSIER_ARRIVAGE02 := 'L''affectation de la prestation %1 au dossier %2 n''a pas été trouvée';
+
+                    IF Dossier.GET(Rec."No. dossier") then
+                        IF Dossier.Etat = Dossier.Etat::Clôturé then
+                            ERROR(TextDOSSIER_ARRIVAGE01);
+
+                    IF NOT PrestDossier.GET(Rec."No. dossier", Rec."No. prestation") THEN
+                        ERROR(TextDOSSIER_ARRIVAGE02, Rec."No. prestation", Rec."No. dossier");
+
+                    CalculerPR.CalculerMntPrestLigneDossier(PrestDossier, TRUE);
+                end;
+            }
+            action("Affectation : décocher tout")
+            {
+                Caption = 'Affectation : décocher tout';
+                ToolTip = 'Affectation : décocher tout';
+
+                trigger OnAction()
+                var
+                    PrestationLigneDossier: Record "PrestationLigneDossier";
+                    TextDOSSIER_ARRIVAGE03: Text[100];
+                begin
+                    TextDOSSIER_ARRIVAGE03 := 'Décocher toutes les lignes';
+                    IF Rec.GETFILTERS <> '' THEN
+                        IF CONFIRM(TextDOSSIER_ARRIVAGE03) THEN BEGIN
+                            PrestationLigneDossier.RESET();
+                            PrestationLigneDossier.COPY(Rec);
+                            PrestationLigneDossier.MODIFYALL(Affectation, FALSE, TRUE);
+                            // No need for CurrForm.UPDATECONTROLS, page updates automatically
+                        END;
+                end;
+            }
+        }
+    }
+
 }
