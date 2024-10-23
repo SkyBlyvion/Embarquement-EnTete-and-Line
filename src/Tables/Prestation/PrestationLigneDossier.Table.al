@@ -26,6 +26,8 @@ table 50254 "PrestationLigneDossier"
             Caption = 'No. ligne dossier';
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
+            TableRelation = "LigneDossierArrivage"."No. Ligne" where("No. dossier" = field("No. dossier"));
         }
         field(6; "Affectation"; Boolean)
         {
@@ -42,6 +44,7 @@ table 50254 "PrestationLigneDossier"
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 10/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
+            AutoFormatType = 1;
         }
         field(8; "Type"; Option)
         {
@@ -50,6 +53,7 @@ table 50254 "PrestationLigneDossier"
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             NotBlank = true;
+            BlankNumbers = DontBlank;
             OptionMembers = "Frais de transport","Frais Financiers","Assurances","Commissions","Transit","Douane";
         }
         field(9; "Prévisionnel"; Boolean)
@@ -76,6 +80,7 @@ table 50254 "PrestationLigneDossier"
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
+            AutoFormatType = 1;
             CalcFormula = lookup("LigneDossierArrivage"."Cout unitaire" where("No. dossier" = field("No. dossier"), "No. ligne" = field("No. ligne dossier")));
         }
         field(12; "Quantité (pièce)"; Decimal)
@@ -95,6 +100,7 @@ table 50254 "PrestationLigneDossier"
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
             BlankNumbers = DontBlank;
+            AutoFormatType = 1;
         }
         field(14; "Volume ligne"; Decimal)
         {
@@ -117,7 +123,7 @@ table 50254 "PrestationLigneDossier"
             Caption = 'No. réception';
             Description = 'PRESTATION_LIGNE_DOSSIER - LN - 23/09/24 REV24';
             Editable = false;
-            TableRelation = "Purch. Rcpt. Header"."No.";//TODO: TableRelation "No. reception" > "Purch. Rcpt. Header" table which field ? 
+            TableRelation = "Purch. Rcpt. Header"."No.";
             FieldClass = FlowField;
             CalcFormula = lookup("LigneDossierArrivage"."No. réception" where("No. dossier" = field("No. dossier"), "No. ligne" = field("No. ligne dossier")));
         }
@@ -164,8 +170,12 @@ table 50254 "PrestationLigneDossier"
     end;
 
     trigger OnModify()
+    var
+        Dossier: Record "DossierArrivage";
     begin
-
+        IF Dossier.GET("No. dossier") THEN
+            IF Dossier.Etat = Dossier.Etat::Clôturé THEN
+                ERROR('Modification impossible : ce dossier est clôturé');
     end;
 
     trigger OnDelete()

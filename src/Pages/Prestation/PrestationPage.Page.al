@@ -74,7 +74,7 @@ page 50268 "PrestationPage"
         {
             action("Dossiers d'arrivages")
             {
-                Caption = 'Affecter Partiellement';
+                Caption = 'Dossiers d''arrivages';
                 ToolTip = 'Affecte une quantité partiellement de la quantité totale de la prestation.';
                 RunObject = Page "PrestationDossierArrivagePage";
                 RunPageLink = "No. prestation" = field("No.");
