@@ -157,16 +157,39 @@ table 50236 "EnTeteEmbarquement"
     trigger OnInsert()
     begin
         // Check if "No. embarquement" is empty
-        if ("No. embarquement" = '') then begin
+        if "No. embarquement" = '' then begin
+            MESSAGE('OnInsert Trigger Hit: No. is empty, attempting to generate a new number.');
+
+            // Retrieve the Purchases & Payables Setup
+            ParamAchat.GET();
+
             // Ensure that the "No. embarquement" series is set up in Purchases & Payables Setup
             ParamAchat.TESTFIELD("No. embarquement");
+            MESSAGE('Using Number Series Code: %1', ParamAchat."No. embarquement");
+            // try peeking
+            MESSAGE('PeekNextNo: %1', NoSeries.PeekNextNo(ParamAchat."No. embarquement", 0D));
 
-            // Fetch the next number in the number series and assign it to "No. embarquement"
+            // Generate the next number in the number series and assign it to "No. embarquement"
             "No. embarquement" := NoSeries.GetNextNo(ParamAchat."No. embarquement", 0D, false);
+            MESSAGE('Generated No.: %1', "No. embarquement");
+
+            VALIDATE("No. embarquement");
+
+            // Assign the number series reference if necessary
+            "Souches de No." := ParamAchat."No. embarquement";
+
+            // Log the number series being assigned
+            MESSAGE('Assigned Souches de No.: %1', "Souches de No.");
 
             // Validate if the series is properly related (if necessary)
             // NoSeries.AreRelated(ParamAchat."No. embarquement", "Souches de No.");
-        end;
+
+            // Final check if the "No." was properly assigned
+            if "No. embarquement" = '' then
+                ERROR('Error: No. embarquement was not generated properly.');
+        end else
+            MESSAGE('OnInsert Trigger: No. embarquement field already has a value: %1', "No. embarquement");
+        ;
 
         // Set today's date as the shipment date
         "Date embarquement" := Today;
