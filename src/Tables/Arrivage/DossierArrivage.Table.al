@@ -18,6 +18,7 @@ table 50249 "DossierArrivage"
             Caption = 'Date d''ouverture';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(4; "Date de clôture"; Date)
         {
@@ -25,6 +26,7 @@ table 50249 "DossierArrivage"
             Caption = 'Date de clôture';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
+            BlankNumbers = DontBlank;
         }
         field(5; "No. Fournisseur"; Code[20])
         {
@@ -39,6 +41,7 @@ table 50249 "DossierArrivage"
             Caption = 'Souche de No.';
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             Editable = false;
+            TableRelation = "No. Series";
         }
         field(7; "Frais de transport"; Decimal)
         {
@@ -46,8 +49,9 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
-                            WHERE("No. Dossier" = FIELD("No. Dossier"),
+                            WHERE("No. Dossier" = field("No. Dossier"),
                             Type = const("Frais de transport")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Frais de transport)))
         }
@@ -57,6 +61,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Frais Financiers")));
@@ -69,6 +74,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Assurances")));
@@ -80,6 +86,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Commissions")));
@@ -91,6 +98,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER_ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté"
                             WHERE("No. Dossier" = FIELD("No. Dossier"),
                             Type = const("Transit")));
@@ -102,6 +110,7 @@ table 50249 "DossierArrivage"
             Description = 'DOSSIER ARRIVAGE LN 13/09/24 REV24';
             FieldClass = FlowField;
             Editable = true;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationDossierArrivage"."Montant affecté" WHERE("No. Dossier" = FIELD("No. Dossier"), Type = const("Douane")));
             //Sum("Prestation / dossiers arrivage"."Montant affecté" WHERE (N° dossier=FIELD(N° dossier),Type=CONST(Douane)))
         }
@@ -119,6 +128,7 @@ table 50249 "DossierArrivage"
             Caption = 'Etat';
             Description = 'DOSSIER ARRIVAGE LN 13/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
             OptionMembers = "En attente de facturation","Facturé","Clôturé";
 
             trigger OnValidate()
@@ -164,6 +174,7 @@ table 50249 "DossierArrivage"
             Editable = true;
             CalcFormula = sum("Lignedossierarrivage"."Montant (dev soc)" where("No. dossier" = field("No. dossier")));
             AutoFormatType = 1;
+            BlankNumbers = DontBlank;
             // Sum("Ligne dossier arrivage"."Montant (dev soc)" WHERE (N° dossier=FIELD(N° dossier)))
         }
     }

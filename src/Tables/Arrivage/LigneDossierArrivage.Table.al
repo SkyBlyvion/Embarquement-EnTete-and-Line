@@ -357,14 +357,30 @@ table 50255 "LigneDossierArrivage"
     begin
 
     end;
+    /*
+       
+        PrestLigneDossier	Record	Prestation / ligne dossier	
+        AvisLigneDossier	Record	Avis / ligne dossier	 
 
-    //TODO: Créer les Pages
+        AfficherPrestations()
+        PrestLigneDossier.RESET;
+        PrestLigneDossier.SETRANGE("N° dossier", "N° dossier");
+        PrestLigneDossier.SETRANGE("N° ligne dossier", "N° ligne");
+        FORM.RUNMODAL(FORM::"Liste prestations/lig. dossier",PrestLigneDossier);
+
+        AfficherAvis()
+        AvisLigneDossier.RESET;
+        AvisLigneDossier.SETRANGE("N° dossier", "N° dossier");
+        AvisLigneDossier.SETRANGE("N° ligne dossier", "N° ligne");
+        FORM.RUNMODAL(FORM::"Avis / ligne dossier",AvisLigneDossier);
+    */
+
     procedure AfficherPrestations()
     begin
         PrestLigneDossier.RESET();
         PrestLigneDossier.SETRANGE("No. dossier", Rec."No. dossier");
         PrestLigneDossier.SETRANGE("No. ligne dossier", Rec."No. ligne");
-        //Page.RUNMODAL(Page::"Liste prestations/lig. dossier", PrestLigneDossier);
+        Page.RUNMODAL(Page::"PrestationLigneDossierList", PrestLigneDossier);
     end;
 
     procedure AfficherAvis()
@@ -372,7 +388,7 @@ table 50255 "LigneDossierArrivage"
         AvisLigneDossier.RESET();
         AvisLigneDossier.SETRANGE("No. dossier", "No. dossier");
         AvisLigneDossier.SETRANGE("No. ligne dossier", "No. ligne");
-        //Page.RUNMODAL(Page::"Avis / ligne dossier", AvisLigneDossier);
+        Page.RUNMODAL(Page::"AvisLigneDossierPage", AvisLigneDossier);
     end;
 
 

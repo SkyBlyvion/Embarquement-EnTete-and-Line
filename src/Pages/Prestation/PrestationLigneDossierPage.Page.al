@@ -1,8 +1,8 @@
 page 50269 "PrestationLigneDossierPage"
 {
+    PageType = List;
     ApplicationArea = All;
     Caption = 'Prestation Ligne Dossier';
-    PageType = List;
     SourceTable = "PrestationLigneDossier";
     Editable = true;
 

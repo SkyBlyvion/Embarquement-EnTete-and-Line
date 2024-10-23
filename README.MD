@@ -136,8 +136,8 @@
  tableextension 50293 PurchRcptLine
  
  50294
- 50295
- 50296
+ page 50295 "Avis ligne dossier"
+ page 50296 "PrestationLigneDossierList"
 
  tableextension 50297 "Sales Price Extension"
 

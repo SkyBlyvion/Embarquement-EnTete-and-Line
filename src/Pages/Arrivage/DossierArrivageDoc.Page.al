@@ -98,7 +98,6 @@ page 50300 "DossierArrivageDoc"
                     LigneDossierArrivageRec.AfficherPrestations(); // Call the procedure from the table
                 end;
             }
-
             action("Calculer PRR")
             {
                 Caption = 'Calculer PRR';
