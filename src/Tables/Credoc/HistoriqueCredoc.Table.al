@@ -8,14 +8,14 @@ table 50279 HistoriqueCredoc
         {
             DataClassification = CustomerContent;
             Caption = 'Code credoc';
-            Description = 'CREDOC - LN - 26/09/24 REV24';
+            Description = 'HISTORIQUE_CREDOC - LN - 26/09/24 REV24';
             Editable = true;
         }
         field(2; "Date validité"; Date)
         {
             DataClassification = SystemMetadata;
             Caption = 'Date validité';
-            Description = 'CREDOC - LN - 26/09/24 REV24';
+            Description = 'HISTORIQUE_CREDOC - LN - 26/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -23,7 +23,7 @@ table 50279 HistoriqueCredoc
         {
             DataClassification = CustomerContent;
             Caption = 'Montant initial';
-            Description = 'CREDOC - LN - 26/09/24 REV24';
+            Description = 'HISTORIQUE_CREDOC - LN - 26/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -31,7 +31,7 @@ table 50279 HistoriqueCredoc
         {
             DataClassification = SystemMetadata;
             Caption = 'Date modification';
-            Description = 'CREDOC - LN - 26/09/24 REV24';
+            Description = 'HISTORIQUE_CREDOC - LN - 26/09/24 REV24';
             Editable = true;
             BlankNumbers = DontBlank;
         }
@@ -44,6 +44,11 @@ table 50279 HistoriqueCredoc
             Clustered = true;
         }
     }
+
+    trigger OnModify()
+    begin
+        "Date modification" := WORKDATE();
+    end;
 
 
 

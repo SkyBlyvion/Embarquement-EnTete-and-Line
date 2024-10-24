@@ -61,19 +61,22 @@ table 50259 Credoc
 
             trigger OnValidate()
             begin
-
+                // Check if the current field number is different from "Code devise"
                 IF CurrFieldNo <> FIELDNO("Code devise") THEN
                     MajFacteurDevise()
-                ELSE
+                ELSE BEGIN
+                    // If the code has changed, update the currency factor
                     IF "Code devise" <> xRec."Code devise" THEN
                         MajFacteurDevise();
-                ELSE
-                IF "Code devise" <> '' THEN BEGIN
-                    MajFacteurDevise();
-                    IF "Facteur devise" <> xRec."Facteur devise" THEN
-                        ConfirmerMajFacteurDevise();
-                END;
 
+                    // Only check and confirm if the code is not empty
+                    IF "Code devise" <> '' THEN BEGIN
+                        MajFacteurDevise();
+                        IF "Facteur devise" <> xRec."Facteur devise" THEN
+                            ConfirmerMajFacteurDevise();
+                    end;
+
+                end;
             end;
         }
         field(7; "Facteur devise"; Decimal)
@@ -95,6 +98,23 @@ table 50259 Credoc
             Editable = true;
             BlankNumbers = DontBlank;
             AutoFormatType = 2;
+
+            trigger OnValidate()
+            begin
+                //* Mise à jour de la table Historique credoc si changement du montant initial
+                IF (xRec."Montant Initial" <> Rec."Montant Initial") AND (xRec."Montant Initial" <> 0) THEN BEGIN
+                    HistoCredoc.SETRANGE("Code credoc", Code);
+                    IF HistoCredoc.FIND('-') THEN BEGIN
+                        HistoCredoc.INIT();
+                        HistoCredoc."Code credoc" := Code;
+                        HistoCredoc."Date validité" := "Date validité";
+                        HistoCredoc."Montant initial" := "Montant Initial";
+                        HistoCredoc."Date modification" := TODAY;
+                        HistoCredoc.INSERT();
+                    END;
+                END;
+                //*
+            end;
         }
         field(9; "Montant utilisé"; Decimal)
         {
