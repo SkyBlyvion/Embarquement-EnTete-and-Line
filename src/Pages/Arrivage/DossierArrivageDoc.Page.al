@@ -117,9 +117,9 @@ page 50300 "DossierArrivageDoc"
                 Caption = 'Liste des Avis associés au dossier';
                 ToolTip = 'Cliquez pour voir la liste des aviss associés au dossier.';
 
-                RunObject = Page "ListAvisDossierArrivage";
+                /*RunObject = Page "ListAvisDossierArrivage";
                 RunPageLink = "No. Dossier" = field("No. Dossier");
-                RunFormOnRec = false;
+                //RunFormOnRec = false;*/
 
             }
             action("Liste des Prestations associées au dossier")
@@ -127,9 +127,9 @@ page 50300 "DossierArrivageDoc"
                 Caption = 'Liste des Prestations associées au dossier';
                 ToolTip = 'Cliquez pour voir la liste des prestations associées au dossier.';
 
-                RunObject = Page "ListPrestationsDossierArrivage";
-                RunPageLink = "No. Dossier" = field("No. Dossier");
-                RunFormOnRec = false;
+                /* RunObject = Page "ListPrestationsDossierArrivage";
+                 RunPageLink = "No. Dossier" = field("No. Dossier");
+                 //RunFormOnRec = false;*/
 
             }
             action("Contenu dossier arrivage")
@@ -144,7 +144,7 @@ page 50300 "DossierArrivageDoc"
                     NDossier.RESET();
                     NDossier.SETRANGE("No. dossier", Rec."No. dossier");
                     IF NDossier.FIND('-') THEN
-                        REPORT.RUNMODAL(50002, TRUE, FALSE, NDossier);
+                        REPORT.RUNMODAL(50305, TRUE, FALSE, NDossier);
                 end;
 
             }

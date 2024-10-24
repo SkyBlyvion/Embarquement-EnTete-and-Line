@@ -4,7 +4,7 @@ report 50305 ContenuDossierArrivage
     ApplicationArea = All;
     Caption = 'Contenu Dossier Arrivage';
     ProcessingOnly = true;
-    DefaultRenderingLayout = LayoutName; // TODO: Créer le template
+    DefaultRenderingLayout = ContenuDossierArrivageWord; // TODO: Créer le template, le XML Mapping.
 
     dataset
     {
@@ -101,10 +101,10 @@ report 50305 ContenuDossierArrivage
 
     rendering
     {
-        layout(LayoutName)
+        layout(ContenuDossierArrivageWord)
         {
-            Type = Excel;
-            LayoutFile = 'mySpreadsheet.xlsx';
+            Type = Word;
+            LayoutFile = 'ContenuDossierArrivageWord.docx';
         }
     }
 }
