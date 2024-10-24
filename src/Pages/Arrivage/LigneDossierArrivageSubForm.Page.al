@@ -1,4 +1,4 @@
-page 50272 LigneDossierArrivageSubForm
+page 50261 LigneDossierArrivageSubForm
 {
     ApplicationArea = All;
     Caption = 'Ligne Dossier Arrivage';

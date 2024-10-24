@@ -71,7 +71,7 @@
 
  table 50260 "AvisLigneDossier"
 
- /!\ REMOVED /!\ pageextension 50261 "HistoriquePRTExtPage"
+ 50261 LigneDossierArrivageSubForm
 
  page 50262 EnTeteEmbrq - NO PERM
 
@@ -93,7 +93,7 @@
 
  page 50271 DossierArrivagePage 
 
- page 50272 LigneDossierArrivagePage
+ table 50272 FraisAnnexesAchat
 
  page 50273 CredocPage
 
@@ -109,13 +109,15 @@
 
  table 50279 HistoriqueCredoc
 
- pageextension 50280 ExtendPurchasingMenu
+ pageextension 50280 ExtenBusnMngRoleCntr
 
- pageextension 50281 EntendWhseMngRoleCntr
+ 50281 PrestationPerm
 
- pageextension 50282 EntendSalesMngRoleCntr
+ 50282 EmbarquementDoc
 
  table 50283 ReglementCredoc
+
+ 50284 LigneEmbarqmtSubform
 
  codeunit 50285 "CalculerPR"
 
@@ -135,8 +137,10 @@
 
  tableextension 50293 PurchRcptLine
  
- 50294
- page 50295 "Avis ligne dossier"
+ tableextension 50294 "ItemLedgerEntryCstm"
+
+ 50295
+
  page 50296 "PrestationLigneDossierList"
 
  tableextension 50297 "Sales Price Extension"
@@ -146,6 +150,14 @@
  tableextension 50299 "ItemJournalLineCustom"
 
  page 50300 DossierArrivageDoc
+
+ page 50301 ListeAvisDossierArrivage
+
+ 50302
+
+ 50303
+ 
+ 50304
 
  report 50305 ContenuDossierArrivage
 

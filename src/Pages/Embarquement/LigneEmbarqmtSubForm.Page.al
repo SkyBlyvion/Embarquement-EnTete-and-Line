@@ -1,4 +1,4 @@
-page 50237 "LigneEmbarqmtSubform"
+page 50284 "LigneEmbarqmtSubform"
 {
     PageType = ListPart;
     SourceTable = "LigneEmbarquement";

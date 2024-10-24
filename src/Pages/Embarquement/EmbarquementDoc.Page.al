@@ -1,4 +1,4 @@
-page 50236 "EmbarquementDoc"
+page 50282 "EmbarquementDoc"
 {
     PageType = Document;
     SourceTable = "EnTeteEmbarquement";
