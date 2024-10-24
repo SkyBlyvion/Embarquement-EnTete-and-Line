@@ -139,7 +139,7 @@
  
  tableextension 50294 "ItemLedgerEntryCstm"
 
- 50295
+ page 50295 ListePrestationDossierArrivage
 
  page 50296 "PrestationLigneDossierList"
 
@@ -156,7 +156,7 @@
  50302
 
  50303
- 
+
  50304
 
  report 50305 ContenuDossierArrivage

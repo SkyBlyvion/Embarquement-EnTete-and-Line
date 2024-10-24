@@ -49,6 +49,8 @@ table 50251 "PrestationDossierArrivage"
             Caption = 'Montant affecté';
             Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = true;
+            BlankNumbers = DontBlank;
+            AutoFormatType = 1;
         }
         field(9; "Prévisionnel"; Boolean)
         {
@@ -64,8 +66,11 @@ table 50251 "PrestationDossierArrivage"
             Description = 'PRESTATION_DOSSIER_ARRIVAGE - LN - 10/09/24 REV24';
             Editable = false;
             FieldClass = FlowField;
+            AutoFormatType = 1;
+            BlankNumbers = DontBlank;
             CalcFormula = Sum("PrestationLigneDossier"."Montant ligne (dev soc)" WHERE("No. prestation" = FIELD("No. prestation"), "No. dossier" = FIELD("No. dossier"), "Affectation" = CONST(true)));
-        } // Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE (N° prestation=FIELD(N° prestation),N° dossier=FIELD(N° dossier),Affectation=CONST(Yes)))
+            // Sum("Prestation / ligne dossier"."Montant ligne (dev soc)" WHERE (N° prestation=FIELD(N° prestation),N° dossier=FIELD(N° dossier),Affectation=CONST(Yes)))
+        }
         field(11; "Affectation partielle"; Boolean)
         {
             Caption = 'Affectation partielle';
@@ -82,6 +87,7 @@ table 50251 "PrestationDossierArrivage"
             Editable = false;
             BlankNumbers = DontBlank;
             FieldClass = FlowField;
+            AutoFormatType = 1;
             CalcFormula = Sum("PrestationLigneDossier"."Montant affecté" WHERE("No. dossier" = FIELD("No. dossier"), "No. prestation" = FIELD("No. prestation"), "Affectation" = CONST(true)));
         }
         field(13; "Vol total lignes affect"; Decimal)

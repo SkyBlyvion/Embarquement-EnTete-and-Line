@@ -117,9 +117,9 @@ page 50300 "DossierArrivageDoc"
                 Caption = 'Liste des Avis associés au dossier';
                 ToolTip = 'Cliquez pour voir la liste des aviss associés au dossier.';
 
-                /*RunObject = Page "ListAvisDossierArrivage";
+                RunObject = Page "ListeAvisDossierArrivage";
                 RunPageLink = "No. Dossier" = field("No. Dossier");
-                //RunFormOnRec = false;*/
+                RunPageOnRec = false;
 
             }
             action("Liste des Prestations associées au dossier")
@@ -127,9 +127,9 @@ page 50300 "DossierArrivageDoc"
                 Caption = 'Liste des Prestations associées au dossier';
                 ToolTip = 'Cliquez pour voir la liste des prestations associées au dossier.';
 
-                /* RunObject = Page "ListPrestationsDossierArrivage";
-                 RunPageLink = "No. Dossier" = field("No. Dossier");
-                 //RunFormOnRec = false;*/
+                RunObject = Page "ListePrestationDossierArrivage";
+                RunPageLink = "No. Dossier" = field("No. Dossier");
+                RunPageOnRec = false;
 
             }
             action("Contenu dossier arrivage")
