@@ -153,7 +153,7 @@
 
  page 50301 ListeAvisDossierArrivage
 
- 50302
+ table 50302 TransfertNoDossier
 
  50303
 

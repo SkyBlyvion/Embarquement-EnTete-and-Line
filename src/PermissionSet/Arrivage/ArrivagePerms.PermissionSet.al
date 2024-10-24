@@ -12,5 +12,6 @@ permissionset 50252 "ArrivagePerms"
         tabledata "Avis" = RIMD,
         tabledata "AvisLigneDossier" = RIMD,
         tabledata "NDPPays" = RIMD,
-        tabledata "AvisDossierArrivage" = RIMD;
+        tabledata "AvisDossierArrivage" = RIMD,
+        tabledata "TransfertNoDossier" = RIMD;
 }

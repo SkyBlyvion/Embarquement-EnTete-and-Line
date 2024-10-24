@@ -100,8 +100,22 @@ table 50259 Credoc
 
     var
 
+        EnteteAchat: Record "Purchase Header";
+        EcrArt: Record "Item Ledger Entry";
+        NDossier: Record "DossierArrivage";
+        TransfertNDossier: Record "TransfertNodossier";
+        ParamStock: Record "Inventory Setup";
+        HistoCredoc: Record "Historiquecredoc";
+        Credoc: Record "Credoc";
+        DeviseTauxChange: Record "Currency Exchange Rate";
+        GestionNoSouche: Codeunit "No. Series";
+
     trigger OnInsert()
     begin
+
+        //* initialisation
+        "Date ouverture" := TODAY;
+        //* 
 
     end;
 
@@ -112,7 +126,11 @@ table 50259 Credoc
 
     trigger OnDelete()
     begin
-
+        //* Supprimer les enregistrements du credoc dans l'Historique du credoc
+        HistoCredoc.RESET();
+        HistoCredoc.SETRANGE("Code credoc", Code);
+        HistoCredoc.DELETEALL();
+        //*
     end;
 
     trigger OnRename()
