@@ -1,4 +1,4 @@
-table 50258 Avis
+table 50258 "Avis"
 {
     DataClassification = ToBeClassified;
 

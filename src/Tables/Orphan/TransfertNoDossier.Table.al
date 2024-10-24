@@ -1,6 +1,7 @@
 table 50302 TransfertNoDossier
 {
     DataClassification = ToBeClassified;
+    //TODO: Realiser la page card "TransfersNoDossier" et la page liste "TransfersNoDossier"
 
     fields
     {

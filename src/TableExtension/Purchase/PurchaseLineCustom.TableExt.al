@@ -174,7 +174,7 @@ tableextension 50241 "PurchaseLineCustom" extends "Purchase Line" // Line sans s
 
     }
 
-    //TODO: Add triggers ( 3800 lignes à Refactoriser ? Non, seulements les Customisations)
+    //TODO: Add triggers ( 3800 lignes à Refactoriser ? Non, seulements les Customisations) a revoir !! 
 
     // Procedure MajQte 
     procedure MajQte(var LigAch: Record "Purchase Line")

@@ -31,6 +31,20 @@ table 50259 Credoc
             Caption = 'Date validité';
             Description = 'CREDOC - LN - 24/09/24 REV24';
             BlankNumbers = DontBlank;
+
+            trigger OnValidate()
+            begin
+                //* Insertion dans la table Historique credoc si changement de la date de validité
+                IF (xRec."Date validité" <> Rec."Date validité") AND (xRec."Date validité" <> 0D) THEN BEGIN
+                    HistoCredoc.INIT();
+                    HistoCredoc."Code credoc" := Code;
+                    HistoCredoc."Date validité" := "Date validité";
+                    HistoCredoc."Montant initial" := "Montant Initial";
+                    HistoCredoc."Date modification" := TODAY;
+                    HistoCredoc.INSERT();
+                END;
+                //*
+            end;
         }
         field(5; "Référence proforma"; Text[30])
         {
@@ -44,6 +58,23 @@ table 50259 Credoc
             Caption = 'Code devise';
             Description = 'CREDOC - LN - 24/09/24 REV24';
             TableRelation = "Currency"."Code";
+
+            trigger OnValidate()
+            begin
+
+                IF CurrFieldNo <> FIELDNO("Code devise") THEN
+                    MajFacteurDevise()
+                ELSE
+                    IF "Code devise" <> xRec."Code devise" THEN
+                        MajFacteurDevise();
+                ELSE
+                IF "Code devise" <> '' THEN BEGIN
+                    MajFacteurDevise();
+                    IF "Facteur devise" <> xRec."Facteur devise" THEN
+                        ConfirmerMajFacteurDevise();
+                END;
+
+            end;
         }
         field(7; "Facteur devise"; Decimal)
         {
@@ -136,5 +167,42 @@ table 50259 Credoc
     trigger OnRename()
     begin
 
+    end;
+
+    procedure MajFacteurDevise()
+    begin
+        IF "Code devise" <> '' THEN
+            "Facteur devise" := DeviseTauxChange.ExchangeRate(WORKDATE(), "Code devise")
+        ELSE
+            "Facteur devise" := 0;
+    end;
+
+    procedure ConfirmerMajFacteurDevise()
+    begin
+        IF CONFIRM('Voulez-vous mettre à jour le taux de change ?', FALSE) THEN
+            VALIDATE("Facteur devise")
+        ELSE
+            "Facteur devise" := xRec."Facteur devise";
+    end;
+
+    procedure CalculMontantUtiliseEnDev(DeviseSource: Code[10])
+    var
+        AvisDossierArrivage: Record "AvisDossierArrivage";
+        Avis: Record "Avis";
+    begin
+        AvisDossierArrivage.RESET();
+        AvisDossierArrivage.SETRANGE("Code credoc", Code);
+        AvisDossierArrivage.SETRANGE(Type, AvisDossierArrivage.Type::Marchandise);
+
+        "Montant utilisé" := 0;
+
+        IF AvisDossierArrivage.FIND('-') THEN
+            REPEAT
+                Avis.GET(AvisDossierArrivage."Code credoc", AvisDossierArrivage."No. ligne avis");
+
+                "Montant utilisé" := "Montant utilisé" +
+                DeviseTauxChange.MntChangeDevVersDev2(WORKDATE(), Avis."Code devise", DeviseSource, AvisDossierArrivage."Montant affecté", 2)
+
+            UNTIL AvisDossierArrivage.NEXT() = 0;
     end;
 }
