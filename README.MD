@@ -147,6 +147,8 @@
 
  page 50300 DossierArrivageDoc
 
+ report 50305 ContenuDossierArrivage
+
 
 
 

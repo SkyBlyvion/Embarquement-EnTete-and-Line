@@ -117,11 +117,9 @@ page 50300 "DossierArrivageDoc"
                 Caption = 'Liste des Avis associés au dossier';
                 ToolTip = 'Cliquez pour voir la liste des aviss associés au dossier.';
 
-                trigger OnAction()
-                var
-                begin
-
-                end;
+                RunObject = Page "ListAvisDossierArrivage";
+                RunPageLink = "No. Dossier" = field("No. Dossier");
+                RunFormOnRec = false;
 
             }
             action("Liste des Prestations associées au dossier")
@@ -129,11 +127,9 @@ page 50300 "DossierArrivageDoc"
                 Caption = 'Liste des Prestations associées au dossier';
                 ToolTip = 'Cliquez pour voir la liste des prestations associées au dossier.';
 
-                trigger OnAction()
-                var
-                begin
-
-                end;
+                RunObject = Page "ListPrestationsDossierArrivage";
+                RunPageLink = "No. Dossier" = field("No. Dossier");
+                RunFormOnRec = false;
 
             }
             action("Contenu dossier arrivage")
@@ -143,8 +139,12 @@ page 50300 "DossierArrivageDoc"
 
                 trigger OnAction()
                 var
+                    NDossier: Record "DossierArrivage";
                 begin
-
+                    NDossier.RESET();
+                    NDossier.SETRANGE("No. dossier", Rec."No. dossier");
+                    IF NDossier.FIND('-') THEN
+                        REPORT.RUNMODAL(50002, TRUE, FALSE, NDossier);
                 end;
 
             }
